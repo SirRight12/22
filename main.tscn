@@ -1,0 +1,112 @@
+[gd_scene load_steps=16 format=3 uid="uid://dlq7slxwr4n8t"]
+
+[ext_resource type="PackedScene" uid="uid://biaqn0vm2ufn0" path="res://table.glb" id="1_ra4ak"]
+[ext_resource type="PackedScene" uid="uid://5bbwgtarbckw" path="res://card.tscn" id="2_5qsxy"]
+[ext_resource type="Script" path="res://spot_light_3d.gd" id="2_jgsjy"]
+[ext_resource type="Script" path="res://slightly_move_cam.gd" id="3_q68a4"]
+[ext_resource type="Script" path="res://go_to_mouse.gd" id="5_b1dpv"]
+[ext_resource type="Script" path="res://ControlDrawing.gd" id="5_ctjtt"]
+[ext_resource type="Texture2D" uid="uid://ds754hne7ab5n" path="res://Cursor.png" id="6_4ivn5"]
+[ext_resource type="AudioStream" uid="uid://dkxrhvpmhu245" path="res://One more.mp3" id="8_g3bra"]
+
+[sub_resource type="Environment" id="Environment_l2d17"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_s32hl"]
+flip_faces = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 25.45
+
+[sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
+material = SubResource("StandardMaterial3D_kcj2m")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r58ox"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_wp7br"]
+sky_material = SubResource("ProceduralSkyMaterial_r58ox")
+
+[sub_resource type="Environment" id="Environment_f8qyp"]
+background_mode = 2
+background_energy_multiplier = 0.0
+sky = SubResource("Sky_wp7br")
+ambient_light_source = 1
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.0
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 6.36
+glow_strength = 1.12
+glow_bloom = 0.07
+glow_blend_mode = 0
+fog_enabled = true
+fog_light_energy = 0.55
+
+[node name="Node3D" type="Node3D"]
+
+[node name="p1hand" type="Node3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 0.715, 0, 0, 0, 1.2, -0.27741, 0.578364, 0.296827)
+
+[node name="Card" parent="p1hand" instance=ExtResource("2_5qsxy")]
+
+[node name="Card2" parent="p1hand" instance=ExtResource("2_5qsxy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.107446, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_l2d17")
+
+[node name="table" parent="." instance=ExtResource("1_ra4ak")]
+transform = Transform3D(1.5, 0, 0, 0, 0.715, 0, 0, 0, 1.2, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
+mesh = SubResource("BoxMesh_s32hl")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
+transform = Transform3D(-0.158958, -0.0786833, 0.984144, 0, 0.996819, 0.0796966, -0.987285, 0.0126685, -0.158453, 0.86483, 0.670863, 0.11292)
+light_energy = 1.99435
+script = ExtResource("2_jgsjy")
+look_target = NodePath("../p1hand")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SpotLight3D"]
+transform = Transform3D(0.075, -1.83814e-10, 1.40781e-19, 1.83814e-10, 0.075, -5.74418e-11, -4.65289e-26, 5.74418e-11, 0.075, 0.000461191, -0.0511899, -0.07398)
+mesh = SubResource("SphereMesh_8xr63")
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.129, 0.651)
+script = ExtResource("3_q68a4")
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.797584, 0.603208, 0, -0.603208, 0.797584, 0, 0, 0)
+environment = SubResource("Environment_f8qyp")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("5_ctjtt")
+
+[node name="Node2D" type="Node2D" parent="CanvasLayer"]
+script = ExtResource("5_b1dpv")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/Node2D"]
+texture_filter = 1
+texture = ExtResource("6_4ivn5")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="CanvasLayer/Node2D"]
+remote_path = NodePath("../../Texts")
+update_rotation = false
+update_scale = false
+
+[node name="Texts" type="Node2D" parent="CanvasLayer"]
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.688735, 0.579664, -0.0819151)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011227, 1.14421, 0.629845)
+stream = ExtResource("8_g3bra")
+volume_db = 16.762
+autoplay = true
+bus = &"Voice"
+parameters/looping = false

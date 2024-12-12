@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgn46dw37hg7j"]
+
+[ext_resource type="Script" path="res://float.gd" id="1_4ubf0"]
+[ext_resource type="Script" path="res://Resize.gd" id="2_k3q1v"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_nq8yc"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="LabelSettings" id="LabelSettings_1wxci"]
+font_size = 4241
+
+[node name="Node2D2" type="Node2D"]
+script = ExtResource("1_4ubf0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 5
+position = Vector2(0, -20)
+scale = Vector2(0.004, 0.004)
+texture = SubResource("ViewportTexture_nq8yc")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(3874, 5776)
+script = ExtResource("2_k3q1v")
+
+[node name="Label" type="Label" parent="SubViewport"]
+offset_right = 49.0
+offset_bottom = 23.0
+text = "hi"
+label_settings = SubResource("LabelSettings_1wxci")
+horizontal_alignment = 1
