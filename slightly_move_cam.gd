@@ -1,22 +1,20 @@
+@tool
 extends Node3D
 @onready var camera = $Camera3D
 var sens = .05
-var target_rot = Vector3(0,0,0)
+@export var max_neck_rotation:Vector3
+@export var min_neck_rotation:Vector3
+@export var max_camera_rotation:Vector3
+@export var min_camera_rotation:Vector3
 var move_speed = 200
-var target_cam_rot = Vector3(-37.1,0,0)
-func _input(event: InputEvent) -> void:
-	if event is not InputEventMouseMotion:
-		return
-	
-	target_cam_rot.x += -event.relative.y * sens
-	target_cam_rot.x = clamp(target_cam_rot.x,-53.6,9.9)
-	target_rot.y += -event.relative.x * sens
-	target_rot.y = clamp(target_rot.y,-44.7,44.7)
-	
 
-func _process(delta: float) -> void:
-	rotation_degrees = rotation_degrees.move_toward(target_rot,move_speed * delta)
-	#rotation_degrees = target_rot
-	
-	camera.rotation_degrees = camera.rotation_degrees.move_toward(target_cam_rot,move_speed * delta)
-	#camera.rotation_degrees = target_cam_rot
+func mouse_moved(mouse_pos):
+	var size = get_viewport().size
+	var percent_x = mouse_pos.x / size.x
+	var percent_y = mouse_pos.y / size.y
+	var new_rot = Vector3(max_neck_rotation)
+	new_rot = new_rot.lerp(min_neck_rotation,percent_x)
+	rotation_degrees = new_rot
+func _ready() -> void:
+	print('ready lol')
+	MouseManager.mouse_update.connect(mouse_moved)

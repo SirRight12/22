@@ -1,12 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://dlq7slxwr4n8t"]
+[gd_scene load_steps=14 format=3 uid="uid://dlq7slxwr4n8t"]
 
 [ext_resource type="PackedScene" uid="uid://biaqn0vm2ufn0" path="res://table.glb" id="1_ra4ak"]
-[ext_resource type="PackedScene" uid="uid://5bbwgtarbckw" path="res://card.tscn" id="2_5qsxy"]
 [ext_resource type="Script" path="res://spot_light_3d.gd" id="2_jgsjy"]
 [ext_resource type="Script" path="res://slightly_move_cam.gd" id="3_q68a4"]
+[ext_resource type="Environment" uid="uid://btfcs2fj835um" path="res://tree.tres" id="4_ax46e"]
 [ext_resource type="Script" path="res://go_to_mouse.gd" id="5_b1dpv"]
 [ext_resource type="Script" path="res://ControlDrawing.gd" id="5_ctjtt"]
 [ext_resource type="Texture2D" uid="uid://ds754hne7ab5n" path="res://Cursor.png" id="6_4ivn5"]
+[ext_resource type="PackedScene" uid="uid://bgn46dw37hg7j" path="res://text_scene.tscn" id="8_f0ksf"]
 [ext_resource type="AudioStream" uid="uid://dkxrhvpmhu245" path="res://One more.mp3" id="8_g3bra"]
 
 [sub_resource type="Environment" id="Environment_l2d17"]
@@ -22,38 +23,10 @@ emission_energy_multiplier = 25.45
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
 material = SubResource("StandardMaterial3D_kcj2m")
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r58ox"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_wp7br"]
-sky_material = SubResource("ProceduralSkyMaterial_r58ox")
-
-[sub_resource type="Environment" id="Environment_f8qyp"]
-background_mode = 2
-background_energy_multiplier = 0.0
-sky = SubResource("Sky_wp7br")
-ambient_light_source = 1
-ambient_light_sky_contribution = 0.0
-ambient_light_energy = 0.0
-tonemap_mode = 3
-glow_enabled = true
-glow_intensity = 6.36
-glow_strength = 1.12
-glow_bloom = 0.07
-glow_blend_mode = 0
-fog_enabled = true
-fog_light_energy = 0.55
-
 [node name="Node3D" type="Node3D"]
 
 [node name="p1hand" type="Node3D" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 0.715, 0, 0, 0, 1.2, -0.27741, 0.578364, 0.296827)
-
-[node name="Card" parent="p1hand" instance=ExtResource("2_5qsxy")]
-
-[node name="Card2" parent="p1hand" instance=ExtResource("2_5qsxy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.107446, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_l2d17")
@@ -66,8 +39,8 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
 mesh = SubResource("BoxMesh_s32hl")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
-transform = Transform3D(-0.158958, -0.0786833, 0.984144, 0, 0.996819, 0.0796966, -0.987285, 0.0126685, -0.158453, 0.86483, 0.670863, 0.11292)
-light_energy = 1.99435
+transform = Transform3D(-0.158958, -0.078683, 0.984144, 0, 0.996819, 0.0796963, -0.987285, 0.0126684, -0.158453, 0.86483, 0.670863, 0.11292)
+light_energy = 1.56142
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p1hand")
 
@@ -78,10 +51,12 @@ mesh = SubResource("SphereMesh_8xr63")
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.129, 0.651)
 script = ExtResource("3_q68a4")
+max_neck_rotation = Vector3(0, 54, 0)
+min_neck_rotation = Vector3(0, -54, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 0.797584, 0.603208, 0, -0.603208, 0.797584, 0, 0, 0)
-environment = SubResource("Environment_f8qyp")
+environment = ExtResource("4_ax46e")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 script = ExtResource("5_ctjtt")
@@ -100,6 +75,14 @@ update_scale = false
 
 [node name="Texts" type="Node2D" parent="CanvasLayer"]
 
+[node name="Draw?" parent="CanvasLayer/Texts" instance=ExtResource("8_f0ksf")]
+visible = false
+words = "Draw?"
+
+[node name="Draw!" parent="CanvasLayer/Texts" instance=ExtResource("8_f0ksf")]
+visible = false
+words = "Draw!"
+
 [node name="Marker3D" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.688735, 0.579664, -0.0819151)
 
@@ -110,3 +93,12 @@ volume_db = 16.762
 autoplay = true
 bus = &"Voice"
 parameters/looping = false
+
+[node name="p1hand_value" type="Label3D" parent="."]
+transform = Transform3D(0.015, 0, 0, 0, 0.015, 0, 0, 0, 0.015, -0.479003, 0.687572, 0.200246)
+billboard = 1
+alpha_antialiasing_mode = 1
+texture_filter = 0
+text = "0/21"
+font_size = 1000
+outline_size = 100

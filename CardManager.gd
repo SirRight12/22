@@ -2,6 +2,7 @@ extends Node
 
 var deck = ['1','2','3','4','5','6','7','8','9','10','11']
 var p1hand = []
+var p1hidden_hand = []
 var p2hand = []
 var can_draw = true
 var card_space = 0.107
@@ -9,7 +10,9 @@ var card_pos = Vector3(0.689,0.58,-0.082)
 signal p1carddrawn()
 signal p2carddrawn()
 @onready var p1node = get_tree().current_scene.find_child('p1hand')
+@onready var p1_hand_val = get_tree().current_scene.find_child('p1hand_value')
 # Called when the node enters the scene tree for the first time.
+var current_target = 21
 func shuffle_deck() -> Array[String]:
 	var new_list:Array[String] = []
 	new_list.resize(11)
@@ -34,14 +37,27 @@ func _ready() -> void:
 	reset_deck()
 	p1draw(true)
 	await p1carddrawn
-	await timeout(.1)
+	await timeout(1.5)
 	p1draw()
+func value_of(hand:Array):
+	var total = 0
+	var ending = ''
+	for val in hand:
+		if not val:
+			ending = '+?'
+		total += int(val)
+	return str(total) + ending
+		
 @onready var card_scene = load('res://card.tscn')
 func p1draw(hidden:bool=false):
 	var idx = randi_range(0,len(deck) - 1)
 	var card = deck[idx]
 	var node = card_scene.instantiate()
 	p1hand.append(card)
+	if hidden:
+		p1hidden_hand.append(false)
+	else:
+		p1hidden_hand.append(card)
 	p1node.add_child(node)
 	node.value = int(card)
 	node.hidden = hidden
@@ -59,6 +75,7 @@ func p1draw(hidden:bool=false):
 	
 	can_draw = true
 	p1carddrawn.emit()
+	p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
 func timeout(time:float):
 	var timer = get_tree().create_timer(time)
 	await timer.timeout
