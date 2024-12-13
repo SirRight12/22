@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://biaqn0vm2ufn0" path="res://table.glb" id="1_ra4ak"]
 [ext_resource type="Script" path="res://spot_light_3d.gd" id="2_jgsjy"]
 [ext_resource type="Script" path="res://slightly_move_cam.gd" id="3_q68a4"]
-[ext_resource type="Environment" uid="uid://btfcs2fj835um" path="res://tree.tres" id="4_ax46e"]
+[ext_resource type="Environment" uid="uid://dlgbbwt24w8w0" path="res://tree.tres" id="4_ax46e"]
 [ext_resource type="Script" path="res://go_to_mouse.gd" id="5_b1dpv"]
 [ext_resource type="Script" path="res://ControlDrawing.gd" id="5_ctjtt"]
 [ext_resource type="Texture2D" uid="uid://ds754hne7ab5n" path="res://Cursor.png" id="6_4ivn5"]
@@ -40,7 +40,7 @@ mesh = SubResource("BoxMesh_s32hl")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.158958, -0.078683, 0.984144, 0, 0.996819, 0.0796963, -0.987285, 0.0126684, -0.158453, 0.86483, 0.670863, 0.11292)
-light_energy = 1.56142
+light_energy = 1.92283
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p1hand")
 
@@ -53,6 +53,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.129, 0.651)
 script = ExtResource("3_q68a4")
 max_neck_rotation = Vector3(0, 54, 0)
 min_neck_rotation = Vector3(0, -54, 0)
+max_camera_rotation = Vector3(-4.6, 0, 0)
+min_camera_rotation = Vector3(-53.1, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 0.797584, 0.603208, 0, -0.603208, 0.797584, 0, 0, 0)

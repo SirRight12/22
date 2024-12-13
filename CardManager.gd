@@ -41,12 +41,12 @@ func _ready() -> void:
 	p1draw()
 func value_of(hand:Array):
 	var total = 0
-	var ending = ''
+	var starting = ''
 	for val in hand:
 		if not val:
-			ending = '+?'
+			starting = '+?'
 		total += int(val)
-	return str(total) + ending
+	return starting + str(total)
 		
 @onready var card_scene = load('res://card.tscn')
 func p1draw(hidden:bool=false):
