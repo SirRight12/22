@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://biaqn0vm2ufn0" path="res://table.glb" id="1_ra4ak"]
 [ext_resource type="Script" path="res://spot_light_3d.gd" id="2_jgsjy"]
 [ext_resource type="Script" path="res://slightly_move_cam.gd" id="3_q68a4"]
-[ext_resource type="Environment" uid="uid://dlgbbwt24w8w0" path="res://tree.tres" id="4_ax46e"]
+[ext_resource type="Environment" uid="uid://d27wrwsv7wsus" path="res://low_graphics.tres" id="4_l67no"]
 [ext_resource type="Script" path="res://go_to_mouse.gd" id="5_b1dpv"]
 [ext_resource type="Script" path="res://ControlDrawing.gd" id="5_ctjtt"]
 [ext_resource type="Texture2D" uid="uid://ds754hne7ab5n" path="res://Cursor.png" id="6_4ivn5"]
@@ -18,7 +18,8 @@ flip_faces = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 25.45
+emission_energy_multiplier = 2.42445
+emission_operator = 1
 
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
 material = SubResource("StandardMaterial3D_kcj2m")
@@ -39,26 +40,25 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
 mesh = SubResource("BoxMesh_s32hl")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
-transform = Transform3D(-0.158958, -0.078683, 0.984144, 0, 0.996819, 0.0796963, -0.987285, 0.0126684, -0.158453, 0.86483, 0.670863, 0.11292)
-light_energy = 1.92283
+transform = Transform3D(-0.168595, -0.032352, 0.985154, 0, 0.999461, 0.0328218, -0.985685, 0.00553361, -0.168504, 0.797794, 0.614186, 0.11292)
+light_energy = 1.6163
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p1hand")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SpotLight3D"]
-transform = Transform3D(0.075, -1.83814e-10, 1.40781e-19, 1.83814e-10, 0.075, -5.74418e-11, -4.65289e-26, 5.74418e-11, 0.075, 0.000461191, -0.0511899, -0.07398)
+transform = Transform3D(0.077, -3.20142e-10, 4.39246e-18, 3.20142e-10, 0.077, -1.05647e-09, 0, 1.05647e-09, 0.077, 0, 0, 0)
 mesh = SubResource("SphereMesh_8xr63")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.129, 0.651)
 script = ExtResource("3_q68a4")
-max_neck_rotation = Vector3(0, 54, 0)
-min_neck_rotation = Vector3(0, -54, 0)
+max_neck_rotation = Vector3(0, 48, 0)
+min_neck_rotation = Vector3(0, -48, 0)
 max_camera_rotation = Vector3(-4.6, 0, 0)
 min_camera_rotation = Vector3(-53.1, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 0.797584, 0.603208, 0, -0.603208, 0.797584, 0, 0, 0)
-environment = ExtResource("4_ax46e")
+environment = ExtResource("4_l67no")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 script = ExtResource("5_ctjtt")
@@ -77,13 +77,9 @@ update_scale = false
 
 [node name="Texts" type="Node2D" parent="CanvasLayer"]
 
-[node name="Draw?" parent="CanvasLayer/Texts" instance=ExtResource("8_f0ksf")]
+[node name="Draw" parent="CanvasLayer/Texts" instance=ExtResource("8_f0ksf")]
 visible = false
 words = "Draw?"
-
-[node name="Draw!" parent="CanvasLayer/Texts" instance=ExtResource("8_f0ksf")]
-visible = false
-words = "Draw!"
 
 [node name="Marker3D" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.688735, 0.579664, -0.0819151)

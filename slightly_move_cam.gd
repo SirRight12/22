@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 @onready var camera = $Camera3D
 var sens = .05
@@ -24,9 +23,15 @@ func mouse_moved(mouse_pos):
 	new_cam_rot = new_cam_rot.lerp(min_camera_rotation,percent_y)
 	#camera.rotation_degrees = new_cam_rot
 	target_cam_rotation = new_cam_rot
+	tween_stuff(camera,'rotation_degrees',target_cam_rotation,.5)
+	tween_stuff(self,'rotation_degrees',target_rotation,.5)
+func tween_stuff(obj:Object,property:NodePath,final,duration):
+	var tween = create_tween()
+	tween.tween_property(obj,property,final,duration)
+	return tween
 func _ready() -> void:
 	print('ready lol')
 	MouseManager.mouse_update.connect(mouse_moved)
-func _process(delta: float) -> void:
-	rotation_degrees = rotation_degrees.move_toward(target_rotation,move_speed*delta)
-	camera.rotation_degrees = camera.rotation_degrees.move_toward(target_cam_rotation,move_speed*delta)
+#func _process(delta: float) -> void:
+	#rotation_degrees = rotation_degrees.move_toward(target_rotation,move_speed*delta)
+	#camera.rotation_degrees = camera.rotation_degrees.move_toward(target_cam_rotation,move_speed*delta)

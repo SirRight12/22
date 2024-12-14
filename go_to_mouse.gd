@@ -15,9 +15,9 @@ func _process(_delta: float) -> void:
 	var direction = (global_position - prev_pos)
 	if direction.x < 0:
 		going_left = true
-		tween_stuff(self,'rotation_degrees',-9.5,.1)
+		tween_stuff(self,'rotation_degrees',-1.5 * abs(direction.x),.1)
 	elif direction.x > 0 :
-		tween_stuff(self,'rotation_degrees',9.5,.1)
+		tween_stuff(self,'rotation_degrees',1.5 * abs(direction.x),.1)
 	else:
-		tween_stuff(self,'rotation_degrees',0,.1)
+		tween_stuff(self,'rotation_degrees',0,.4)
 		

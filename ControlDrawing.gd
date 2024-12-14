@@ -1,7 +1,6 @@
 extends CanvasLayer
 @onready var text_scene = load('res://text_scene.tscn')
-@onready var draw_q = $"Texts/Draw?"
-@onready var draw_a = $"Texts/Draw!"
+@onready var texts = $"Texts/Draw"
 @onready var mouse = $"Node2D"
 var draw_step = 0
 func _input(event: InputEvent) -> void:
@@ -20,20 +19,15 @@ func advance_draw_step():
 	draw_step += 1
 	reset_timer()
 	if draw_step == 2:
-		draw_a.hide()
-		draw_a.reset()
-		draw_q.show()
-		draw_q.reset()
-		draw_q.float_up()
+		#texts.words = "Draw?"
+		#texts.float_up()
 		mouse.scale = Vector2(.3,.3)
 		var tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
 	elif draw_step == 4:
 		reset_timer()
-		draw_q.hide()
-		draw_q.reset()
-		draw_a.show()
-		draw_a.reset()
-		draw_a.float_up()
+		#texts.words = "Draw!"
+		#texts.float_up()
+		CardManager.draw_card()
 		current_timer = false
 		mouse.scale = Vector2(.6,.6)
 		var tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)

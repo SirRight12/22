@@ -6,6 +6,8 @@ var p1hidden_hand = []
 var p2hand = []
 var can_draw = true
 var card_space = 0.107
+enum TURNS{P1,P2}
+var turn = TURNS.P1
 var card_pos = Vector3(0.689,0.58,-0.082)
 signal p1carddrawn()
 signal p2carddrawn()
@@ -29,16 +31,22 @@ func shuffle_deck() -> Array[String]:
 	
 	print(new_list)
 	return new_list
-	pass
 func reset_deck():
 	deck = shuffle_deck()
+func draw_card():
+	if not can_draw:
+		return
+	if turn == TURNS.P1:
+		can_draw = false
+		p1draw()
+		p1_hand_val.text = 'draw card? ' + str(len(p1hand))
+		await p1carddrawn
+		p1_hand_val.text = 'can draw again'
+		can_draw = true
 func _ready() -> void:
 	clear_children(p1node)
 	reset_deck()
-	p1draw(true)
-	await p1carddrawn
-	await timeout(1.5)
-	p1draw()
+	#p1draw(true)
 func value_of(hand:Array):
 	var total = 0
 	var starting = ''
@@ -63,19 +71,23 @@ func p1draw(hidden:bool=false):
 	node.hidden = hidden
 	var final = Vector3(card_space * (len(p1hand) - 1),0,0)
 	node.position = card_pos
+	node.show()
+	p1_hand_val.text = str(len(p1hand)) +  ' ' + card + str(final) + ' '
 	
-	var tween = create_tween()
-	tween.tween_property(node,'position',final,.3)
-	node.slide()
+	
 	deck.pop_at(idx)
 	can_draw = false
 	if not node.is_node_ready():
 		await node.ready
+	var tween = create_tween()
+	tween.tween_property(node,'position',final,.3)
+	node.slide()
+	p1_hand_val.text = 'ready? ' + node.is_node_ready()
 	await tween.finished
-	
+	p1_hand_val.text = 'tween done'
 	can_draw = true
 	p1carddrawn.emit()
-	p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
+	#p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
 func timeout(time:float):
 	var timer = get_tree().create_timer(time)
 	await timer.timeout
