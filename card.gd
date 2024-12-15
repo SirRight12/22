@@ -7,8 +7,8 @@ extends Node3D
 	set = set_value
 @export var hidden:bool = false:
 	set = set_hidden
-func set_hidden(value):
-	hidden = value
+func set_hidden(val):
+	hidden = val
 	eval_hidden()
 func eval_hidden():
 	if not is_node_ready():

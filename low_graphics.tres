@@ -8,7 +8,6 @@ ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 sky_material = SubResource("ProceduralSkyMaterial_r58ox")
 
 [resource]
-background_mode = 2
 background_energy_multiplier = 0.0
 sky = SubResource("Sky_wp7br")
 ambient_light_source = 1

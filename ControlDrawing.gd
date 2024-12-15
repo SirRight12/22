@@ -1,7 +1,8 @@
 extends CanvasLayer
 @onready var text_scene = load('res://text_scene.tscn')
-@onready var texts = $"Texts/Draw"
-@onready var mouse = $"Node2D"
+@onready var confirm = $"Node/Texts/Confirm"
+@onready var accept = $"Node/Texts/Accept"
+@onready var mouse = $"Node/Node2D"
 var draw_step = 0
 func _input(event: InputEvent) -> void:
 	if not event.is_action('draw'):
@@ -19,18 +20,20 @@ func advance_draw_step():
 	draw_step += 1
 	reset_timer()
 	if draw_step == 2:
-		#texts.words = "Draw?"
-		#texts.float_up()
+		confirm.words = "draw?"
+		accept.hide()
+		confirm.float_up()
 		mouse.scale = Vector2(.3,.3)
-		var tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
+		var _tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
 	elif draw_step == 4:
 		reset_timer()
-		#texts.words = "Draw!"
-		#texts.float_up()
+		accept.words = "DRAW!"
+		confirm.hide()
+		accept.float_up()
 		CardManager.draw_card()
 		current_timer = false
 		mouse.scale = Vector2(.6,.6)
-		var tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
+		var _tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
 		reset_draw()
 	print('draw step')
 	current_timer = timeout(.4)
