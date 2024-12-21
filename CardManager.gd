@@ -7,7 +7,7 @@ var p2hidden_hand = []
 var p2hand = []
 var can_draw = true
 var card_space = 0.107
-enum TURNS{P1,P2}
+enum TURNS{P1,P2,REVEAL}
 var turn = TURNS.P1
 var card_pos = Vector3(0.689,0.58,-0.082)
 signal p1carddrawn()
@@ -22,8 +22,10 @@ signal p2carddrawn()
 @onready var p2:Node3D = get_tree().current_scene.find_child('Player2')
 @onready var p1cam:Camera3D = p1.find_child('Camera3D')
 @onready var p2cam:Camera3D = p2.find_child('Camera3D')
+@onready var revealcam:Camera3D = get_tree().current_scene.find_child('RevealCam')
 @onready var p1_light:SpotLight3D = get_tree().current_scene.find_child('P1Light')
 @onready var p2_light:SpotLight3D = get_tree().current_scene.find_child('P2Light')
+@onready var mood_light:SpotLight3D = get_tree().current_scene.find_child('MoodLight')
 # Called when the node enters the scene tree for the first time.
 var current_target = 21
 func shuffle_deck() -> Array[String]:
@@ -49,6 +51,8 @@ func draw_card():
 		return
 	if turn == TURNS.P1:
 		can_draw = false
+		p1_passed = false
+		p2_passed = false
 		p1draw()
 		await p1carddrawn
 		await timeout(1)
@@ -62,6 +66,8 @@ func draw_card():
 		can_draw = true
 	elif turn == TURNS.P2:
 		can_draw = false
+		p1_passed = false
+		p2_passed = false
 		p2draw()
 		await p2carddrawn
 		await timeout(1)
@@ -73,13 +79,90 @@ func draw_card():
 		p1cam.make_current()
 		blackout.hide()
 		can_draw = true
+	swap_view()
+var p1_passed = false
+var p2_passed = false
+func pass_turn():
+	if turn == TURNS.P1:
+		p1_passed = true
+		turn = TURNS.P2
+		can_draw = false
+		await timeout(1)
+		blackout.show()
+		turn = TURNS.P2
+		p2cam.make_current()
+		await timeout(3)
+		blackout.hide()
+		if p1_passed and p2_passed:
+			turn = TURNS.REVEAL
+			reveal()
+			return
+		p2_light.show()
+		p1_light.hide()
+		can_draw = true
+	elif turn == TURNS.P2:
+		p2_passed = true
+		
+		turn = TURNS.P2
+		can_draw = false
+		await timeout(1)
+		blackout.show()
+		turn = TURNS.P1
+		p1cam.make_current()
+		await timeout(3)
+		blackout.hide()
+		if p1_passed and p2_passed:
+			turn = TURNS.REVEAL
+			reveal()
+			return
+		p1_light.show()
+		p2_light.hide()
+		
+		can_draw = true
+	
+	swap_view()
+func reveal():
+	swap_view()
+	mood_light.hide()
+	p1_light.hide()
+	p2_light.hide()
+	p1_hand_val.hide()
+	p2_hand_val.hide()
+	p1_light.spot_angle = 20
+	p2_light.spot_angle = 20
+	revealcam.make_current()
+	await timeout(2)
+	reveal_children(p1node)
+	p1_light.show()
+	await timeout(1)
+	create_tween().tween_property(revealcam,'fov',35,1.5)
+	await timeout(2)
+	p2node.rotation_degrees = Vector3.ZERO
+	reveal_children(p2node)
+	p2_light.show()
+	create_tween().tween_property(revealcam,'fov',75,.2)
+func reveal_children(hand:Node3D):
+	for node in hand.get_children():
+		node.hidden = false
+func swap_view():
+	if turn == TURNS.P1:
+		p1_hand_val.text = str(value_of(p1hand)) + '/' + str(current_target)
+		p2_hand_val.text = str(value_of(p2hidden_hand)) + '/' + str(current_target)
+	elif turn == TURNS.P2:
+		p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
+		p2_hand_val.text = str(value_of(p2hand)) + '/' + str(current_target)
+	else:
+		p1_hand_val.text = str(value_of(p1hand)) + '/' + str(current_target)
+		p2_hand_val.text = str(value_of(p2hand)) + '/' + str(current_target)
 func _ready() -> void:
 	clear_children(p1node)
 	reset_deck()
 	p1draw(true)
+	p2draw(true)
 	await p1carddrawn
 	await timeout(.4)
 	p1draw()
+	p2draw()
 func value_of(hand:Array):
 	var total = 0
 	var starting = ''
@@ -115,7 +198,7 @@ func p1draw(hidden:bool=false):
 	tween.tween_property(node,'position',final,.3)
 	node.slide()
 	await tween.finished
-	p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
+	swap_view()
 	can_draw = true
 	p1carddrawn.emit()
 	#p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
@@ -147,6 +230,7 @@ func p2draw(hidden:bool=false):
 	p2_hand_val.text = str(value_of(p2hidden_hand)) + '/' + str(current_target)
 	can_draw = true
 	p2carddrawn.emit()
+	swap_view()
 	#p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
 func timeout(time:float):
 	var timer = get_tree().create_timer(time)

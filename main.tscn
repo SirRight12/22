@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://dlq7slxwr4n8t"]
+[gd_scene load_steps=20 format=4 uid="uid://dlq7slxwr4n8t"]
 
 [ext_resource type="Texture2D" uid="uid://bjcmwmmsoawat" path="res://table_1.jpg" id="1_y6px7"]
 [ext_resource type="Texture2D" uid="uid://cafvkibmuq2ul" path="res://table_2.jpg" id="2_hp78w"]
@@ -15,7 +15,6 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m6v4k"]
 resource_name = "wooden_table_02"
 cull_mode = 2
-albedo_color = Color(1, 1, 1, 1)
 albedo_texture = ExtResource("1_y6px7")
 metallic_specular = 0.1
 metallic_texture = ExtResource("2_hp78w")
@@ -72,6 +71,27 @@ emission_on_uv2 = true
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
 material = SubResource("StandardMaterial3D_kcj2m")
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r58ox"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_wp7br"]
+sky_material = SubResource("ProceduralSkyMaterial_r58ox")
+
+[sub_resource type="Environment" id="Environment_ku3f5"]
+background_energy_multiplier = 0.0
+sky = SubResource("Sky_wp7br")
+ambient_light_source = 1
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+tonemap_mode = 2
+glow_intensity = 0.0
+glow_strength = 1.12
+glow_bloom = 0.07
+glow_blend_mode = 0
+fog_light_energy = 0.55
+
 [node name="Node3D" type="Node3D"]
 
 [node name="p1hand" type="Node3D" parent="."]
@@ -97,7 +117,7 @@ mesh = SubResource("BoxMesh_s32hl")
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(0.168709, 0.0325175, -0.985129, 0, 0.999455, 0.0329904, 0.985665, -0.00556578, 0.168617, -0.798, 0.614, -0.113)
 visible = false
-light_energy = 2.8412
+light_energy = 2.83428
 spot_range = 2.092
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p2hand")
@@ -108,7 +128,7 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.168493, -0.0321792, 0.985177, 0, 0.999466, 0.0326459, -0.985702, 0.0055006, -0.168403, 0.798, 0.614, 0.113)
-light_energy = 1.93471
+light_energy = 2.85477
 light_size = 0.1
 spot_range = 2.092
 script = ExtResource("2_jgsjy")
@@ -172,9 +192,13 @@ text = "0/21"
 font_size = 1000
 outline_size = 100
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
+[node name="MoodLight" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 5.00956, 0)
 light_color = Color(0.485703, 0.485704, 0.485703, 1)
 light_energy = 1.02
 spot_range = 8.8567
 spot_angle_attenuation = 0.965939
+
+[node name="RevealCam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.47836, 0)
+environment = SubResource("Environment_ku3f5")
