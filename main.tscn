@@ -1,14 +1,15 @@
-[gd_scene load_steps=20 format=4 uid="uid://dlq7slxwr4n8t"]
+[gd_scene load_steps=21 format=4 uid="uid://dlq7slxwr4n8t"]
 
 [ext_resource type="Texture2D" uid="uid://bjcmwmmsoawat" path="res://table_1.jpg" id="1_y6px7"]
 [ext_resource type="Texture2D" uid="uid://cafvkibmuq2ul" path="res://table_2.jpg" id="2_hp78w"]
-[ext_resource type="Script" path="res://spot_light_3d.gd" id="2_jgsjy"]
-[ext_resource type="Script" path="res://slightly_move_cam.gd" id="3_q68a4"]
+[ext_resource type="Script" uid="uid://bmbi6b6ql1scv" path="res://spot_light_3d.gd" id="2_jgsjy"]
+[ext_resource type="Script" uid="uid://c4fksd52317ng" path="res://slightly_move_cam.gd" id="3_q68a4"]
 [ext_resource type="Texture2D" uid="uid://drdi3ip6w3d4e" path="res://table_0.jpg" id="3_w702b"]
 [ext_resource type="Environment" uid="uid://d27wrwsv7wsus" path="res://low_graphics.tres" id="4_l67no"]
-[ext_resource type="Script" path="res://ControlDrawing.gd" id="5_ctjtt"]
+[ext_resource type="Script" uid="uid://d26vy88yblukt" path="res://ControlDrawing.gd" id="5_ctjtt"]
 [ext_resource type="PackedScene" uid="uid://cyugpqt4rxrpw" path="res://ui.tscn" id="6_jwklw"]
 [ext_resource type="AudioStream" uid="uid://dkxrhvpmhu245" path="res://One more.mp3" id="8_g3bra"]
+[ext_resource type="PackedScene" uid="uid://buu12v1gfaefj" path="res://evgenii-old_ussr_lamp.glb" id="10_4c57u"]
 
 [sub_resource type="Environment" id="Environment_l2d17"]
 
@@ -115,27 +116,33 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
 mesh = SubResource("BoxMesh_s32hl")
 
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
-transform = Transform3D(0.168709, 0.0325175, -0.985129, 0, 0.999455, 0.0329904, 0.985665, -0.00556578, 0.168617, -0.798, 0.614, -0.113)
+transform = Transform3D(0.0929808, 0.270836, -0.958125, 0, 0.962293, 0.272014, 0.995668, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 2.83428
+light_energy = 2.29174
 spot_range = 2.092
+spot_angle = 26.82
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p2hand")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="P2Light"]
-transform = Transform3D(0.077, -3.20142e-10, 4.39246e-18, 3.20142e-10, 0.077, -1.05647e-09, 0, 1.05647e-09, 0.077, 0, 0, 0)
+transform = Transform3D(0.077, -5.82077e-10, 0, 4.65661e-10, 0.077, 1.19326e-09, 0, -6.34464e-09, 0.077, -0.0482357, 0.0375915, -0.132986)
 mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
-transform = Transform3D(-0.168493, -0.0321792, 0.985177, 0, 0.999466, 0.0326459, -0.985702, 0.0055006, -0.168403, 0.798, 0.614, 0.113)
-light_energy = 2.85477
+transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
+light_energy = 2.07094
 light_size = 0.1
-spot_range = 2.092
+distance_fade_enabled = true
+distance_fade_begin = 0.9
+distance_fade_length = 1.1
+spot_range = 1.408
+spot_angle = 22.71
+spot_angle_attenuation = 3.73212
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p1hand")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="P1Light"]
-transform = Transform3D(0.077, -3.20142e-10, 4.39246e-18, 3.20142e-10, 0.077, -1.05647e-09, 0, 1.05647e-09, 0.077, 0, 0, 0)
+transform = Transform3D(0.077, -2.91038e-10, 0, 3.20142e-10, 0.077, -9.74978e-10, 0, 6.33008e-10, 0.077, -0.017, 0.057, -0.387)
 mesh = SubResource("SphereMesh_8xr63")
 
 [node name="Player1" type="Node3D" parent="."]
@@ -148,6 +155,7 @@ min_camera_rotation = Vector3(-53.1, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Player1"]
 environment = ExtResource("4_l67no")
+current = true
 
 [node name="Player2" type="Node3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.934002, -0.651)
@@ -202,3 +210,9 @@ spot_angle_attenuation = 0.965939
 [node name="RevealCam" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.47836, 0)
 environment = SubResource("Environment_ku3f5")
+
+[node name="Lamp1" parent="." instance=ExtResource("10_4c57u")]
+transform = Transform3D(0.00387001, 0, -0.00922079, 0, 0.01, 0, 0.00922079, 0, 0.00387001, 0.693063, 0.784719, 0.172484)
+
+[node name="Lamp2" parent="." instance=ExtResource("10_4c57u")]
+transform = Transform3D(-0.00431472, 0, 0.00902126, 0, 0.01, 0, -0.00902126, 0, -0.00431472, -0.705805, 0.784719, -0.197142)

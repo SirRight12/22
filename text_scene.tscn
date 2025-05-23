@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bgn46dw37hg7j"]
 
-[ext_resource type="Script" path="res://float.gd" id="1_4ubf0"]
-[ext_resource type="Script" path="res://Resize.gd" id="2_k3q1v"]
+[ext_resource type="Script" uid="uid://tv1uuk7x4ym" path="res://float.gd" id="1_4ubf0"]
+[ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="2_k3q1v"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_nq8yc"]
 viewport_path = NodePath("SubViewport")
@@ -23,6 +23,7 @@ transparent_bg = true
 canvas_item_default_texture_filter = 0
 size = Vector2i(3874, 5776)
 script = ExtResource("2_k3q1v")
+offset = null
 
 [node name="Label" type="Label" parent="SubViewport"]
 offset_right = 49.0

@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://cyugpqt4rxrpw"]
 
-[ext_resource type="Script" path="res://go_to_mouse.gd" id="1_wrvu1"]
+[ext_resource type="Script" uid="uid://cw4dfmgdmoxl2" path="res://go_to_mouse.gd" id="1_wrvu1"]
 [ext_resource type="Texture2D" uid="uid://ds754hne7ab5n" path="res://Cursor.png" id="2_43ch1"]
 [ext_resource type="PackedScene" uid="uid://bgn46dw37hg7j" path="res://text_scene.tscn" id="3_js3fx"]
-[ext_resource type="Script" path="res://Resize.gd" id="4_d81dh"]
+[ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="4_d81dh"]
 [ext_resource type="FontFile" uid="uid://b4lu3xdnl0ntv" path="res://October-Crow.ttf" id="5_4odyu"]
 
 [sub_resource type="Animation" id="Animation_0q7ht"]
@@ -14,8 +14,8 @@ resource_name = "expand"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2oa5r"]
 _data = {
-"RESET": SubResource("Animation_0q7ht"),
-"expand": SubResource("Animation_mjofu")
+&"RESET": SubResource("Animation_0q7ht"),
+&"expand": SubResource("Animation_mjofu")
 }
 
 [sub_resource type="LabelSettings" id="LabelSettings_ljbd0"]
@@ -41,7 +41,7 @@ update_scale = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Node2D"]
 libraries = {
-"": SubResource("AnimationLibrary_2oa5r")
+&"": SubResource("AnimationLibrary_2oa5r")
 }
 
 [node name="Texts" type="Node2D" parent="."]
@@ -76,6 +76,7 @@ color = Color(0, 0, 0, 1)
 transparent_bg = true
 size = Vector2i(2725, 2089)
 script = ExtResource("4_d81dh")
+offset = null
 
 [node name="Label" type="Label" parent="Control/ColorRect/SubViewport"]
 offset_right = 40.0

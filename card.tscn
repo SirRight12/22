@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://5bbwgtarbckw"]
 
-[ext_resource type="Script" path="res://card.gd" id="1_001nj"]
+[ext_resource type="Script" uid="uid://bvh23xbeosaqp" path="res://card.gd" id="1_001nj"]
 [ext_resource type="Texture2D" uid="uid://dgk63k5ukbh3v" path="res://Cards/Back.tres" id="2_si8r1"]
 
 [sub_resource type="Animation" id="Animation_hyo5n"]
@@ -36,8 +36,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mha3y"]
 _data = {
-"RESET": SubResource("Animation_hyo5n"),
-"reveal": SubResource("Animation_qbi75")
+&"RESET": SubResource("Animation_hyo5n"),
+&"reveal": SubResource("Animation_qbi75")
 }
 
 [node name="Node3D" type="Node3D"]
@@ -47,7 +47,7 @@ hidden = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_mha3y")
+&"": SubResource("AnimationLibrary_mha3y")
 }
 
 [node name="Sprite3D" type="Sprite3D" parent="."]

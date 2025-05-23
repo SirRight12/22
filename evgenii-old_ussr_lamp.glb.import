@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c2nu1igcyff3c"
-path="res://.godot/imported/Television_01_1k.glb-eef1a78d1cc83f76284bdd2a35d67e02.scn"
+uid="uid://buu12v1gfaefj"
+path="res://.godot/imported/evgenii-old_ussr_lamp.glb-f52cea3cbcee9c79d66347284bc65a49.scn"
 
 [deps]
 
-source_file="res://Television_01_1k.glb"
-dest_files=["res://.godot/imported/Television_01_1k.glb-eef1a78d1cc83f76284bdd2a35d67e02.scn"]
+source_file="res://evgenii-old_ussr_lamp.glb"
+dest_files=["res://.godot/imported/evgenii-old_ussr_lamp.glb-f52cea3cbcee9c79d66347284bc65a49.scn"]
 
 [params]
 

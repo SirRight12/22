@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c2nu1igcyff3c"
-path="res://.godot/imported/Television_01_1k.glb-eef1a78d1cc83f76284bdd2a35d67e02.scn"
+uid="uid://byofd3vgcfbfj"
+path="res://.godot/imported/no-more-feelings-digital_radio_clock.glb-d81c97a4c44a0a19e0ca2b26e3cb2c82.scn"
 
 [deps]
 
-source_file="res://Television_01_1k.glb"
-dest_files=["res://.godot/imported/Television_01_1k.glb-eef1a78d1cc83f76284bdd2a35d67e02.scn"]
+source_file="res://no-more-feelings-digital_radio_clock.glb"
+dest_files=["res://.godot/imported/no-more-feelings-digital_radio_clock.glb-d81c97a4c44a0a19e0ca2b26e3cb2c82.scn"]
 
 [params]
 

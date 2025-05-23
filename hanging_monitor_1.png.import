@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjcmwmmsoawat"
-path.s3tc="res://.godot/imported/table_1.jpg-402156056cdb31fb58a6b91d593910e2.s3tc.ctex"
+uid="uid://b7l2btwms7h8s"
+path.s3tc="res://.godot/imported/hanging_monitor_1.png-0c9909e2033b4b1b9c502777665e29a5.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "9b5645288bef2d2b1eac03ecb984df22"
+"md5": "4f0de64d99bb745a716e0a12a175fc11"
 }
 
 [deps]
 
-source_file="res://table_1.jpg"
-dest_files=["res://.godot/imported/table_1.jpg-402156056cdb31fb58a6b91d593910e2.s3tc.ctex"]
+source_file="res://hanging_monitor_1.png"
+dest_files=["res://.godot/imported/hanging_monitor_1.png-0c9909e2033b4b1b9c502777665e29a5.s3tc.ctex"]
 
 [params]
 
@@ -27,8 +27,8 @@ compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=0
-roughness/src_normal=""
+roughness/mode=8
+roughness/src_normal="res://hanging_monitor_2.png"
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

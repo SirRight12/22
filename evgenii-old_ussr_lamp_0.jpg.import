@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjcmwmmsoawat"
-path.s3tc="res://.godot/imported/table_1.jpg-402156056cdb31fb58a6b91d593910e2.s3tc.ctex"
+uid="uid://bydafitlox14f"
+path.s3tc="res://.godot/imported/evgenii-old_ussr_lamp_0.jpg-bbced528f9dfc2e49f5609492c61c6f3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "9b5645288bef2d2b1eac03ecb984df22"
+"md5": "7740653078dcf3e9022a75ff73746d9a"
 }
 
 [deps]
 
-source_file="res://table_1.jpg"
-dest_files=["res://.godot/imported/table_1.jpg-402156056cdb31fb58a6b91d593910e2.s3tc.ctex"]
+source_file="res://evgenii-old_ussr_lamp_0.jpg"
+dest_files=["res://.godot/imported/evgenii-old_ussr_lamp_0.jpg-bbced528f9dfc2e49f5609492c61c6f3.s3tc.ctex"]
 
 [params]
 
