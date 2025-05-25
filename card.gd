@@ -3,6 +3,7 @@ extends Node3D
 
 @onready var sprite = $Sprite3D
 @onready var animation_player:AnimationPlayer = $AnimationPlayer
+@onready var alt_text:Label = $SubViewport/Label/Label2
 @export var value:int = 1:
 	set = set_value
 @export var hidden:bool = false:
@@ -16,8 +17,21 @@ func eval_hidden():
 	if hidden:
 		sprite.texture = load("res://Cards/Back.tres")
 		print('hiding')
+		alt_text.text = '?'
 	else:
+		true_num()
 		show_number_val()
+func true_num():
+	$Sprite3D2.show()
+	alt_text.text = str(value)
+func hidden_num():
+	$Sprite3D2.show()
+	if hidden:
+		alt_text.text = '?'
+		return
+	alt_text.text = str(value)
+func hide_num():
+	$Sprite3D2.hide()
 var file_start = 'res://Cards/'
 var file_end = '.tres'
 func set_value(val):

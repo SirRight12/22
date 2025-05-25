@@ -1,9 +1,12 @@
 @tool
 extends SpotLight3D
 @export var look_target:Node3D
+var disabled = false
 var place = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if disabled:
+		return
 	place += delta
 	light_energy = randf_range(0.6,1.0) * 3
 	if not look_target:

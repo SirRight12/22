@@ -82,6 +82,31 @@ func draw_card():
 	swap_view()
 var p1_passed = false
 var p2_passed = false
+func reset():
+	clear_children(p1node)
+	clear_children(p2node)
+	p1hand = []
+	p2hand = []
+	p1hidden_hand = []
+	p2hidden_hand = []
+	p1_passed = false
+	p2_passed = false
+	reset_deck()
+	turn = TURNS.P1
+	p1_hand_val.show()
+	p2_hand_val.show()
+	p2node.rotation = Vector3(0,PI,0)
+	p1_light.disabled = false
+	p2_light.disabled = false
+	p1_light.light_color = Color.WHITE
+	p2_light.light_color = Color.WHITE
+	p1cam.make_current()
+	mood_light.show()
+	p2_light.hide()
+	swap_view()
+	await cards_setup()
+	
+	
 func pass_turn():
 	if turn == TURNS.P1:
 		p1_passed = true
@@ -141,21 +166,65 @@ func reveal():
 	reveal_children(p2node)
 	p2_light.show()
 	create_tween().tween_property(revealcam,'fov',75,.2)
+	await timeout(1)
+	winner()
+	await timeout(3)
+	reset()
+func winner():
+	var win = eval_winner()
+	if win == TURNS.P1:
+		p2node.hide_cards()
+		p2_light.disabled = true
+		create_tween().tween_property(p2_light,'light_color',Color.RED,.4)
+		create_tween().tween_property(p2_light,'light_energy',0,1)
+	else:
+		p1node.hide_cards()
+		p1_light.disabled = true
+		create_tween().tween_property(p1_light,'light_color',Color.RED,.4)
+		create_tween().tween_property(p1_light,'light_energy',0,1)
+
+	
+func eval_winner():
+	var p1 = int(value_of(p1hand))
+	var p2 = int(value_of(p2hand))
+	#if the first hand is more than the second
+	if p1 > p2:
+		#if p1 busted then p2 must be either under, or at least less
+		if p1 > current_target:
+			return TURNS.P2
+		#Otherwise p1 has not busted and bested p2 so they win
+		else:
+			return TURNS.P1
+	# p2 >= p1
+	else:
+		if p2 > current_target:
+			return TURNS.P1
+		else:
+			return TURNS.P2
+	
 func reveal_children(hand:Node3D):
 	for node in hand.get_children():
 		node.hidden = false
 func swap_view():
 	if turn == TURNS.P1:
+		p1node.show_all()
+		p2node.hide_all()
 		p1_hand_val.text = str(value_of(p1hand)) + '/' + str(current_target)
 		p2_hand_val.text = str(value_of(p2hidden_hand)) + '/' + str(current_target)
 	elif turn == TURNS.P2:
+		p2node.show_all()
+		p1node.hide_all()
 		p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
 		p2_hand_val.text = str(value_of(p2hand)) + '/' + str(current_target)
 	else:
+		p2node.hide_cards()
+		p1node.hide_cards()
 		p1_hand_val.text = str(value_of(p1hand)) + '/' + str(current_target)
 		p2_hand_val.text = str(value_of(p2hand)) + '/' + str(current_target)
 func _ready() -> void:
 	clear_children(p1node)
+	cards_setup()
+func cards_setup():
 	reset_deck()
 	p1draw(true)
 	p2draw(true)

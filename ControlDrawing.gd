@@ -6,6 +6,8 @@ extends CanvasLayer
 var draw_step = 0
 var pass_step = 0
 func _input(event: InputEvent) -> void:
+	if CardManager.turn == CardManager.TURNS.REVEAL:
+		return
 	if not event.is_action('draw') and not event.is_action('pass'):
 		return
 	if event.is_action('draw'):

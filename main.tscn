@@ -1,5 +1,6 @@
-[gd_scene load_steps=21 format=4 uid="uid://dlq7slxwr4n8t"]
+[gd_scene load_steps=22 format=4 uid="uid://dlq7slxwr4n8t"]
 
+[ext_resource type="Script" uid="uid://b6gy2tjpbxk8m" path="res://p1_turn.gd" id="1_dg77c"]
 [ext_resource type="Texture2D" uid="uid://bjcmwmmsoawat" path="res://table_1.jpg" id="1_y6px7"]
 [ext_resource type="Texture2D" uid="uid://cafvkibmuq2ul" path="res://table_2.jpg" id="2_hp78w"]
 [ext_resource type="Script" uid="uid://bmbi6b6ql1scv" path="res://spot_light_3d.gd" id="2_jgsjy"]
@@ -97,9 +98,11 @@ fog_light_energy = 0.55
 
 [node name="p1hand" type="Node3D" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 0.715, 0, 0, 0, 1.2, -0.27741, 0.578364, 0.296827)
+script = ExtResource("1_dg77c")
 
 [node name="p2hand" type="Node3D" parent="."]
 transform = Transform3D(-1.5, 0, -1.04907e-07, 0, 0.715, 0, 1.31134e-07, 0, -1.2, 0.277, 0.578, -0.297)
+script = ExtResource("1_dg77c")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_l2d17")
@@ -116,11 +119,12 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
 mesh = SubResource("BoxMesh_s32hl")
 
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
-transform = Transform3D(0.0929808, 0.270836, -0.958125, 0, 0.962293, 0.272014, 0.995668, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
+transform = Transform3D(0.0929808, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995668, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 2.29174
+light_energy = 2.70159
 spot_range = 2.092
-spot_angle = 26.82
+spot_angle = 22.71
+spot_angle_attenuation = 2.0
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p2hand")
 
@@ -130,14 +134,14 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
-light_energy = 2.07094
+light_energy = 2.436
 light_size = 0.1
 distance_fade_enabled = true
 distance_fade_begin = 0.9
 distance_fade_length = 1.1
-spot_range = 1.408
+spot_range = 2.092
 spot_angle = 22.71
-spot_angle_attenuation = 3.73212
+spot_angle_attenuation = 2.0
 script = ExtResource("2_jgsjy")
 look_target = NodePath("../p1hand")
 

@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://5bbwgtarbckw"]
+[gd_scene load_steps=9 format=3 uid="uid://5bbwgtarbckw"]
 
 [ext_resource type="Script" uid="uid://bvh23xbeosaqp" path="res://card.gd" id="1_001nj"]
 [ext_resource type="Texture2D" uid="uid://dgk63k5ukbh3v" path="res://Cards/Back.tres" id="2_si8r1"]
+[ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="3_q5obu"]
+[ext_resource type="PackedScene" uid="uid://l5dosyapdlmw" path="res://card_text.tscn" id="4_e484p"]
 
 [sub_resource type="Animation" id="Animation_hyo5n"]
 length = 0.001
@@ -40,6 +42,9 @@ _data = {
 &"reveal": SubResource("Animation_qbi75")
 }
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_q5obu"]
+viewport_path = NodePath("SubViewport")
+
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_001nj")
 value = 6
@@ -57,3 +62,15 @@ shaded = true
 alpha_cut = 1
 texture_filter = 0
 texture = ExtResource("2_si8r1")
+
+[node name="Sprite3D2" type="Sprite3D" parent="."]
+transform = Transform3D(0.011, 0, 0, 0, 0.011, 0, 0, 0, 0.011, 0, 0.088082, 0)
+billboard = 1
+texture = SubResource("ViewportTexture_q5obu")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(400, 400)
+script = ExtResource("3_q5obu")
+
+[node name="Label" parent="SubViewport" instance=ExtResource("4_e484p")]

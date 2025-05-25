@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://l5dosyapdlmw"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7kgri"]
+font_size = 226
+
+[node name="Label" type="ColorRect"]
+offset_right = 400.0
+offset_bottom = 400.0
+color = Color(0, 0, 0, 0.631373)
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 0
+offset_top = 46.0
+offset_right = 400.0
+offset_bottom = 355.0
+pivot_offset = Vector2(200, 154.5)
+text = "1"
+label_settings = SubResource("LabelSettings_7kgri")
+horizontal_alignment = 1
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(200, 200)
