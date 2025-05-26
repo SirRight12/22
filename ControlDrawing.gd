@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var confirm = $"Node/Texts/Confirm"
 @onready var accept = $"Node/Texts/Accept"
 @onready var mouse = $"Node/Node2D"
+@onready var CardManager = $"../CardManager"
 var draw_step = 0
 var pass_step = 0
 func _input(event: InputEvent) -> void:

@@ -17,13 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-CardManager="*res://CardManager.gd"
 MouseManager="*res://MouseManager.gd"
 
 [display]
 
 window/stretch/mode="viewport"
-mouse_cursor/custom_image="res://Cursor.png"
 
 [input]
 

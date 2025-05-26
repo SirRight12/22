@@ -1,0 +1,77 @@
+[gd_scene load_steps=3 format=3 uid="uid://wjwrypmcquom"]
+
+[ext_resource type="Script" uid="uid://bfq3mmn2dqulq" path="res://Main.gd" id="1_nrb8h"]
+[ext_resource type="PackedScene" uid="uid://o3b70rfnsck" path="res://test.tscn" id="2_7jfie"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nrb8h")
+player_scene = ExtResource("2_7jfie")
+
+[node name="Host" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.420139
+anchor_top = 0.350309
+anchor_right = 0.579861
+anchor_bottom = 0.498457
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+text = "Host"
+metadata/_edit_use_anchors_ = true
+
+[node name="Join" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.420139
+anchor_top = 0.541667
+anchor_right = 0.579861
+anchor_bottom = 0.689815
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+text = "Join"
+metadata/_edit_use_anchors_ = true
+
+[node name="Start" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.420139
+anchor_top = 0.834877
+anchor_right = 0.579861
+anchor_bottom = 0.983025
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+text = "Start"
+metadata/_edit_use_anchors_ = true
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(576, 342)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://o3b70rfnsck")
+spawn_path = NodePath("..")
+
+[node name="Players" type="ItemList" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.342014
+anchor_top = 0.219136
+anchor_right = 0.657986
+anchor_bottom = 0.780864
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
