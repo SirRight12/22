@@ -243,7 +243,7 @@ func value_of(hand:Array):
 		
 @onready var card_scene = load('res://card.tscn')
 func p1draw(hidden:bool=false):
-	var idx = randi_range(0,len(deck) - 1)
+	var idx = 0
 	var card = deck[idx]
 	var node = card_scene.instantiate()
 	p1hand.append(card)
@@ -272,7 +272,7 @@ func p1draw(hidden:bool=false):
 	p1carddrawn.emit()
 	#p1_hand_val.text = str(value_of(p1hidden_hand)) + '/' + str(current_target)
 func p2draw(hidden:bool=false):
-	var idx = randi_range(0,len(deck) - 1)
+	var idx = 0
 	var card = deck[idx]
 	var node = card_scene.instantiate()
 	p2hand.append(card)

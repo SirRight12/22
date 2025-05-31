@@ -1,5 +1,4 @@
 extends Control
-@export var player_scene:PackedScene
 @onready var host:Button = $Host
 @onready var join:Button = $Join
 @onready var Players = $Players
@@ -9,6 +8,9 @@ var peers = [peer]
 func _ready():
 	join.pressed.connect(find_lobby)
 	host.pressed.connect(create_lobby)
+	#comment out top line in favor for this one when server created
+	if OS.has_feature('dedicated_server'):
+		create_lobby()
 func loaded():
 	host.hide()
 	join.hide()
