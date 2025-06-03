@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://wjwrypmcquom"]
 
-[ext_resource type="Script" uid="uid://ceb562sbp64yg" path="res://NewLobbySystem.gd" id="1_nrb8h"]
+[ext_resource type="Script" uid="uid://b7l4678vyblmi" path="res://WebSocketLobby.gd" id="1_nrb8h"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_nrb8h"]
 font_size = 256
