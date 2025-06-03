@@ -1,9 +1,10 @@
 //Import the Websocket server from the NPM package
-import {express} from 'express'
+import pkg from 'express'
 import http from 'http'
 import {WebSocketServer} from 'ws'
 //Declare the arbitrary port
 const PORT = 8080
+const express = pkg
 const app = express()
 const server = http.createServer(app)
 
@@ -13,8 +14,6 @@ const wss = new WebSocketServer({
     server
 })
 
-//Debug log
-console.log(`Listening on port ${PORT}`)
 
 //Called when the godot client connects
 wss.on('connection',(socket) => {
@@ -27,4 +26,7 @@ wss.on('connection',(socket) => {
     socket.on('close',() => {
         console.log('client closed')
     }) 
+})
+server.listen(PORT,() => {
+    console.log(`Server listening on port ${PORT}`)
 })
