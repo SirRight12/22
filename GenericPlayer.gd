@@ -1,15 +1,17 @@
-extends Object
-class_name GenericPlayer
+extends Node
 
-var id:int = -1
+var socket: WebSocketPeer
 
-var icon_path:String = "res://icon.svg"
+var id = '':
+	set = set_id
 
-var is_host:bool = false
+signal id_recieved(id)
 
-func to_dict():
-	return {
-		'id': id,
-		'icon_path': icon_path,
-		'is_host': is_host,
-	}
+var has_id = false
+
+func set_id(val:String):
+	id = val
+	if has_id:
+		return
+	has_id = true
+	id_recieved.emit(id)

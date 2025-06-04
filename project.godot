@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 MouseManager="*res://MouseManager.gd"
 Transfer="*res://Transfer.gd"
+Client="*res://GenericPlayer.gd"
 
 [display]
 
