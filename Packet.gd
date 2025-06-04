@@ -8,6 +8,7 @@ func to_dict():
 		'event': event,
 		'message': message,
 	}
+##Convert packet to a string to be sent to the server
 func stringify():
 	return JSON.stringify(self.to_dict())
 static func from_string(string:String):

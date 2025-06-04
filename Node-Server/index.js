@@ -88,6 +88,34 @@ function join_lobby(socket,lobby_id) {
     send_all(lobby,'update_player_list',JSON.stringify(lobby_to_client(lobby)))
 }
 
+function leave_lobby(socket,packet) {
+    let id = socket.id
+    for (let lobby_id in lobbies) {
+        const lobby = lobbies[lobby_id]
+        for (let pidx = 0; pidx < lobby.length; pidx ++) {
+            const player = lobby[pidx]
+            if (player.id == id) {
+                //remove player from the lobby
+                if (!player.isHost) {
+                    lobby.splice(pidx,1)
+                    send_all(lobby,'update_player_list',JSON.stringify(lobby_to_client(lobby)))
+                } else {
+                    socket.isHost = false
+                    send_all(lobby,'leave_success','')
+                    console.log('lobby disbanded')
+                    delete lobbies[lobby_id]
+                }
+                console.log('player found!')
+                socket.send(new Packet('leave_success','').toString())
+                return
+            }
+        } 
+    }
+
+    server_error(socket,'Error while leaving, idk lol try again maybe?')
+
+}
+
 function send_all(list,event,message) {
     let packet = new Packet(event,message)
     for (let idx in list) {
@@ -123,11 +151,17 @@ wss.on('connection',(socket) => {
             case 'join':
                 join_lobby(socket,packet.message)
                 break;
+            case 'leave':
+            case 'disband':
+                leave_lobby(socket,packet)
+                break;
         }
     })
     socket.on('close',() => {
         console.log('client closed')
+        //remove player from player list, freeing id
         delete players[socket.id]
+
     })
 })
 server.listen(PORT,() => {

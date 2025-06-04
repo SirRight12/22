@@ -7,12 +7,15 @@ extends Control
 @onready var join_code:LineEdit = $Joining/LineEdit
 
 @onready var start:Button = $Start
+@onready var disband:Button = $Disband
 
 @onready var players:ItemList = $Players
 
 @onready var id_ui:Control = $ID_UI
 ##LineEdit that shows the ID of the lobby the client is in
 @onready var lobby_id_ui:LineEdit = $ID_UI/ID
+
+@onready var leave : Button = $Leave
 
 
 var socket : WebSocketPeer
@@ -65,6 +68,9 @@ func _on_data(data:String):
 		'join_success':
 			join_success(packet)
 			return
+		'leave_success':
+			leave_success(packet)
+			return
 	pass
 func hide_ui():
 	host.hide()
@@ -73,17 +79,45 @@ func hide_ui():
 	joining.hide()
 	id_ui.show()
 
+func disband_pressed():
+	var packet = Packet.new()
+	packet.event = 'leave'
+	packet.message = ''
+	socket.send_text(packet.stringify())
+
 func host_success(packet:Packet):
 	hide_ui()
 	start.show()
+	disband.show()
+	disband.pressed.connect(disband_pressed)
 	var lobby = JSON.parse_string(packet.message)
 	lobby_id_ui.text = lobby.id
 	var player_list = JSON.parse_string(lobby['client_lobby'])
 	update_player_list(player_list)
 
+func leave_pressed():
+	var packet = Packet.new()
+	packet.event = 'leave'
+	packet.message = Client.id
+	socket.send_text(packet.stringify())
+
+func leave_success(_packet:Packet):
+	leave.hide()
+	id_ui.hide()
+	joining.show()
+	start.hide()
+	disband.hide()
+	join_code.text = ''
+	host.show()
+	players.hide()
+	players.clear()
+	
+
 func join_success(packet:Packet):
 	hide_ui()
+	leave.show()
 	print(packet.message)
+	leave.pressed.connect(leave_pressed,CONNECT_ONE_SHOT)
 	lobby_id_ui.text = packet.message
 	
 
@@ -104,6 +138,7 @@ func update_player_list(player_list):
 	
 func host_clicked():
 	var packet = Packet.new()
+	
 	packet.event = 'host'
 	packet.message = ''
 	socket.send_text(packet.stringify())
@@ -112,7 +147,6 @@ func join_clicked():
 	var packet = Packet.new()
 	packet.event = 'join'
 	packet.message = join_code.text if not join_code.text.is_empty() else  DisplayServer.clipboard_get()
-	push_error(packet.message)
 	socket.send_text(packet.stringify())
 func on_init(packet:Packet):
 	Client.id = packet.message
