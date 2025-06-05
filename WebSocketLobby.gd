@@ -71,6 +71,9 @@ func _on_data(data:String):
 		'leave_success':
 			leave_success(packet)
 			return
+		'start_success':
+			start_lobby()
+			return
 	pass
 func hide_ui():
 	host.hide()
@@ -85,11 +88,18 @@ func disband_pressed():
 	packet.message = ''
 	socket.send_text(packet.stringify())
 
+func start_pressed():
+	var packet = Packet.new()
+	packet.event = 'start'
+	packet.message = ''
+	socket.send_text(packet.stringify())
+
 func host_success(packet:Packet):
 	hide_ui()
 	start.show()
 	disband.show()
 	disband.pressed.connect(disband_pressed)
+	start.pressed.connect(start_pressed)
 	var lobby = JSON.parse_string(packet.message)
 	lobby_id_ui.text = lobby.id
 	var player_list = JSON.parse_string(lobby['client_lobby'])
@@ -150,6 +160,11 @@ func join_clicked():
 	socket.send_text(packet.stringify())
 func on_init(packet:Packet):
 	Client.id = packet.message
+	
+func start_lobby():
+	get_tree().change_scene_to_file("res://multiplayer_22.tscn")
+	pass
+	
 func _ready():
 	init_client()
 	host.pressed.connect(host_clicked)

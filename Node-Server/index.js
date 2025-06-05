@@ -39,6 +39,18 @@ class Packet {
         return JSON.stringify(this)
     }
 }
+class Card {
+    constructor (value,hidden) {
+        this.value = value
+        this.hidden = hidden
+    }
+    getValue() {
+        if (this.hidden) {
+            return 0
+        }
+        return this.value
+    }
+}
 
 function init_ws(socket,packet) {
     console.log('init')
@@ -115,6 +127,60 @@ function leave_lobby(socket,packet) {
     server_error(socket,'Error while leaving, idk lol try again maybe?')
 
 }
+function generate_deck() {
+    let deck = Array(11)
+    let x = 0
+    const used = {}
+    while (x < 11) {
+        let card = randRange(1,11)
+        while (used[card]) {
+            card = randRange(1,11)
+        }
+        used[card] = true
+        deck[x] = new Card(card,false)
+        x ++
+    }
+    return deck
+}
+function start_lobby(socket,packet) {
+    const [lobby,lobby_id] = find_player_lobby(socket)
+    const gameInfo = []
+    let player_num = 1
+    for (let p_idx in lobby) {
+        const player = lobby[p_idx]
+        const pInfo = {}
+        pInfo['id'] = player.id
+        pInfo['loaded'] = false
+        pInfo['hand'] = []
+        pInfo['hp'] = 10
+        pInfo['playernum'] = player_num
+        player_num ++
+        gameInfo.push(pInfo)
+    }
+
+    games[lobby_id] = {
+        'turn': 0,
+        'players': gameInfo,
+        'deck': generate_deck(),
+    }
+    
+    console.log(games)
+    send_all(lobby,'start_success','')
+}
+function find_player_lobby(socket) {
+    let id = socket.id
+    for (let lobby_id in lobbies) {
+        const lobby = lobbies[lobby_id]
+        for (let x = 0; x < lobby.length; x ++) {
+            const player = lobby[x]
+            if (player.id == id) {
+                console.log('player found in lobby')
+                return [lobby,lobby_id]
+            }
+        }
+    }
+    return []
+}
 
 function send_all(list,event,message) {
     let packet = new Packet(event,message)
@@ -125,6 +191,7 @@ function send_all(list,event,message) {
 }
 
 const lobbies = {}
+const games = {}
 const players = {}
 //Called when the godot client connects
 wss.on('connection',(socket) => {  
@@ -154,6 +221,16 @@ wss.on('connection',(socket) => {
             case 'leave':
             case 'disband':
                 leave_lobby(socket,packet)
+                break;
+            case 'start':
+                if (!socket.isHost) {
+                    console.error('The player is not a host, so they cant start')
+                    return
+                }
+                start_lobby(socket,packet)
+                break;
+            case "init-game":
+                
                 break;
         }
     })
