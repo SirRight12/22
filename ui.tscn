@@ -1,22 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://cyugpqt4rxrpw"]
+[gd_scene load_steps=12 format=3 uid="uid://cyugpqt4rxrpw"]
 
+[ext_resource type="Script" uid="uid://bgqtrtvepaot5" path="res://ui.gd" id="1_waa4j"]
 [ext_resource type="Script" uid="uid://cw4dfmgdmoxl2" path="res://go_to_mouse.gd" id="1_wrvu1"]
 [ext_resource type="Texture2D" uid="uid://ds754hne7ab5n" path="res://Cursor.png" id="2_43ch1"]
 [ext_resource type="PackedScene" uid="uid://bgn46dw37hg7j" path="res://text_scene.tscn" id="3_js3fx"]
+[ext_resource type="Shader" uid="uid://cwofk6i8nh446" path="res://circle.gdshader" id="3_n5ude"]
 [ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="4_d81dh"]
+[ext_resource type="Script" uid="uid://bx4j1lw66qhia" path="res://circle_expand.gd" id="4_y4yjw"]
 [ext_resource type="FontFile" uid="uid://b4lu3xdnl0ntv" path="res://October-Crow.ttf" id="5_4odyu"]
 
-[sub_resource type="Animation" id="Animation_0q7ht"]
-length = 0.001
-
-[sub_resource type="Animation" id="Animation_mjofu"]
-resource_name = "expand"
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_2oa5r"]
-_data = {
-&"RESET": SubResource("Animation_0q7ht"),
-&"expand": SubResource("Animation_mjofu")
-}
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y4yjw"]
+shader = ExtResource("3_n5ude")
+shader_parameter/inner_rad = 0.13
 
 [sub_resource type="LabelSettings" id="LabelSettings_ljbd0"]
 font_size = 1000
@@ -25,6 +20,7 @@ font_size = 1000
 viewport_path = NodePath("Control/ColorRect/SubViewport")
 
 [node name="Node" type="Node"]
+script = ExtResource("1_waa4j")
 
 [node name="Node2D" type="Node2D" parent="."]
 z_index = 10
@@ -39,11 +35,6 @@ remote_path = NodePath("../../Texts")
 update_rotation = false
 update_scale = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Node2D"]
-libraries = {
-&"": SubResource("AnimationLibrary_2oa5r")
-}
-
 [node name="Texts" type="Node2D" parent="."]
 
 [node name="Confirm" parent="Texts" instance=ExtResource("3_js3fx")]
@@ -53,6 +44,14 @@ words = "Draw?"
 [node name="Accept" parent="Texts" instance=ExtResource("3_js3fx")]
 visible = false
 words = "Draw!"
+
+[node name="ColorRect" type="ColorRect" parent="Texts"]
+material = SubResource("ShaderMaterial_y4yjw")
+offset_left = -47.0
+offset_top = -47.0
+offset_right = 47.0
+offset_bottom = 47.0
+script = ExtResource("4_y4yjw")
 
 [node name="Control" type="Control" parent="."]
 visible = false

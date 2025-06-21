@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bbh43s4aj0i7b"
+path="res://.godot/imported/ill keep this.mp3-3232230ec5abae2cf5c939d220c60888.mp3str"
+
+[deps]
+
+source_file="res://ill keep this.mp3"
+dest_files=["res://.godot/imported/ill keep this.mp3-3232230ec5abae2cf5c939d220c60888.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

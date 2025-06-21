@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://k7267hw1umah"
+path="res://.godot/imported/give me another.mp3-66ddd6c768a03263c964da8dcac75a12.mp3str"
+
+[deps]
+
+source_file="res://give me another.mp3"
+dest_files=["res://.godot/imported/give me another.mp3-66ddd6c768a03263c964da8dcac75a12.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

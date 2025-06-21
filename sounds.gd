@@ -1,0 +1,22 @@
+extends Node
+
+@onready var tap_sound = $Hit
+@onready var draw = $Draw
+@onready var pass_sounds = $Pass
+func mouse_tap():
+	tap_sound.pitch_scale = randf_range(2.4,2.6)
+	tap_sound.play()
+func draw_card(is_self):
+	var sound:AudioStreamPlayer = draw.get_children().pick_random()
+	if is_self:
+		sound.bus = 'Voice2'
+	else:
+		sound.bus = 'Voice1'
+	sound.play()
+func pass_turn(is_self):
+	var sound:AudioStreamPlayer = pass_sounds.get_children().pick_random()
+	if is_self:
+		sound.bus = 'Voice2'
+	else:
+		sound.bus = 'Voice1'
+	sound.play()

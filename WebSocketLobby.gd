@@ -49,13 +49,20 @@ func _process(_delta: float) -> void:
 	prev_state = state
 	while socket.get_ready_state() == WebSocketPeer.STATE_OPEN and socket.get_available_packet_count():
 		var packet = socket.get_packet()
-		print(packet)
 		got_packet.emit(packet.get_string_from_utf8())
-	
+@onready var error_scene: PackedScene = load("res://error.tscn")
+func server_error(error:String):
+	var inst: Control = error_scene.instantiate()
+	add_child(inst)
+	inst.label.text = error
 func _on_data(data:String):
 	print(data)
 	var packet:Packet = Packet.from_string(data)
 	match packet.event:
+		'server_error':
+			server_error(packet.message)
+			return			
+			pass
 		'init':
 			on_init(packet)
 			return

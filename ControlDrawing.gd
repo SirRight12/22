@@ -36,9 +36,9 @@ func advance_draw_step():
 		accept.words = "DRAW!"
 		confirm.hide()
 		accept.float_up()
-		CardManager.draw_card()
+		draw_card()
 		current_timer = false
-		mouse.scale = Vector2(.6,.6)
+		mouse.scale = Vector2(.2,.2)
 		var _tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
 		reset_draw()
 	print('draw step')
@@ -62,7 +62,7 @@ func advance_pass_step():
 		accept.words = "PASS!"
 		confirm.hide()
 		accept.float_up()
-		CardManager.pass_turn()
+		pass_turn()
 		current_timer = false
 		mouse.scale = Vector2(.6,.6)
 		var _tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
@@ -71,5 +71,9 @@ func advance_pass_step():
 	pass_timer = timeout(.4)
 	pass_timer.timeout.connect(reset_pass,CONNECT_ONE_SHOT)
 	pass
+func draw_card():
+	CardManager.draw_card()
+func pass_turn():
+	CardManager.pass_turn()
 func timeout(time:float):
 	return get_tree().create_timer(time)

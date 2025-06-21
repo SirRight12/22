@@ -1,0 +1,85 @@
+[gd_scene load_steps=7 format=3 uid="uid://dlx2hctj2jj8g"]
+
+[ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="1_blvk3"]
+[ext_resource type="Script" uid="uid://cmqk86vqi1ume" path="res://ace_ui.gd" id="1_iv4q6"]
+[ext_resource type="Script" uid="uid://d11kfgsd6jgt" path="res://addons/AutoSizeText/ui/AutoSizeLabel.gd" id="2_n6tei"]
+[ext_resource type="Texture2D" uid="uid://ch1e7jxyhq7ap" path="res://PerfectDraw.png" id="3_n6tei"]
+[ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="5_kxgsc"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_iv4q6"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Container" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_iv4q6")
+dictionary = Dictionary[String, Texture2D]({
+"Perfect-Draw": ExtResource("3_n6tei")
+})
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0980392, 0.0980392, 0.0980392, 0.443137)
+
+[node name="AutoSizeLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_blvk3")
+theme_override_font_sizes/font_size = 6
+text = "Perfect Draw"
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 3
+clip_text = true
+text_overrun_behavior = 3
+script = ExtResource("2_n6tei")
+watch_text_change = true
+min_font_size = 1
+max_font_size = 6
+metadata/_custom_type_script = "uid://d11kfgsd6jgt"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_n6tei")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource("ViewportTexture_iv4q6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(940, 205)
+script = ExtResource("5_kxgsc")
+
+[node name="Label" type="Label" parent="SubViewport"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 150
+text = "Perfect Draw"

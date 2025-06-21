@@ -4,6 +4,7 @@ extends Node3D
 @onready var sprite = $Sprite3D
 @onready var animation_player:AnimationPlayer = $AnimationPlayer
 @onready var alt_text:Label = $SubViewport/Label/Label2
+var is_owner = false
 @export var value:int = 1:
 	set = set_value
 @export var hidden:bool = false:
@@ -21,6 +22,8 @@ func eval_hidden():
 	else:
 		true_num()
 		show_number_val()
+	if is_owner:
+		true_num()
 func true_num():
 	$Sprite3D2.show()
 	alt_text.text = str(value)

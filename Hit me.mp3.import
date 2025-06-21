@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cp5e6cylcp8fx"
+path="res://.godot/imported/Hit me.mp3-06f5b304b7155cd83a04b8d4c23f00ab.mp3str"
+
+[deps]
+
+source_file="res://Hit me.mp3"
+dest_files=["res://.godot/imported/Hit me.mp3-06f5b304b7155cd83a04b8d4c23f00ab.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -19,7 +19,6 @@ function randRange(min, max) {
   const maxFloored = Math.floor(max);
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
-const nameLength = 10
 function generateUID() {
     let string = ''
     let x = 0
@@ -44,8 +43,8 @@ class Card {
         this.value = value
         this.hidden = hidden
     }
-    getValue() {
-        if (this.hidden) {
+    getValue(isOwner=false) {
+        if (this.hidden && !isOwner) {
             return 0
         }
         return this.value
@@ -94,6 +93,10 @@ function join_lobby(socket,lobby_id) {
         return
     }
     let lobby = lobbies[lobby_id]
+    if (lobby.length >= 2) {
+        server_error(socket,'Lobby is full')
+        return
+    }
     let packet = new Packet('join_success',lobby_id)
     socket.send(packet.toString())
     lobby.push(socket)
@@ -154,19 +157,363 @@ function start_lobby(socket,packet) {
         pInfo['hand'] = []
         pInfo['hp'] = 10
         pInfo['playernum'] = player_num
+        pInfo['passed'] = false
         player_num ++
         gameInfo.push(pInfo)
     }
 
     games[lobby_id] = {
-        'turn': 0,
+        'turn': 1,
         'players': gameInfo,
         'deck': generate_deck(),
+        'target': 21,
     }
-    
+
     console.log(games)
     send_all(lobby,'start_success','')
 }
+
+function join_game(socket,packet) {
+    const [lobby,lobby_id] = find_player_lobby(socket)
+    const game = games[lobby_id]
+    const playerData = find_in_game(socket,game)
+    playerData['loaded'] = true
+    const plr_count = game['players'].length
+    let loaded = 0
+    for (let x in game.players) {
+        const plr = game['players'][x]
+        if (plr.loaded) {
+            loaded += 1
+        }
+    }
+    if (loaded >= plr_count) {
+        start_game(game)
+        console.log('all loaded')
+    }
+}
+function get_hidden_count(hand) {
+    let hidden = 0
+    for (let card_idx in hand) {
+        let card = hand[card_idx]
+        if (card.hidden) {
+            hidden += 1
+        }
+    }
+    return hidden
+}
+function start_game(game) {
+    let card1 = game['deck'][0]
+    game['deck'].splice(0,1)
+    card1.hidden = true
+    let card2 = game['deck'][0]
+    game['deck'].splice(0,1)
+    card2.hidden = true
+    let card3 = game['deck'][0]
+    game['deck'].splice(0,1)
+    let card4 = game['deck'][0]
+    game['deck'].splice(0,1)
+    let p1,p2
+    game.players.forEach(player => {
+        if (player.playernum == 1) {
+            p1 = player
+        } else if (player.playernum == 2) {
+            p2 = player
+        }
+    })
+    p1.hand.push(card1,card3)
+    p2.hand.push(card2,card4)
+    game.players.forEach(player => {
+        const socket = players[player.id]
+        const packet = new Packet('init-cameras',JSON.stringify(player))
+        socket.send(packet.toString())
+        const p1Draw1 = new Packet('p1-draw',JSON.stringify({
+            'yours': player.playernum == 1,
+            'card': JSON.stringify(card1),
+            'init': true,
+        }))
+        let isP1 = player.playernum == 1
+        let isP2 = player.playernum == 2
+        const valObj1 = {
+            'value': p1.hand[0].getValue(isP1),
+            'target': game.target,
+            'hcount': get_hidden_count([p1.hand[0]]),
+            'yours': player.playernum == 1,
+        }
+        const valObj2 = {
+            'value': p2.hand[0].getValue(isP2),
+            'target': game.target,
+            'hcount': get_hidden_count([p2.hand[0]]),
+            'yours': player.playernum == 2,
+        }
+        const valObj3 = {
+            'value': p1.hand[0].getValue(isP1) + p1.hand[1].getValue(isP1),
+            'target': game.target,
+            'hcount': get_hidden_count(p1.hand),
+            'yours': player.playernum == 1,
+        }
+        const valObj4 = {
+            'value': p2.hand[0].getValue(isP2) + p2.hand[1].getValue(isP2),
+            'target': game.target,
+            'hcount': get_hidden_count(p1.hand),
+            'yours': player.playernum == 2,
+        }
+        console.log('valObj',valObj1)
+        const p1Update = new Packet('p1-val',JSON.stringify(valObj1))
+        const p2Update = new Packet('p2-val',JSON.stringify(valObj2))
+        const p1Update2 = new Packet('p1-val',JSON.stringify(valObj3))
+        const p2Update2 = new Packet('p2-val',JSON.stringify(valObj4))
+        const p2Draw1 = new Packet('p2-draw',JSON.stringify({
+            'yours': player.playernum == 2,
+            'card': JSON.stringify(card2),
+            'init': true,
+        }))
+        const p1Draw2 = new Packet('p1-draw',JSON.stringify({
+            'yours': player.playernum == 1,
+            'card': JSON.stringify(card3),
+            'init': true,
+        }))
+        const p2Draw2 = new Packet('p2-draw',JSON.stringify({
+            'yours': player.playernum == 2,
+            'card': JSON.stringify(card4),
+            'init': true,
+        }))
+        socket.send(p1Draw1.toString())
+        socket.send(p1Update.toString())
+        setTimeout(() => {
+            socket.send(p2Draw1.toString())
+            socket.send(p2Update.toString())
+        },1000)
+        setTimeout(() => {
+            socket.send(p1Draw2.toString())
+            socket.send(p1Update2.toString())
+            setTimeout(() => {
+                socket.send(p2Draw2.toString())
+                socket.send(p2Update2.toString())
+                const turnPacket = new Packet('p1-turn',player.playernum == 1)
+                socket.send(turnPacket.toString())
+            },1000)
+
+        },2000)
+    })
+} 
+function get_value(hand,pNum,expectedPNum) {
+    let val = 0
+    for (let card_idx in hand) {
+        const card = hand[card_idx]
+        val += card.getValue(pNum == expectedPNum)
+    }
+    return val
+}
+function player_draw_card(socket) {
+    const [lobby,lobby_id] = find_player_lobby(socket)
+    const game = games[lobby_id]
+    function send_to_players(drawingPlayer,card) {
+        let event = 'p1-draw'
+        let event2 = 'p1-val'
+        if (drawingPlayer.playernum == 2) {
+            event = 'p2-draw'
+            event2 = 'p2-val'
+        }
+        game.players.forEach(player => {
+            player.passed = false
+            const yours = player.playernum == drawingPlayer.playernum
+            const newSocket = players[player.id]
+            const packet = new Packet(event,JSON.stringify({
+                'card': JSON.stringify(card),
+                'yours': yours,
+            }))
+            const valObj = {
+                'value': get_value(drawingPlayer.hand,player.playernum,drawingPlayer.playernum),
+                'target': game.target,
+                'hcount': get_hidden_count(drawingPlayer.hand),
+                'yours': yours,
+            }
+            const packetUpd = new Packet(event2,JSON.stringify(valObj))
+            newSocket.send(packet.toString())
+            newSocket.send(packetUpd.toString())
+            console.log('done!')
+        })
+    }
+    function send_turn() {
+        game.players.forEach(player => {
+            const sock = players[player.id]
+            let event = 'p1-turn'
+            if (game.turn == 2) {
+                event = 'p2-turn'
+            }
+            const packet = new Packet(event,player.playernum == game.turn)
+            sock.send(packet.toString())
+        })
+    }
+    game.players.forEach(player => {
+        //if its not the player, try again
+        if (player.id != socket.id) return
+        console.log('found player!')
+        //stop trying to draw if its not the player's turn
+        if (player.playernum != game.turn) return
+
+        player.hand.push(game.deck[0])
+        send_to_players(player,game.deck[0])
+        game.deck.splice(0,1)
+        let turn = -1
+        if (game.turn == 1) {
+            turn = 2
+        } else if (game.turn == 2) {
+            turn = 1
+        }
+        game.turn = 3
+        game.players.forEach(player => {
+            const sock = players[player.id]
+            const packet = new Packet('no-turn','')
+            sock.send(packet.toString())
+        })
+        setTimeout(() => {
+            game.turn = turn
+            send_turn()
+        },2000)
+    })
+}
+function player_pass_turn(socket) {
+    const [lobby, lobby_id] = find_player_lobby(socket)
+    const game = games[lobby_id]
+    function send_turn() {
+        game.players.forEach(player => {
+            const sock = players[player.id]
+            
+            let event = 'p1-turn'
+            if (game.turn == 2) {
+                event = 'p2-turn'
+            }
+            const packet = new Packet(event,player.playernum == game.turn)
+            sock.send(packet.toString())
+        })
+    }
+    let turn = -1
+    if (game.turn == 1) {
+        turn  = 2
+    } else if (game.turn == 2) {
+        turn = 1
+    }
+    game.turn = 3
+
+    let p = find_in_game(socket,game)
+    p.passed = true
+    let e = p.playernum == 1 ? 'p1-pass' : 'p2-pass'
+    game.players.forEach(player => {
+        
+        const sock = players[player.id]
+        const packet = new Packet('no-turn','')
+        const passPacket = new Packet(e,JSON.stringify({'yours': player.playernum == p.playernum,}))
+        sock.send(packet.toString())
+        sock.send(passPacket.toString())
+    })
+    console.log('game',game)
+    let evaluate = eval_passed(game)
+    console.log('eval',evaluate)
+    if (evaluate) {
+        setTimeout(() => {
+
+            // get the winner of the game
+            let result = evaluate_game(game)
+            let p
+            let p1,p2;
+            game.players.forEach(player => {
+                if (player.playernum == 1) {
+                    p1 = player
+                } else if (player.playernum == 2) {
+                    p2 = player
+                }
+                player.hand.forEach(card => {
+                    card.hidden = false
+                })
+            })
+            let p1val = get_value(p1.hand,1,1)
+            let p2val = get_value(p2.hand,1,1)
+            switch(result) {
+                case 1:
+                    //p1 wins
+                    game.players.forEach(player => {
+                        const socket = players[player.id]
+                        p = new Packet('winner',[1,player.playernum,p1.hand,p2.hand,p1val,p2val])
+                        console.log(p.message)
+                        socket.send(p.toString())
+                    })
+                    break;
+                case 2:
+                        //p2 wins
+                        game.players.forEach(player => {
+                            const socket = players[player.id]
+                            p = new Packet('winner',[2,player.playernum,p1.hand,p2.hand,p1val,p2val])
+                            console.log(p.message)
+                            socket.send(p.toString())
+                        })
+                        break;
+                case 3:
+                   //draw
+                   
+                   game.players.forEach(player => {
+                        const socket = players[player.id]
+                        p = new Packet('winner',[3,player.playernum,p1.hand,p2.hand,p1val,p2val])
+                        socket.send(p.toString())
+                    })
+                    break;
+            }
+        },2000)
+        return
+    }
+    setTimeout(() => {
+        game.turn = turn
+        send_turn()
+    },2000)
+}
+function evaluate_game(game) {
+    let p1,p2
+    game.players.forEach(player => {
+        if (player.playernum == 1) {
+            p1 = player
+        } else if (player.playernum == 2) {
+            p2 = player
+        }
+    })
+    let p1val = get_value(p1.hand,1,1)
+    let p2val = get_value(p2.hand,1,1)
+    if (p1val == p2val) {
+        //draw
+        return 3
+    } else if (p1val > p2val) {
+        //p2 wins bc p1 is over the target MORE than p2
+        if (p1val > game.target) return 2
+        //p1 wins bc any other case results in a p1 win
+        return 1
+    } else if (p2val > p1val) {
+        //p1 wins bc p2 is over the target MORE than p1
+        if (p2val > game.target) return 1
+        //p2 wins bc any other case results in a p2 win
+        return 2
+    }
+}
+function eval_passed(game) {
+    let passedNum = 0
+    game.players.forEach(player => {
+        if (player.passed) {
+            passedNum += 1
+        }
+    })
+    return passedNum == game.players.length
+}
+
+function find_in_game(socket,game) {
+    const id = socket.id
+    
+    for (let x = 0; x < game.players.length; x ++) {
+        const player = game.players[x]
+        if (player.id == id) {
+            return player
+        }
+    }
+    return false
+}
+
 function find_player_lobby(socket) {
     let id = socket.id
     for (let lobby_id in lobbies) {
@@ -230,14 +577,61 @@ wss.on('connection',(socket) => {
                 start_lobby(socket,packet)
                 break;
             case "init-game":
-                
+                join_game(socket,packet)
+                break;
+            case 'draw':
+                player_draw_card(socket)
+                break;
+            case 'pass':
+                player_pass_turn(socket)
                 break;
         }
     })
     socket.on('close',() => {
         console.log('client closed')
         //remove player from player list, freeing id
+        let [lobby,lobby_id] = find_player_lobby(socket)
+        console.log(lobby,lobby_id)
+        let removed = false
+        for (let id in lobby) {
+            const sock = lobby[id]
+            console.log(sock)
+            if (sock.id == socket.id) {
+                lobby.splice(id,0)
+                removed = true
+                break
+            }
+        }
         delete players[socket.id]
+        if (!removed) return
+        console.log('removed')
+        // remove the lobby if there are no players or if there is a game instance running
+        if (lobby.length <= 0 || games[lobby_id]) {
+            delete lobbies[lobby_id]
+        }
+        const game = games[lobby_id]
+        if (!game) return
+        console.log('game found')
+        let testP = find_in_game(socket,game)
+        if (testP) {
+            console.log('player is in game')
+            let i = 0
+            console.log('before',game.players)
+            game.players.forEach(player => {
+                if (player.id == socket.id) {
+                    console.log('player id found')
+                    game.players.splice(i,1)
+                }
+                i ++
+            })
+            game.players.forEach(player => {
+                const sock = players[player.id]
+                console.log('player')
+                sock.send(new Packet('disband','').toString())
+            })
+            delete games[lobby_id]
+            console.log(games,lobbies)
+        }
 
     })
 })
