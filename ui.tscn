@@ -11,7 +11,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y4yjw"]
 shader = ExtResource("3_n5ude")
-shader_parameter/inner_rad = 0.13
+shader_parameter/inner_rad = 0.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_ljbd0"]
 font_size = 1000
@@ -46,6 +46,7 @@ visible = false
 words = "Draw!"
 
 [node name="ColorRect" type="ColorRect" parent="Texts"]
+self_modulate = Color(1, 1, 1, 0)
 material = SubResource("ShaderMaterial_y4yjw")
 offset_left = -47.0
 offset_top = -47.0

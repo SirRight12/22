@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://0nniqh387ln5"]
+
+[ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="1_aohfb"]
+[ext_resource type="Script" uid="uid://djjrxenphh2b6" path="res://AdjustableText.gd" id="1_g853r"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1d40f"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Control" type="TextureRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_1d40f")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("1_g853r")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(40, 546)
+script = ExtResource("1_aohfb")
+
+[node name="Label" type="Label" parent="SubViewport"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 400

@@ -2,14 +2,7 @@
 extends Control
 #
 func _ready():
-	var perf_draw = {
-		'name': 'Perfect-Draw',
-	}
-	var aces = []
-	aces.resize(28)
-	aces.fill(perf_draw)
-	#print(aces)
-	got_aces(aces)
+	pass
 @export_tool_button('test_open') var openthing = tween_open
 @export_tool_button('test_close') var close_thing = tween_close
 @export_tool_button('test_aces') var ace_thing = _ready

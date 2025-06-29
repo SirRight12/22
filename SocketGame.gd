@@ -127,7 +127,9 @@ func winner_scene(message):
 			await get_tree().create_timer(1).timeout
 			if winner == pNum:
 				p2_lose()
+				sounds.win()
 			else:
+				sounds.lose()
 				p1_lose()
 		2:
 			push_warning('2')
@@ -145,8 +147,10 @@ func winner_scene(message):
 			await get_tree().create_timer(1).timeout
 			if winner != pNum:
 				p2_lose()
+				sounds.lose()
 			else:
 				p1_lose()
+				sounds.win()
 func init_cameras(string_pdata:String):
 	var playerData = JSON.parse_string(string_pdata)
 	var num = playerData.playernum

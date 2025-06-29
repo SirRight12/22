@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://bfc5d01gu77ey"]
+[gd_scene load_steps=36 format=4 uid="uid://bfc5d01gu77ey"]
 
 [ext_resource type="Script" uid="uid://b6gy2tjpbxk8m" path="res://p1_turn.gd" id="1_2svmt"]
 [ext_resource type="Script" uid="uid://c7wawpuljridq" path="res://SocketGame.gd" id="1_jfl5n"]
@@ -14,13 +14,16 @@
 [ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="12_8ow6m"]
 [ext_resource type="Script" uid="uid://d11kfgsd6jgt" path="res://addons/AutoSizeText/ui/AutoSizeLabel.gd" id="12_hb0x5"]
 [ext_resource type="Script" uid="uid://cunpkotitjehq" path="res://AcesMenu.gd" id="13_8ow6m"]
+[ext_resource type="Script" uid="uid://rcdr6v2qucc2" path="res://organize_children.gd" id="14_4b43k"]
 [ext_resource type="Script" uid="uid://4fpadhwi0qfj" path="res://SocketCardManager.gd" id="14_f6tbo"]
 [ext_resource type="AudioStream" uid="uid://djdqrps8n0h0t" path="res://hit.mp3" id="16_a51sq"]
 [ext_resource type="Script" uid="uid://dtkoidtfpo13p" path="res://sounds.gd" id="16_p0q11"]
 [ext_resource type="AudioStream" uid="uid://6a4w0wo6ecbd" path="res://ill stay.mp3" id="17_p0q11"]
+[ext_resource type="AudioStream" uid="uid://fkfjgrf8wshn" path="res://lose.ogg" id="18_3t2yw"]
 [ext_resource type="AudioStream" uid="uid://cp5e6cylcp8fx" path="res://Hit me.mp3" id="18_qndba"]
 [ext_resource type="AudioStream" uid="uid://ci5138bqm381p" path="res://one more?.mp3" id="19_4b43k"]
 [ext_resource type="AudioStream" uid="uid://k7267hw1umah" path="res://give me another.mp3" id="20_3t2yw"]
+[ext_resource type="AudioStream" uid="uid://d1ikrxipr27ju" path="res://win.ogg" id="20_jdojm"]
 
 [sub_resource type="Environment" id="Environment_l2d17"]
 
@@ -77,7 +80,7 @@ flip_faces = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
 emission_enabled = true
 emission = Color(0.547002, 0.536003, 0.271457, 1)
-emission_energy_multiplier = 2.37248
+emission_energy_multiplier = 2.72226
 emission_on_uv2 = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
@@ -136,7 +139,7 @@ skeleton = NodePath("")
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(0.0929806, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995666, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 2.7513
+light_energy = 2.20758
 spot_range = 2.092
 spot_angle = 22.71
 spot_angle_attenuation = 2.0
@@ -149,7 +152,7 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
-light_energy = 2.16346
+light_energy = 2.75839
 light_size = 0.1
 distance_fade_enabled = true
 distance_fade_begin = 0.9
@@ -395,6 +398,15 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.282353)
 
+[node name="Text" type="ColorRect" parent="Canvas"]
+clip_children = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.03
+anchor_right = 0.68
+anchor_bottom = 0.19
+script = ExtResource("14_4b43k")
+
 [node name="Marker3D" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.688735, 0.579664, -0.0819151)
 
@@ -437,10 +449,21 @@ script = ExtResource("14_f6tbo")
 [node name="Sounds" type="Node" parent="."]
 script = ExtResource("16_p0q11")
 
+[node name="Lose" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("18_3t2yw")
+volume_db = -8.0
+pitch_scale = 2.32
+bus = &"lose"
+
 [node name="Hit" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("16_a51sq")
 volume_db = 10.891
 pitch_scale = 2.56585
+
+[node name="Win" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("20_jdojm")
+pitch_scale = 2.33
+bus = &"win"
 
 [node name="Pass" type="Node" parent="Sounds"]
 

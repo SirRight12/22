@@ -3,6 +3,8 @@ extends Node
 @onready var tap_sound = $Hit
 @onready var draw = $Draw
 @onready var pass_sounds = $Pass
+@onready var win_sound = $Win
+@onready var lose_sound = $Lose
 func mouse_tap():
 	tap_sound.pitch_scale = randf_range(2.4,2.6)
 	tap_sound.play()
@@ -20,3 +22,7 @@ func pass_turn(is_self):
 	else:
 		sound.bus = 'Voice1'
 	sound.play()
+func win():
+	win_sound.play()
+func lose():
+	lose_sound.play()
