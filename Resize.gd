@@ -5,3 +5,4 @@ extends SubViewport
 func _process(_delta: float) -> void:
 	size = ($Label.size * $Label.scale) #+ offset
 	pass
+#nothing lol ;)

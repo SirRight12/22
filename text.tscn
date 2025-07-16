@@ -16,7 +16,7 @@ texture = SubResource("ViewportTexture_1d40f")
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("1_g853r")
-text = "You drew a draw 5 ACE"
+text = "You suck at this game loser"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
@@ -27,4 +27,4 @@ script = ExtResource("1_aohfb")
 offset_right = 40.0
 offset_bottom = 23.0
 theme_override_font_sizes/font_size = 400
-text = "You drew a draw 5 ACE"
+text = "You suck at this game loser"
