@@ -16,6 +16,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_default_cursor_shape = 13
 script = ExtResource("1_iv4q6")
 dictionary = Dictionary[String, Texture2D]({
 "Perfect-Draw": ExtResource("3_n6tei")

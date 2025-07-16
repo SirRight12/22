@@ -2,6 +2,7 @@
 import pkg from 'express'
 import http from 'http'
 import {WebSocketServer} from 'ws'
+import {trumps} from './trumps.js'
 //Declare the arbitrary port
 const PORT = 8080
 const express = pkg
@@ -130,6 +131,8 @@ function leave_lobby(socket,packet) {
     server_error(socket,'Error while leaving, idk lol try again maybe?')
 
 }
+
+
 function generate_deck() {
     let deck = Array(11)
     let x = 0
@@ -156,6 +159,7 @@ function start_lobby(socket,packet) {
         pInfo['loaded'] = false
         pInfo['hand'] = []
         pInfo['hp'] = 10
+        pInfo['trumps'] = []
         pInfo['playernum'] = player_num
         pInfo['passed'] = false
         player_num ++
@@ -201,6 +205,22 @@ function get_hidden_count(hand) {
     }
     return hidden
 }
+// Function to send a card to the player and if the card is hidden, it will not pass the value to the wrong client
+function send_card(player, card, expected, init = false, trump = false) {
+    // Only send the real value if the player is the owner or the card is not hidden
+    let owner = player.playernum == expected;
+    const socket = players[player.id];
+    let val = card.hidden && !owner ? 0 : card.value;
+    let newCard = new Card(val, card.hidden);
+    const obj = {
+        'card': JSON.stringify(newCard),
+        'yours': owner,
+    };
+    if (init) obj['init'] = true;
+    if (trump) obj['trump'] = true;
+    const packet = new Packet(`p${expected}-draw`, JSON.stringify(obj));
+    socket.send(packet.toString());
+}
 function start_game(game) {
     let card1 = game['deck'][0]
     game['deck'].splice(0,1)
@@ -226,11 +246,7 @@ function start_game(game) {
         const socket = players[player.id]
         const packet = new Packet('init-cameras',JSON.stringify(player))
         socket.send(packet.toString())
-        const p1Draw1 = new Packet('p1-draw',JSON.stringify({
-            'yours': player.playernum == 1,
-            'card': JSON.stringify(card1),
-            'init': true,
-        }))
+        
         let isP1 = player.playernum == 1
         let isP2 = player.playernum == 2
         const valObj1 = {
@@ -262,32 +278,21 @@ function start_game(game) {
         const p2Update = new Packet('p2-val',JSON.stringify(valObj2))
         const p1Update2 = new Packet('p1-val',JSON.stringify(valObj3))
         const p2Update2 = new Packet('p2-val',JSON.stringify(valObj4))
-        const p2Draw1 = new Packet('p2-draw',JSON.stringify({
-            'yours': player.playernum == 2,
-            'card': JSON.stringify(card2),
-            'init': true,
-        }))
-        const p1Draw2 = new Packet('p1-draw',JSON.stringify({
-            'yours': player.playernum == 1,
-            'card': JSON.stringify(card3),
-            'init': true,
-        }))
-        const p2Draw2 = new Packet('p2-draw',JSON.stringify({
-            'yours': player.playernum == 2,
-            'card': JSON.stringify(card4),
-            'init': true,
-        }))
-        socket.send(p1Draw1.toString())
+
+        //send a card to the player expecting the playernum to be 1
+
+
+        send_card(player,card1,1,true)
         socket.send(p1Update.toString())
         setTimeout(() => {
-            socket.send(p2Draw1.toString())
+            send_card(player,card2,2,true)
             socket.send(p2Update.toString())
         },1000)
         setTimeout(() => {
-            socket.send(p1Draw2.toString())
+            send_card(player,card3,1,true)
             socket.send(p1Update2.toString())
             setTimeout(() => {
-                socket.send(p2Draw2.toString())
+                send_card(player,card4,2,true)
                 socket.send(p2Update2.toString())
                 const turnPacket = new Packet('p1-turn',player.playernum == 1)
                 socket.send(turnPacket.toString())
@@ -458,6 +463,18 @@ function player_pass_turn(socket) {
                     })
                     break;
             }
+            setTimeout(() => {
+                game.players.forEach(player => {
+                    const socket = players[player.id]
+                    let p = new Packet('new-round',player.playernum)
+                    socket.send(p.toString())
+                    game.deck = generate_deck()
+                    player.hand = []
+                    player['passed'] = false      
+                })
+                start_game(game)
+                game.turn = 1
+            },8000)
         },2000)
         return
     }
@@ -465,6 +482,82 @@ function player_pass_turn(socket) {
         game.turn = turn
         send_turn()
     },2000)
+}
+function use_trump(socket,packet) {
+    const [lobby,lobby_id] = find_player_lobby(socket)
+    const game = games[lobby_id]
+    const player = find_in_game(socket,game)
+    if (!player) {
+        console.error('Player not found in game')
+        return
+    }
+    const trumpName = packet.message
+    let trump = null
+    for (let x = 0; x < trumps.length; x ++) {
+        const t = trumps[x]
+        if (t.name == trumpName) {
+            trump = t
+            // Remove the trump from the player's hand
+            player.trumps.splice(x,1)
+            break
+        }
+    }
+    if (!trump) {
+        // A little jab at the presumable cheater
+        server_error(socket,"Nice try, bozo, but you can't use what you don't have")
+        //actual error handling
+        console.error('Trump not found')
+        return
+    }
+    switch (trump.name) {
+        case 'Perfect Draw':
+            usePerfectDraw(trump,player,game)
+            break;
+        case 'Hush':
+            useHush(trump,player,game)
+            break;
+        default:
+            console.error('Oops, forgot to implement that one clown',trump.name)
+            return
+    }
+}
+function usePerfectDraw(trump,player,game) {
+    const card = trump.onUse(player, null, game)
+    player.hand.push(card)
+    // Send the card to the players
+    game.players.forEach(p => {
+
+        const sock = players[player.id]
+        const packetDraw = new Packet('p1-draw',JSON.stringify({
+            'card': JSON.stringify(card),
+            'yours': p.playernum == player.playernum,
+            'trump': true, //ignore the voicelines on the client and plays a trump sfx
+        }))
+        // send the card to the client
+        sock.send(packetDraw.toString())
+    })
+}
+function useHush(trump,player,game) {
+    const card = trump.onUse(player, null, game)
+    if (!card) {
+        console.error('Hush failed, no card to draw')
+        return
+    }
+    // Send the card to the players
+    game.players.forEach(p => {
+        const sock = players[p.id]
+        const packetDraw = new Packet('p1-draw',JSON.stringify({
+            'card': JSON.stringify(card),
+            'yours': p.playernum == player.playernum,
+            'trump': true, //ignore the voicelines on the client and plays a trump sfx
+        }))
+        // send the card to the client
+        sock.send(packetDraw.toString())
+        // Hide the card from the other player
+        if (p.playernum != player.playernum) {
+            card.hidden = true
+        }
+    })
 }
 function evaluate_game(game) {
     let p1,p2
@@ -584,6 +677,9 @@ wss.on('connection',(socket) => {
                 break;
             case 'pass':
                 player_pass_turn(socket)
+                break;
+            case 'use-trump':
+                use_trump(socket,packet)
                 break;
         }
     })

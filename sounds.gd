@@ -26,3 +26,6 @@ func win():
 	win_sound.play()
 func lose():
 	lose_sound.play()
+func trump_sound():
+	print('trump_sounds')
+	print('nothing yet lol')

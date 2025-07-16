@@ -32,8 +32,10 @@ func received_packet(packet_string):
 			card_manager.draw_p1(message)
 		'p2-draw':
 			var message:Dictionary = JSON.parse_string(packet.message)
-			if not message.has('init'):
+			if not message.has('init') and not message.has('trump'):
 				sounds.draw_card(message.yours)
+			if message.has('trump'):
+				sounds.trump_sound()
 			card_manager.draw_p2(message)
 		'p1-pass':
 			var message:Dictionary = JSON.parse_string(packet.message)
@@ -66,6 +68,24 @@ func received_packet(packet_string):
 		'winner':
 			turn = 3
 			winner_scene(packet.message)
+		'new-round':
+			print(packet.message)
+			turn = 2
+			card_manager.p1_light.show()
+			card_manager.p2_light.hide()
+			card_manager.mood_light.show()
+			card_manager.p1_light.light_color = Color.WHITE
+			card_manager.p2_light.light_color = Color.WHITE
+			card_manager.p1node.clear_children()
+			card_manager.p1node.show()
+			card_manager.p2node.show()
+			card_manager.p1node.rotation_degrees.y = -180.0
+			card_manager.p2node.rotation_degrees.y = 0.0
+			card_manager.p2node.clear_children()
+			card_manager.p1_hand_val.show()
+			card_manager.p2_hand_val.show()
+			card_manager.p2_hand_val.text = '0/21'
+			card_manager.p1_hand_val.text = '0/21'
 func zoom_camera():
 	var tween = create_tween().tween_property($RevealCam,'fov',20,1.5)
 	await tween.finished

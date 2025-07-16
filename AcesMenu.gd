@@ -42,3 +42,6 @@ func tween_open():
 func tween_close():
 	create_tween().tween_property(self,'anchor_left',1.0,.4)
 	create_tween().tween_property(self,'anchor_right',1.285,.4)
+func ace_hovered(ace):
+	
+	pass

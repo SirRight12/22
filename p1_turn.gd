@@ -3,6 +3,9 @@ extends Node3D
 @onready var card_manager:SocketCardManager = $"../CardManager"
 @onready var card_scene:PackedScene = load("res://card.tscn")
 
+func clear_children():
+	for child in get_children():
+		self.remove_child(child)
 func show_all():
 	for child in get_children():
 		child.true_num()

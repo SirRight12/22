@@ -52,7 +52,6 @@ dry = 0.2
 voice/1/delay_ms = 24.81
 
 [resource]
-bus/0/send = &"Knock Effect"
 bus/1/name = &"Voice1"
 bus/1/solo = false
 bus/1/mute = false
