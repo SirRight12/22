@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://mq7xn53uu5l8"]
+
+[ext_resource type="Script" uid="uid://cdrats6ajfy74" path="res://WaveTextEffect.gd" id="1_e3oed"]
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_e3oed"]
+script = ExtResource("1_e3oed")
+metadata/_custom_type_script = "uid://cdrats6ajfy74"
+
+[node name="RichTextLabel" type="RichTextLabel"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_font_sizes/normal_font_size = 181
+bbcode_enabled = true
+text = "[wave_effect speed=-5 amp=30]ACE[wave_effect]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+custom_effects = [SubResource("RichTextEffect_e3oed")]

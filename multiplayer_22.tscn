@@ -22,7 +22,7 @@
 [ext_resource type="AudioStream" uid="uid://6a4w0wo6ecbd" path="res://ill stay.mp3" id="17_p0q11"]
 [ext_resource type="AudioStream" uid="uid://fkfjgrf8wshn" path="res://lose.ogg" id="18_3t2yw"]
 [ext_resource type="AudioStream" uid="uid://cp5e6cylcp8fx" path="res://Hit me.mp3" id="18_qndba"]
-[ext_resource type="AudioStream" uid="uid://ci5138bqm381p" path="res://One more.mp3" id="19_4b43k"]
+[ext_resource type="AudioStream" uid="uid://ci5138bqm381p" path="res://one more.mp3" id="19_4b43k"]
 [ext_resource type="AudioStream" uid="uid://k7267hw1umah" path="res://give me another.mp3" id="20_3t2yw"]
 [ext_resource type="AudioStream" uid="uid://d1ikrxipr27ju" path="res://win.ogg" id="20_jdojm"]
 [ext_resource type="AudioStream" uid="uid://dyupngurrdnf0" path="res://im_good.mp3" id="23_305i4"]

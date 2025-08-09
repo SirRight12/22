@@ -1,10 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://0nniqh387ln5"]
+[gd_scene load_steps=7 format=3 uid="uid://0nniqh387ln5"]
 
 [ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="1_aohfb"]
 [ext_resource type="Script" uid="uid://djjrxenphh2b6" path="res://AdjustableText.gd" id="1_g853r"]
+[ext_resource type="Script" uid="uid://cdrats6ajfy74" path="res://WaveTextEffect.gd" id="3_1d40f"]
+[ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="3_oskos"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1d40f"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_1d40f"]
+script = ExtResource("3_1d40f")
+metadata/_custom_type_script = "uid://cdrats6ajfy74"
 
 [node name="Control" type="TextureRect"]
 anchors_preset = 15
@@ -16,15 +22,21 @@ texture = SubResource("ViewportTexture_1d40f")
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("1_g853r")
-text = "You suck at this game loser"
+text = "You drew a draw 5 ACE"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(4415, 546)
+size = Vector2i(3111, 397)
 script = ExtResource("1_aohfb")
+const_size = Vector2(10000, 10000)
+text = "o"
 
-[node name="Label" type="Label" parent="SubViewport"]
-offset_right = 40.0
-offset_bottom = 23.0
-theme_override_font_sizes/font_size = 400
-text = "You suck at this game loser"
+[node name="Label" type="RichTextLabel" parent="SubViewport"]
+theme_override_fonts/normal_font = ExtResource("3_oskos")
+theme_override_font_sizes/normal_font_size = 290
+bbcode_enabled = true
+text = "You drew a draw 5 [wave_effect speed=-5 amp=30]ACE[wave_effect]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+custom_effects = [SubResource("RichTextEffect_1d40f")]
