@@ -2,11 +2,12 @@ extends Node3D
 
 @onready var card_manager := $CardManager
 @onready var sounds := $Sounds
+@onready var trump_ui = $Canvas/Control2
+# TURNS
 #0 = yours
 #1 = theirs
 #2 = nobody
 var turn = 2
-
 func _ready() -> void:
 	Client.poll_packets = true
 	Client.got_packet.connect(received_packet)
@@ -19,7 +20,6 @@ func received_packet(packet_string):
 		'init-cameras':
 			init_cameras(packet.message)
 			return
-		#TODO obscure the number of the others hidden cards to prevent cheating
 		'disband':
 			Client.poll_packets = false
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -27,9 +27,27 @@ func received_packet(packet_string):
 			get_tree().change_scene_to_file("res://test_multiplayer.tscn")
 		'p1-draw':
 			var message:Dictionary = JSON.parse_string(packet.message)
-			if not message.has('init'):
+			print('drawing card')
+			push_warning('packet',message)
+			if not message.has('init') and not message.has('trump'):
 				sounds.draw_card(message.yours)
 			card_manager.draw_p1(message)
+		'p1-draw-trump':
+			var message = packet.message
+			if card_manager.has_method('slide_trump'):
+				card_manager.slide_trump('p1')
+			if not message:
+				return
+			trump_ui.aces.append(message)
+			trump_ui.got_aces(trump_ui.aces)
+		'p2-draw-trump':
+			var message = packet.message
+			if card_manager.has_method('slide_trump'):
+				card_manager.slide_trump('p2')
+			if not message:
+				return
+			trump_ui.aces.append(message)
+			trump_ui.got_aces(trump_ui.aces)
 		'p2-draw':
 			var message:Dictionary = JSON.parse_string(packet.message)
 			if not message.has('init') and not message.has('trump'):
@@ -69,7 +87,6 @@ func received_packet(packet_string):
 			turn = 3
 			winner_scene(packet.message)
 		'new-round':
-			print(packet.message)
 			turn = 2
 			card_manager.p1_light.show()
 			card_manager.p2_light.hide()

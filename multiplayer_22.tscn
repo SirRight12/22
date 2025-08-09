@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://bfc5d01gu77ey"]
+[gd_scene load_steps=40 format=4 uid="uid://bfc5d01gu77ey"]
 
 [ext_resource type="Script" uid="uid://b6gy2tjpbxk8m" path="res://p1_turn.gd" id="1_2svmt"]
 [ext_resource type="Script" uid="uid://c7wawpuljridq" path="res://SocketGame.gd" id="1_jfl5n"]
@@ -13,18 +13,21 @@
 [ext_resource type="PackedScene" uid="uid://buu12v1gfaefj" path="res://evgenii-old_ussr_lamp.glb" id="11_qndba"]
 [ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="12_8ow6m"]
 [ext_resource type="Script" uid="uid://d11kfgsd6jgt" path="res://addons/AutoSizeText/ui/AutoSizeLabel.gd" id="12_hb0x5"]
-[ext_resource type="Script" uid="uid://cunpkotitjehq" path="res://AcesMenu.gd" id="13_8ow6m"]
+[ext_resource type="Script" uid="uid://bohky06154ftw" path="res://AcesMenu.gd" id="13_8ow6m"]
 [ext_resource type="Script" uid="uid://rcdr6v2qucc2" path="res://organize_children.gd" id="14_4b43k"]
 [ext_resource type="Script" uid="uid://4fpadhwi0qfj" path="res://SocketCardManager.gd" id="14_f6tbo"]
-[ext_resource type="PackedScene" uid="uid://dlx2hctj2jj8g" path="res://ace_ui.tscn" id="14_jdojm"]
+[ext_resource type="Script" uid="uid://slf841unhq4h" path="res://TestAddAce.gd" id="16_305i4"]
 [ext_resource type="AudioStream" uid="uid://djdqrps8n0h0t" path="res://hit.mp3" id="16_a51sq"]
 [ext_resource type="Script" uid="uid://dtkoidtfpo13p" path="res://sounds.gd" id="16_p0q11"]
 [ext_resource type="AudioStream" uid="uid://6a4w0wo6ecbd" path="res://ill stay.mp3" id="17_p0q11"]
 [ext_resource type="AudioStream" uid="uid://fkfjgrf8wshn" path="res://lose.ogg" id="18_3t2yw"]
 [ext_resource type="AudioStream" uid="uid://cp5e6cylcp8fx" path="res://Hit me.mp3" id="18_qndba"]
-[ext_resource type="AudioStream" uid="uid://ci5138bqm381p" path="res://one more.mp3" id="19_4b43k"]
+[ext_resource type="AudioStream" uid="uid://ci5138bqm381p" path="res://One more.mp3" id="19_4b43k"]
 [ext_resource type="AudioStream" uid="uid://k7267hw1umah" path="res://give me another.mp3" id="20_3t2yw"]
 [ext_resource type="AudioStream" uid="uid://d1ikrxipr27ju" path="res://win.ogg" id="20_jdojm"]
+[ext_resource type="AudioStream" uid="uid://dyupngurrdnf0" path="res://im_good.mp3" id="23_305i4"]
+[ext_resource type="Script" uid="uid://cjkgw8ev5cbl0" path="res://connection_watcher.gd" id="26_cm4tu"]
+[ext_resource type="AudioStream" uid="uid://b1yj74puvt5ql" path="res://bgmusic.wav" id="26_dklut"]
 
 [sub_resource type="Environment" id="Environment_l2d17"]
 
@@ -81,7 +84,7 @@ flip_faces = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
 emission_enabled = true
 emission = Color(0.547002, 0.536003, 0.271457, 1)
-emission_energy_multiplier = 2.95893
+emission_energy_multiplier = 1.8138
 emission_on_uv2 = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
@@ -140,7 +143,7 @@ skeleton = NodePath("")
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(0.0929806, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995666, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 1.85538
+light_energy = 2.30582
 spot_range = 2.092
 spot_angle = 22.71
 spot_angle_attenuation = 2.0
@@ -153,7 +156,7 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
-light_energy = 2.86791
+light_energy = 1.84237
 light_size = 0.1
 distance_fade_enabled = true
 distance_fade_begin = 0.9
@@ -203,6 +206,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="AutoSizeLabel" type="Label" parent="Canvas/Control"]
 modulate = Color(1, 1, 1, 0.45098)
@@ -220,7 +224,7 @@ grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("12_8ow6m")
-theme_override_font_sizes/font_size = 37
+theme_override_font_sizes/font_size = 38
 text = "[SPACE] To view ACES"
 autowrap_mode = 3
 paragraph_separator = " \\n"
@@ -233,15 +237,26 @@ metadata/_custom_type_script = "uid://d11kfgsd6jgt"
 
 [node name="Control2" type="Control" parent="Canvas"]
 layout_mode = 3
-anchor_left = 0.705
+anchor_left = 1.0
 anchor_top = 0.05
-anchor_right = 0.99
+anchor_right = 1.285
 anchor_bottom = 0.95
 grow_horizontal = 0
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("13_8ow6m")
 metadata/_edit_use_anchors_ = true
+
+[node name="ColorRect" type="ColorRect" parent="Canvas/Control2"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.282353)
 
 [node name="GridContainer" type="GridContainer" parent="Canvas/Control2"]
 layout_mode = 1
@@ -254,150 +269,198 @@ mouse_filter = 2
 columns = 4
 
 [node name="Control" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Control2" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control3" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control4" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control5" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control6" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control7" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control8" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control9" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control10" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control11" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control12" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control13" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control14" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control15" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control16" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control17" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control18" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control19" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control20" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control21" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control22" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control23" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control24" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control25" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control26" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Control27" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="Container" parent="Canvas/Control2/GridContainer" instance=ExtResource("14_jdojm")]
+[node name="Control28" type="Control" parent="Canvas/Control2/GridContainer"]
+z_index = 6
 layout_mode = 2
-
-[node name="ColorRect" type="ColorRect" parent="Canvas/Control2"]
-z_index = -1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.282353)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Text" type="ColorRect" parent="Canvas"]
 clip_children = 1
@@ -407,6 +470,13 @@ anchor_top = 0.03
 anchor_right = 0.68
 anchor_bottom = 0.19
 script = ExtResource("14_4b43k")
+
+[node name="Button2" type="Button" parent="Canvas"]
+offset_top = 44.0
+offset_right = 138.0
+offset_bottom = 75.0
+text = "Test draw ace lol"
+script = ExtResource("16_305i4")
 
 [node name="Marker3D" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.688735, 0.579664, -0.0819151)
@@ -471,10 +541,17 @@ bus = &"win"
 [node name="Pass1" type="AudioStreamPlayer" parent="Sounds/Pass"]
 stream = ExtResource("17_p0q11")
 volume_db = -8.0
+bus = &"Voice1"
 
 [node name="Pass2" type="AudioStreamPlayer" parent="Sounds/Pass"]
 stream = SubResource("AudioStreamMP3_jdojm")
 volume_db = -8.0
+bus = &"win"
+
+[node name="Pass3" type="AudioStreamPlayer" parent="Sounds/Pass"]
+stream = ExtResource("23_305i4")
+volume_db = -8.0
+bus = &"Voice2"
 
 [node name="Draw" type="Node" parent="Sounds"]
 
@@ -491,3 +568,16 @@ bus = &"Voice1"
 [node name="Draw3" type="AudioStreamPlayer" parent="Sounds/Draw"]
 stream = ExtResource("20_3t2yw")
 volume_db = -8.0
+bus = &"Voice1"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("26_dklut")
+volume_db = -8.0
+pitch_scale = 0.95
+autoplay = true
+
+[node name="ConnectionWatcher" type="Node" parent="."]
+script = ExtResource("26_cm4tu")
+
+[connection signal="mouse_entered" from="Canvas/Control2/ColorRect" to="Canvas/Control2" method="_on_color_rect_mouse_entered"]
+[connection signal="mouse_exited" from="Canvas/Control2/ColorRect" to="Canvas/Control2" method="_on_color_rect_mouse_exited"]

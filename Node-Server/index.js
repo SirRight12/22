@@ -9,7 +9,6 @@ const express = pkg
 const app = express()
 const server = http.createServer(app)
 
-
 //create a web socket server
 const wss = new WebSocketServer({
     server
@@ -51,6 +50,7 @@ class Card {
         return this.value
     }
 }
+console.log(generate_deck())
 
 function init_ws(socket,packet) {
     console.log('init')
@@ -132,26 +132,25 @@ function leave_lobby(socket,packet) {
 
 }
 
-
 function generate_deck() {
-    let deck = Array(11)
-    let x = 0
-    const used = {}
-    while (x < 11) {
-        let card = randRange(1,11)
-        while (used[card]) {
-            card = randRange(1,11)
-        }
-        used[card] = true
-        deck[x] = new Card(card,false)
-        x ++
+    // Create an array of numbers 1-11, shuffle, and map to Card objects
+    const numbers = Array.from({ length: 11 }, (_, i) => i + 1);
+    // Fisher-Yates shuffle
+    for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
     }
-    return deck
+    return numbers.map(num => new Card(num, false));
 }
 function start_lobby(socket,packet) {
     const [lobby,lobby_id] = find_player_lobby(socket)
     const gameInfo = []
     let player_num = 1
+    //define player info
+    if (!lobby) {
+        server_error(socket,'Error: Lobby not found')
+        return
+    }
     for (let p_idx in lobby) {
         const player = lobby[p_idx]
         const pInfo = {}
@@ -167,10 +166,12 @@ function start_lobby(socket,packet) {
     }
 
     games[lobby_id] = {
-        'turn': 1,
-        'players': gameInfo,
-        'deck': generate_deck(),
-        'target': 21,
+        'turn': 3, // The turn, 1 is player 1, 2 is player 2, 3 is no turn (yes I should have done an enum)
+        'players': gameInfo, // All the players in the game
+        'deck': generate_deck(), // The game deck
+        'target': 21, // The target score for player hands (can be modified by trumps)
+        'ante': 1, // The ante is the amount of hp players will gain and lose each round
+        'ante-up': 1, // The ante will increase by this amount each round (can be modified by trumps)
     }
 
     console.log(games)
@@ -191,7 +192,7 @@ function join_game(socket,packet) {
         }
     }
     if (loaded >= plr_count) {
-        start_game(game)
+        start_round(game)
         console.log('all loaded')
     }
 }
@@ -210,6 +211,10 @@ function send_card(player, card, expected, init = false, trump = false) {
     // Only send the real value if the player is the owner or the card is not hidden
     let owner = player.playernum == expected;
     const socket = players[player.id];
+    if (!socket) {
+        console.error('Socket not found for player', player.id);
+        return;
+    }
     let val = card.hidden && !owner ? 0 : card.value;
     let newCard = new Card(val, card.hidden);
     const obj = {
@@ -219,9 +224,10 @@ function send_card(player, card, expected, init = false, trump = false) {
     if (init) obj['init'] = true;
     if (trump) obj['trump'] = true;
     const packet = new Packet(`p${expected}-draw`, JSON.stringify(obj));
+    
     socket.send(packet.toString());
 }
-function start_game(game) {
+function start_round(game) {
     let card1 = game['deck'][0]
     game['deck'].splice(0,1)
     card1.hidden = true
@@ -242,6 +248,7 @@ function start_game(game) {
     })
     p1.hand.push(card1,card3)
     p2.hand.push(card2,card4)
+    const trumpPackets = roundTrumps(game)
     game.players.forEach(player => {
         const socket = players[player.id]
         const packet = new Packet('init-cameras',JSON.stringify(player))
@@ -291,16 +298,67 @@ function start_game(game) {
         setTimeout(() => {
             send_card(player,card3,1,true)
             socket.send(p1Update2.toString())
-            setTimeout(() => {
+            setTimeout(async () => {
                 send_card(player,card4,2,true)
                 socket.send(p2Update2.toString())
+                await sendTrumps(socket,player, trumpPackets)
+                console.log('sent trumps')
                 const turnPacket = new Packet('p1-turn',player.playernum == 1)
+                game.turn = 1
                 socket.send(turnPacket.toString())
             },1000)
 
         },2000)
     })
-} 
+}
+function sendTrumps(socket, player, trumpPackets) {
+    return new Promise((resolve) => {
+        if (!trumpPackets || !trumpPackets[player.playernum - 1]) {
+            return;
+        }
+        console.log(trumpPackets[player.playernum - 1])
+        trumpPackets[player.playernum - 1].forEach(async packet => {
+            socket.send(packet.toString())
+            await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for 1 second before sending the next packet
+        })
+        resolve(); // Resolve the promise after all packets are sent
+    })
+}
+function drawRandomTrump() {
+    let totalWeight = 0;
+    for (const trump of trumps) {
+        totalWeight += trump.weight;
+    }
+    let random = Math.random() * totalWeight;
+    for (const trump of trumps) {
+        if (random < trump.weight) {
+            return trump;
+        }
+        random -= trump.weight;
+    }
+}
+function roundTrumps(game) {
+    let p1 = game.players[0]
+    let p2 = game.players[1]
+    const packets = []
+    let p1Packets = [] // an array of packets for player 1, p2's trump names will not be sent
+    let p2Packets = [] // an array of packets for player 2, p1's trump names will not be sent to keep client integrity
+    for (let x = 0; x < 4; x ++) {
+        if (x % 2 == 0) {
+            const trump = drawRandomTrump()
+            p1.trumps.push(trump.name)
+            p1Packets.push(new Packet(`p1-draw-trump`, trump.name))
+            p2Packets.push(new Packet(`p1-draw-trump`, '')) // send a false trump to player 2 so they know player 1 has a trump, but not what it is
+        } else {
+            const trump = drawRandomTrump()
+            p2.trumps.push(trump.name)
+            p2Packets.push(new Packet(`p2-draw-trump`, trump.name))
+            p1Packets.push(new Packet(`p2-draw-trump`, '')) // send a false trump to player 1 so they know player 2 has a trump, but not what it is       
+        }
+    }
+    packets.push(p1Packets,p2Packets)
+    return packets
+}
 function get_value(hand,pNum,expectedPNum) {
     let val = 0
     for (let card_idx in hand) {
@@ -312,6 +370,12 @@ function get_value(hand,pNum,expectedPNum) {
 function player_draw_card(socket) {
     const [lobby,lobby_id] = find_player_lobby(socket)
     const game = games[lobby_id]
+    let p = find_in_game(socket,game)
+    if (!p) {
+        console.error('Player not found in game')
+        return
+    }
+    if (game.turn != p.playernum) return // If it's not the player's turn, do nothing
     function send_to_players(drawingPlayer,card) {
         let event = 'p1-draw'
         let event2 = 'p1-val'
@@ -355,6 +419,7 @@ function player_draw_card(socket) {
         if (player.id != socket.id) return
         console.log('found player!')
         //stop trying to draw if its not the player's turn
+        console.log('turn',game.turn)
         if (player.playernum != game.turn) return
 
         player.hand.push(game.deck[0])
@@ -437,6 +502,9 @@ function player_pass_turn(socket) {
             switch(result) {
                 case 1:
                     //p1 wins
+                    p1.hp += game.ante
+                    p2.hp -= game.ante
+                    game.ante += 1
                     game.players.forEach(player => {
                         const socket = players[player.id]
                         p = new Packet('winner',[1,player.playernum,p1.hand,p2.hand,p1val,p2val])
@@ -446,6 +514,9 @@ function player_pass_turn(socket) {
                     break;
                 case 2:
                         //p2 wins
+                        p1.hp -= game.ante
+                        p2.hp += game.ante
+                        game.ante += 1
                         game.players.forEach(player => {
                             const socket = players[player.id]
                             p = new Packet('winner',[2,player.playernum,p1.hand,p2.hand,p1val,p2val])
@@ -455,7 +526,7 @@ function player_pass_turn(socket) {
                         break;
                 case 3:
                    //draw
-                   
+                   game.ante += 1
                    game.players.forEach(player => {
                         const socket = players[player.id]
                         p = new Packet('winner',[3,player.playernum,p1.hand,p2.hand,p1val,p2val])
@@ -472,7 +543,7 @@ function player_pass_turn(socket) {
                     player.hand = []
                     player['passed'] = false      
                 })
-                start_game(game)
+                start_round(game)
                 game.turn = 1
             },8000)
         },2000)
@@ -493,20 +564,29 @@ function use_trump(socket,packet) {
     }
     const trumpName = packet.message
     let trump = null
+    let playerHas = false
     for (let x = 0; x < trumps.length; x ++) {
         const t = trumps[x]
         if (t.name == trumpName) {
             trump = t
             // Remove the trump from the player's hand
-            player.trumps.splice(x,1)
+            const removed = player.trumps.splice(x,1)
+            if (removed.length > 0) {
+                playerHas = true
+            }
             break
         }
     }
-    if (!trump) {
+    if (!playerHas) {
         // A little jab at the presumable cheater
         server_error(socket,"Nice try, bozo, but you can't use what you don't have")
-        //actual error handling
-        console.error('Trump not found')
+
+        console.error('Player does not have the trump card',trumpName)
+        return
+    }
+    if (!trump) {
+        //error handling
+        console.error('Trump does not exist found')
         return
     }
     switch (trump.name) {
@@ -523,18 +603,31 @@ function use_trump(socket,packet) {
 }
 function usePerfectDraw(trump,player,game) {
     const card = trump.onUse(player, null, game)
+    if (!card) {
+        console.error('Perfect Draw failed, no card to draw')
+        return
+    }
     player.hand.push(card)
     // Send the card to the players
     game.players.forEach(p => {
 
-        const sock = players[player.id]
+        const socket = players[p.id]
         const packetDraw = new Packet('p1-draw',JSON.stringify({
             'card': JSON.stringify(card),
             'yours': p.playernum == player.playernum,
             'trump': true, //ignore the voicelines on the client and plays a trump sfx
         }))
+        // Update the player's hand value
+        const valObj = {
+            'value': get_value(player.hand, p.playernum, player.playernum),
+            'target': game.target,
+            'hcount': get_hidden_count(player.hand),
+            'yours': p.playernum == player.playernum,
+        }
+        const packetVal = new Packet(`p${player.playernum}-val`, JSON.stringify(valObj))
         // send the card to the client
-        sock.send(packetDraw.toString())
+        socket.send(packetDraw.toString())
+        socket.send(packetVal.toString())
     })
 }
 function useHush(trump,player,game) {

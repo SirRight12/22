@@ -3,7 +3,7 @@ extends Node3D
 
 @onready var sprite = $Sprite3D
 @onready var animation_player:AnimationPlayer = $AnimationPlayer
-@onready var alt_text:Label = $SubViewport/Label/Label2
+@onready var alt_text:Label = $SubViewport/Label/Label/Label2
 var is_owner = false
 @export var value:int = 1:
 	set = set_value

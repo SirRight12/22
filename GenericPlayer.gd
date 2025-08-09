@@ -10,6 +10,11 @@ var poll_packets : bool = false
 signal id_recieved(id)
 signal got_packet(packet)
 
+signal on_connected()
+signal on_connection_lost()
+
+var connected = false
+
 var has_id = false
 
 func set_id(val:String):
@@ -19,12 +24,24 @@ func set_id(val:String):
 	has_id = true
 	id_recieved.emit(id)
 
+func monitor_connection():
+	if socket.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		if connected:
+			connected = false
+			on_connection_lost.emit()
+			push_error('Disconnected from server')
+	if not connected and socket.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		connected = true
+		on_connected.emit()
+		push_error('Connected to server')
+	
+
 func _process(_delta):
+	monitor_connection()
 	if not poll_packets or not has_id:
 		return
 	socket.poll()
-	if socket.get_ready_state() != WebSocketPeer.STATE_OPEN:
-		return
+	
 	while socket.get_ready_state() == WebSocketPeer.STATE_OPEN and socket.get_available_packet_count():
 		push_error('got packet')
 		var packet : PackedByteArray = socket.get_packet()

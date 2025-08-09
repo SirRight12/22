@@ -1,0 +1,180 @@
+[gd_scene load_steps=7 format=3 uid="uid://wjwrypmcquom"]
+
+[ext_resource type="Script" path="res://WebSocketLobby.gd" id="1_nrb8h"]
+[ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="2_7jfie"]
+[ext_resource type="Script" path="res://Resize.gd" id="3_grj1v"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_grj1v"]
+viewport_path = NodePath("Joining/Join2")
+
+[sub_resource type="LabelSettings" id="LabelSettings_grj1v"]
+font_size = 776
+
+[sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
+font_size = 36
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nrb8h")
+
+[node name="Host" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.420139
+anchor_top = 0.350309
+anchor_right = 0.579861
+anchor_bottom = 0.498457
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+text = "Host"
+metadata/_edit_use_anchors_ = true
+
+[node name="Start" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.336806
+anchor_top = 0.834877
+anchor_right = 0.496528
+anchor_bottom = 0.983025
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+text = "Start"
+metadata/_edit_use_anchors_ = true
+
+[node name="Disband" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.503472
+anchor_top = 0.834877
+anchor_right = 0.663194
+anchor_bottom = 0.983025
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 44
+text = "Disband"
+metadata/_edit_use_anchors_ = true
+
+[node name="Leave" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.420139
+anchor_top = 0.834877
+anchor_right = 0.579861
+anchor_bottom = 0.983025
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+text = "Leave
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="Players" type="ItemList" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.342014
+anchor_top = 0.219136
+anchor_right = 0.657986
+anchor_bottom = 0.780864
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+allow_search = false
+metadata/_edit_use_anchors_ = true
+
+[node name="Joining" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.328125
+anchor_top = 0.54321
+anchor_right = 0.671875
+anchor_bottom = 0.691358
+metadata/_edit_use_anchors_ = true
+
+[node name="LineEdit" type="LineEdit" parent="Joining"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+theme_override_fonts/font = ExtResource("2_7jfie")
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Insert Lobby Id"
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Join" type="Button" parent="Joining"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.66
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 61
+icon = SubResource("ViewportTexture_grj1v")
+icon_alignment = 1
+expand_icon = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Join2" type="SubViewport" parent="Joining"]
+transparent_bg = true
+size = Vector2i(1415, 1058)
+script = ExtResource("3_grj1v")
+text = "Join"
+
+[node name="Label" type="Label" parent="Joining/Join2"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Join"
+label_settings = SubResource("LabelSettings_grj1v")
+
+[node name="ID_UI" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.335938
+anchor_top = 0.0478395
+anchor_right = 0.663099
+anchor_bottom = 0.134259
+offset_right = 1.10999
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="info" type="Label" parent="ID_UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.500279
+anchor_bottom = 1.0
+text = "Lobby id:"
+label_settings = SubResource("LabelSettings_7jfie")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="ID" type="LineEdit" parent="ID_UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.500022
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 31
+text = "1234567890"
+alignment = 3
+max_length = 10
+editable = false
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+metadata/_edit_use_anchors_ = true

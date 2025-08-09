@@ -3,18 +3,22 @@ extends Control
 @export var dictionary:Dictionary[String,Texture2D]
 var hovering = false
 func set_ace_name(ace_name:String):
-	$TextureRect.texture = dictionary[ace_name]
-	$AutoSizeLabel.text = ace_name.replace('-',' ')
+	$Content/TextureRect.texture = dictionary[ace_name]
+	$Content/SubViewport.text = ace_name
 func _ready():
 	hovered.bind()
 	mouse_entered.connect(hovered)
 	mouse_exited.connect(exited)
 	pass
 func hovered():
+	var mat:ShaderMaterial = $ColorRect.material
+	print('hover')
+	mat.set_shader_parameter('enabled',true)
 	hovering = true
 	get_parent().get_parent().ace_hovered(self)
-	pass
 func exited():
+	var mat:ShaderMaterial = $ColorRect.material
+	mat.set_shader_parameter('enabled',false)
 	hovering = false
 func _input(event):
 	if not hovering:

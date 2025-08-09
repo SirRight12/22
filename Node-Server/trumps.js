@@ -5,8 +5,9 @@
 
 // BTW "busting" is when the player's hand value exceeds the target value,
 class Trump {
-  constructor(name='null', description='sorry, lol',onUse=()=>{}) {
+  constructor(name='null', description='sorry, lol',weight=0.5,onUse=()=>{}) {
     this.name = name;
+    this.weight = weight; // Weight can be used to determine the likelihood of drawing this trump
     this.description = description;
     this.onUse = onUse;
   }
@@ -49,6 +50,6 @@ function Hush(player,other,game) {
 }
 
 export const trumps = [
-  new Trump('Perfect Draw', 'Draw the perfect card from the deck', perfectDraw),
-  new Trump('Hush', 'Draw a card and hide it from the other player', Hush),
+  new Trump('Perfect Draw', 'Draw the perfect card from the deck', 1, perfectDraw),
+  new Trump('Hush', 'Draw a card and hide it from the other player', 1, Hush),
 ]

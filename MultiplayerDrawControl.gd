@@ -2,8 +2,25 @@ extends "res://ControlDrawing.gd"
 
 @onready var game = $".."
 @onready var sounds = $"../Sounds"
+@onready var ace_menu = $Control2
 
+
+
+var hovering_ace_menu = false
+func _ready():
+	ace_menu.enter.connect(mouse_enter_ace_menu)
+	ace_menu.exit.connect(mouse_exit_ace_menu)
+	pass
+func mouse_enter_ace_menu():
+	hovering_ace_menu = true
+	print('enter')
+func mouse_exit_ace_menu():
+	hovering_ace_menu = false
+	print('exit')
 func _input(event: InputEvent) -> void:
+	#handle inputs differently if hovering over the ace menu
+	if hovering_ace_menu:
+		return
 	if event.is_action_pressed('view'):
 		if $Control2.is_open:
 			$Control2.close()

@@ -1,13 +1,24 @@
-[gd_scene load_steps=7 format=3 uid="uid://dlx2hctj2jj8g"]
+[gd_scene load_steps=9 format=3 uid="uid://dlx2hctj2jj8g"]
 
-[ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="1_blvk3"]
-[ext_resource type="Script" uid="uid://cmqk86vqi1ume" path="res://ace_ui.gd" id="1_iv4q6"]
-[ext_resource type="Script" uid="uid://d11kfgsd6jgt" path="res://addons/AutoSizeText/ui/AutoSizeLabel.gd" id="2_n6tei"]
+[ext_resource type="Script" uid="uid://cn5i67eq2mrdl" path="res://ace_ui.gd" id="1_iv4q6"]
+[ext_resource type="Texture2D" uid="uid://71b83yhq6vw5" path="res://Hush.png" id="3_kxgsc"]
 [ext_resource type="Texture2D" uid="uid://ch1e7jxyhq7ap" path="res://PerfectDraw.png" id="3_n6tei"]
+[ext_resource type="Texture2D" uid="uid://1gi0hh2rh7ay" path="res://Draw5.png" id="4_n0mis"]
 [ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="5_kxgsc"]
+[ext_resource type="Shader" uid="uid://coqwca7uy5byv" path="res://border.gdshader" id="5_n0mis"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n0mis"]
+resource_local_to_scene = true
+shader = ExtResource("5_n0mis")
+shader_parameter/color = Vector4(1, 1, 1, 1)
+shader_parameter/border_left = 0.045
+shader_parameter/border_right = 0.955
+shader_parameter/border_top = 0.045
+shader_parameter/border_bottom = 0.955
+shader_parameter/enabled = false
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_iv4q6"]
-viewport_path = NodePath("SubViewport")
+viewport_path = NodePath("Content/SubViewport")
 
 [node name="Container" type="Control"]
 layout_mode = 3
@@ -16,43 +27,34 @@ offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_default_cursor_shape = 13
 script = ExtResource("1_iv4q6")
 dictionary = Dictionary[String, Texture2D]({
-"Perfect-Draw": ExtResource("3_n6tei")
+"Draw 5": ExtResource("4_n0mis"),
+"Hush": ExtResource("3_kxgsc"),
+"Perfect Draw": ExtResource("3_n6tei")
 })
 
 [node name="ColorRect" type="ColorRect" parent="."]
+clip_children = 2
+material = SubResource("ShaderMaterial_n0mis")
 layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 color = Color(0.0980392, 0.0980392, 0.0980392, 0.443137)
 
-[node name="AutoSizeLabel" type="Label" parent="."]
-visible = false
+[node name="Content" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("1_blvk3")
-theme_override_font_sizes/font_size = 6
-text = "Perfect Draw"
-horizontal_alignment = 1
-vertical_alignment = 2
-autowrap_mode = 3
-clip_text = true
-text_overrun_behavior = 3
-script = ExtResource("2_n6tei")
-watch_text_change = true
-min_font_size = 1
-max_font_size = 6
-metadata/_custom_type_script = "uid://d11kfgsd6jgt"
+anchor_left = 0.045
+anchor_top = 0.045
+anchor_right = 0.955
+anchor_bottom = 0.955
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="Content"]
 texture_filter = 1
 layout_mode = 1
 anchors_preset = -1
@@ -60,27 +62,28 @@ anchor_right = 1.0
 anchor_bottom = 0.8
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("3_n6tei")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TextureRect2" type="TextureRect" parent="."]
+[node name="Name" type="TextureRect" parent="Content"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 texture = SubResource("ViewportTexture_iv4q6")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="Content"]
 transparent_bg = true
-size = Vector2i(940, 205)
+size = Vector2i(40, 205)
 script = ExtResource("5_kxgsc")
 
-[node name="Label" type="Label" parent="SubViewport"]
+[node name="Label" type="Label" parent="Content/SubViewport"]
 offset_right = 40.0
 offset_bottom = 23.0
 theme_override_font_sizes/font_size = 150
-text = "Perfect Draw"

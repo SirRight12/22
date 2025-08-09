@@ -1,8 +1,16 @@
 @tool
 extends SubViewport
 
-@export var offset = Vector2(0,0)
+@export var fixed_size:bool
+
+@export var const_size:Vector2
+
+@export var text:String = ""
 func _process(_delta: float) -> void:
-	size = ($Label.size * $Label.scale) #+ offset
+	if $Label is Label:
+		$Label.text = text
+	if fixed_size:
+		size = const_size
+		return
+	size = ($Label.size * $Label.scale)
 	pass
-#nothing lol ;)
