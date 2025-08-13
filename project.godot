@@ -23,7 +23,7 @@ Client="*res://GenericPlayer.gd"
 
 [display]
 
-window/stretch/mode="viewport"
+window/stretch/mode="canvas_items"
 
 [input]
 
@@ -45,9 +45,11 @@ view={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=2
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=true
 textures/default_filters/anisotropic_filtering_level=3
 viewport/hdr_2d=true
-textures/decals/filter=5
-textures/light_projectors/filter=5
+textures/decals/filter=2
+textures/light_projectors/filter=0

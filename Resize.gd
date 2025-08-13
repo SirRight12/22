@@ -7,7 +7,7 @@ extends SubViewport
 
 @export var text:String = ""
 func _process(_delta: float) -> void:
-	if $Label is Label:
+	if $Label is Label or $Label is RichTextLabel:
 		$Label.text = text
 	if fixed_size:
 		size = const_size

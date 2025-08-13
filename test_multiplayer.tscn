@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://dfes0xtl1brn7" path="res://text_viewport.tscn" id="4_rjagb"]
 [ext_resource type="Texture2D" uid="uid://o24uyowiij7r" path="res://Reconnect.tres" id="7_tcmrn"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_grj1v"]
-viewport_path = NodePath(".")
+[sub_resource type="ViewportTexture" id="ViewportTexture_k8sjm"]
+viewport_path = NodePath("Joining/TextViewport")
 
 [sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
 font = ExtResource("2_7jfie")
@@ -26,7 +26,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": ["Reconnecting"]
+"values": ["[wave_effect speed=-4 amp=100]Reconnecting[wave_effect]"]
 }
 
 [sub_resource type="Animation" id="Animation_60jql"]
@@ -40,10 +40,10 @@ tracks/0/path = NodePath("TextViewport:text")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8, 1.2),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
 "update": 1,
-"values": ["Reconnecting", "Reconnecting.", "Reconnecting..", "Reconnecting..."]
+"values": []
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tcmrn"]
@@ -78,7 +78,7 @@ expand_icon = true
 metadata/_edit_use_anchors_ = true
 
 [node name="HostViewport" parent="Host" instance=ExtResource("4_rjagb")]
-size = Vector2i(7081, 4459)
+size = Vector2i(4021, 2533)
 text = "Host"
 
 [node name="Start" type="Button" parent="."]
@@ -173,13 +173,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 61
-icon = SubResource("ViewportTexture_grj1v")
+icon = SubResource("ViewportTexture_k8sjm")
 icon_alignment = 1
 expand_icon = true
 metadata/_edit_use_anchors_ = true
 
 [node name="TextViewport" parent="Joining" instance=ExtResource("4_rjagb")]
-size = Vector2i(5659, 4459)
+size = Vector2i(3214, 2533)
 text = "Join"
 
 [node name="ID_UI" type="Control" parent="."]
@@ -235,10 +235,8 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="TextViewport" parent="CanvasLayer" instance=ExtResource("4_rjagb")]
-size = Vector2i(22049, 4086)
-fixed_size = true
 const_size = Vector2(22049, 4086)
-text = "Reconnecting"
+text = "[wave_effect speed=-4 amp=100]Reconnecting[wave_effect]"
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
 anchors_preset = -1

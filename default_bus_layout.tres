@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=10 format=3 uid="uid://ijc8drcppx53"]
+[gd_resource type="AudioBusLayout" load_steps=12 format=3 uid="uid://ijc8drcppx53"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_vehbk"]
 resource_name = "Reverb"
@@ -51,6 +51,19 @@ resource_name = "Chorus"
 dry = 0.2
 voice/1/delay_ms = 24.81
 
+[sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_5t1r3"]
+resource_name = "PitchShift"
+pitch_scale = 1.64
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_g28q7"]
+resource_name = "Reverb"
+predelay_msec = 89.0
+predelay_feedback = 0.01
+room_size = 0.69
+spread = 0.0
+dry = 0.0
+wet = 0.39
+
 [resource]
 bus/1/name = &"Voice1"
 bus/1/solo = false
@@ -94,3 +107,13 @@ bus/4/effect/0/effect = SubResource("AudioEffectPitchShift_n8wo2")
 bus/4/effect/0/enabled = true
 bus/4/effect/1/effect = SubResource("AudioEffectChorus_j3pel")
 bus/4/effect/1/enabled = true
+bus/5/name = &"Water"
+bus/5/solo = false
+bus/5/mute = false
+bus/5/bypass_fx = false
+bus/5/volume_db = 0.0
+bus/5/send = &"Master"
+bus/5/effect/0/effect = SubResource("AudioEffectPitchShift_5t1r3")
+bus/5/effect/0/enabled = true
+bus/5/effect/1/effect = SubResource("AudioEffectReverb_g28q7")
+bus/5/effect/1/enabled = true

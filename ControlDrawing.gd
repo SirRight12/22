@@ -26,14 +26,14 @@ func advance_draw_step():
 	draw_step += 1
 	reset_timer()
 	if draw_step == 2:
-		confirm.words = "draw?"
+		confirm.viewport_text.text = "draw?"
 		accept.hide()
 		confirm.float_up()
 		mouse.scale = Vector2(.3,.3)
 		var _tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
 	elif draw_step == 4:
 		reset_timer()
-		accept.words = "DRAW!"
+		accept.viewport_text.text = "DRAW!"
 		confirm.hide()
 		accept.float_up()
 		draw_card()
@@ -52,14 +52,14 @@ func advance_pass_step():
 	pass_step += 1
 	reset_timer()
 	if pass_step == 2:
-		confirm.words = "pass?"
+		confirm.viewport_text.text = 'pass?'
 		accept.hide()
 		confirm.float_up()
 		mouse.scale = Vector2(.3,.3)
 		var _tween = create_tween().tween_property(mouse,'scale',Vector2(1,1),.2)
 	elif pass_step == 4:
 		reset_timer()
-		accept.words = "PASS!"
+		accept.viewport_text.text = "PASS!"
 		confirm.hide()
 		accept.float_up()
 		pass_turn()

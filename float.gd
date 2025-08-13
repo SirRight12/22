@@ -1,11 +1,9 @@
 extends Node2D
-@export var words:String
 @onready var sprite:Sprite2D = $Sprite2D
-@onready var text = $SubViewport/Label
+@onready var viewport_text = $SubViewport
 var _tween1:Tween
 var _tween2:Tween
-func _ready():
-	text.text = words
+
 func float_up():
 	self.show()
 	if _tween1:
@@ -24,6 +22,6 @@ func float_up():
 	_tween2.tween_property(sprite,'position',Vector2(0,-30),.4)
 	print('hello?')
 func reset():
-	text.text = words
+	#viewport_text.text = ' '
 	sprite.position = Vector2(0,-20)
 	sprite.modulate = Color(1.0,1.0,1.0,1.0)

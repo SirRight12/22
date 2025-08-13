@@ -1,23 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://dfes0xtl1brn7"]
+[gd_scene load_steps=5 format=3 uid="uid://dfes0xtl1brn7"]
 
 [ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="1_qd6oi"]
+[ext_resource type="Script" uid="uid://cdrats6ajfy74" path="res://WaveTextEffect.gd" id="2_wd4nv"]
 [ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="3_5ioxb"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_qd6oi"]
-font = ExtResource("3_5ioxb")
-font_size = 3260
+[sub_resource type="RichTextEffect" id="RichTextEffect_o34pf"]
+script = ExtResource("2_wd4nv")
+metadata/_custom_type_script = "uid://cdrats6ajfy74"
 
 [node name="TextViewport" type="SubViewport"]
 transparent_bg = true
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 2
-size = Vector2i(13552, 4459)
+size = Vector2i(11646, 2533)
 script = ExtResource("1_qd6oi")
-text = "sup nerd"
+text = "Reconnecting"
 
-[node name="Label" type="Label" parent="."]
-offset_right = 40.0
+[node name="Label" type="RichTextLabel" parent="."]
+offset_right = 102.0
 offset_bottom = 23.0
-text = "sup nerd"
-label_settings = SubResource("LabelSettings_qd6oi")
+theme_override_fonts/normal_font = ExtResource("3_5ioxb")
+theme_override_font_sizes/normal_font_size = 1851
+bbcode_enabled = true
+text = "Reconnecting"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+custom_effects = [SubResource("RichTextEffect_o34pf")]
