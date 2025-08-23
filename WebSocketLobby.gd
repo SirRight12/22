@@ -30,7 +30,7 @@ func init_client():
 	#official build
 	socket.connect_to_url('wss://two2-mi7l.onrender.com')
 	#debug testing
-	#socket.connect_to_url('ws://localhost:8080')
+	#socket.connect_to_url('ws://localhost:4000')
 	Client.socket = socket
 	got_packet.connect(_on_data)
 	#socket = WebSocketMultiplayerPeer.new()

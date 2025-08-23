@@ -4,7 +4,7 @@ import http from 'http'
 import {WebSocketServer} from 'ws'
 import {trumps} from './trumps.js'
 //Declare the arbitrary port
-const PORT = 8080
+const PORT = process.env.PORT || 4000
 const express = pkg
 const app = express()
 const server = http.createServer(app)
@@ -337,13 +337,15 @@ function start_round(game) {
         },2000)
     })
 }
-function change_turn(game,playernum) {
+async function change_turn(game,playernum) {
+    game.turn = 3
     game.players.forEach(async player => {
-        game.turn = 3
+        console.log('changing turn for player', player.playernum)
         const socket = players[player.id]
         if (!socket) return
         socket.send(new Packet('no-turn','').toString())
         await new Promise(resolve => setTimeout(resolve, 1000))
+        console.log('after await for player', player.playernum)
         if (player.playernum == playernum) {
             player.timer = setTimeout(() => {
                 //handle case where player has left before timer expires
@@ -357,6 +359,10 @@ function change_turn(game,playernum) {
         const packet = new Packet(`p${playernum}-turn`, player.playernum == playernum)
         socket.send(packet.toString())
     })
+    //keep in line with the loop
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    console.log('turn changed to',playernum)
+    game.turn = playernum
 }
 function sendTrumps(socket, player, trumpPackets) {
     return new Promise((resolve) => {
@@ -422,7 +428,9 @@ function player_draw_card(socket) {
         console.error('Player not found in game')
         return
     }
-    if (game.turn != p.playernum) return // If it's not the player's turn, do nothing
+    if (game.turn != p.playernum) {
+        return // If it's not the player's turn, do nothing
+    }
     function send_to_players(drawingPlayer,card) {
         let event = 'p1-draw'
         let event2 = 'p1-val'

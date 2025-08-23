@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://o24uyowiij7r" path="res://Reconnect.tres" id="7_tcmrn"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_k8sjm"]
-viewport_path = NodePath(".")
+viewport_path = NodePath("Joining/TextViewport")
 
 [sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
 font = ExtResource("2_7jfie")
