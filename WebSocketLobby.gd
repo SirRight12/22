@@ -61,8 +61,7 @@ func _on_data(data:String):
 	match packet.event:
 		'server_error':
 			server_error(packet.message)
-			return			
-			pass
+			return
 		'init':
 			on_init(packet)
 			return

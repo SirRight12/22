@@ -19,14 +19,14 @@ func mouse_exit_ace_menu():
 	print('exit')
 func _input(event: InputEvent) -> void:
 	#handle inputs differently if hovering over the ace menu
-	if hovering_ace_menu:
-		return
 	if event.is_action_pressed('view'):
 		if $Control2.is_open:
 			$Control2.close()
 		elif $Control2.is_close:
 			$Control2.open()
 			pass
+		return
+	if hovering_ace_menu:
 		return
 	if not event.is_action('draw') and not event.is_action('pass'):
 		return

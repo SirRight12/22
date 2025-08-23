@@ -90,12 +90,26 @@ func ace_click(ace):
 		mouse_ui.ask_use()
 	pass
 func use_ace(ace):
+	ace.hide()
 	anchor_left = 1.0
 	anchor_right = 1.285
 	is_open = false
 	is_close = true
 	opening = false
 	closing = false
+	var packet = Packet.new()
+	packet.event = 'use-trump'
+	packet.message = ace.ace_name
+	for child in ace.get_children():
+		ace.remove_child(child)
+	var placeholder = Control.new()
+	placeholder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	placeholder.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ace.replace_by(placeholder)
+	Client.socket.send_text(packet.stringify())
+	$"..".hovering_ace_menu = false
+	Input.set_custom_mouse_cursor(load('res://Cursor.png'))
 func _on_color_rect_mouse_entered() -> void:
 	print('entered')
 	enter.emit()

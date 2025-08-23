@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://fv6ujv0vv3tl"]
+
+[ext_resource type="Script" uid="uid://bef5vpbiyuw40" path="res://InvisibleTextEffect.gd" id="1_0fbet"]
+[ext_resource type="Script" uid="uid://bn5dr6o2i2num" path="res://PlayerClock.gd" id="1_62e2m"]
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_62e2m"]
+script = ExtResource("1_0fbet")
+metadata/_custom_type_script = "uid://bef5vpbiyuw40"
+
+[node name="Control" type="Control"]
+clip_children = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 275.0
+offset_bottom = 45.0
+script = ExtResource("1_62e2m")
+
+[node name="Information" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_right = 2000.0
+offset_bottom = 450.0
+scale = Vector2(0.1, 0.1)
+theme_override_font_sizes/normal_font_size = 321
+bbcode_enabled = true
+text = "R1 | [color='red']±1[/color] | =7"
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="TimeText" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 200.0
+offset_right = 950.0
+offset_bottom = 450.0
+scale = Vector2(0.1, 0.1)
+theme_override_font_sizes/normal_font_size = 351
+bbcode_enabled = true
+text = "[invis]0:30[/invis]"
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+custom_effects = [SubResource("RichTextEffect_62e2m")]

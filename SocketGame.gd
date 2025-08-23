@@ -8,18 +8,33 @@ extends Node3D
 #1 = theirs
 #2 = nobody
 var turn = 2
+@onready var p1_clock_ui = $p1clock/UI/Control
+@onready var p2_clock_ui = $p2clock/UI/Control
+var turn_clock = Timer.new()
+var clock
 func _ready() -> void:
 	Client.poll_packets = true
 	Client.got_packet.connect(received_packet)
 	var packet = Packet.new()
 	packet.event = 'init-game'
 	Client.socket.send_text(packet.stringify())
+	add_child(turn_clock)
+	turn_clock.one_shot = true
 func received_packet(packet_string):
 	var packet:Packet = Packet.from_string(packet_string)
 	match (packet.event):
 		'init-cameras':
 			init_cameras(packet.message)
 			return
+		'update-clock':
+			var info:Dictionary = JSON.parse_string(packet.message)
+			turn_clock.wait_time = info.time
+			if not clock:
+				if int(info.playernum) == 1:
+					clock = p1_clock_ui
+				else:
+					clock = p2_clock_ui
+			clock.set_information(int(info.get('round',1)),int(info.get('ante',1)),int(info.get('hp',7)))
 		'disband':
 			Client.poll_packets = false
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -39,6 +54,11 @@ func received_packet(packet_string):
 			if not message:
 				return
 			trump_ui.aces.append(message)
+			trump_ui.got_aces(trump_ui.aces)
+		'update-client-trumps':
+			print('help!')
+			var message = JSON.parse_string(packet.message)
+			trump_ui.aces = message
 			trump_ui.got_aces(trump_ui.aces)
 		'p2-draw-trump':
 			var message = packet.message
@@ -71,7 +91,9 @@ func received_packet(packet_string):
 			var you = packet.message
 			if you:
 				turn = 0
+				turn_clock.start()
 			else:
+				turn_clock.stop()
 				turn = 1
 		'p2-turn':
 			card_manager.p1_light.hide()
@@ -79,11 +101,15 @@ func received_packet(packet_string):
 			var you = packet.message
 			if you:
 				turn = 0
+				turn_clock.start()
 			else:
+				turn_clock.stop()
 				turn = 1
 		'no-turn':
+			turn_clock.stop()
 			turn = 2
 		'winner':
+			turn_clock.stop()
 			turn = 3
 			winner_scene(packet.message)
 		'new-round':
@@ -198,3 +224,16 @@ func init_cameras(string_pdata:String):
 			return
 		2.0:
 			$Player2/Camera3D.make_current()
+func _process(delta: float) -> void:
+	if not turn_clock.is_stopped():
+		set_clock_time(floor(turn_clock.time_left))
+func set_clock_time(time:int):
+	var minutes = floor(time / 60)
+	var seconds = time - (minutes * 60)
+	var time_text = str(minutes) + ':' + format_seconds(seconds)
+	clock.set_time(time_text)
+func format_seconds(seconds) -> String:
+	if seconds < 10:
+		return '0' + str(seconds)
+	return str(seconds)
+	

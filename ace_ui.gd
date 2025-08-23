@@ -4,11 +4,13 @@ extends Control
 
 @onready var ace_menu = get_parent().get_parent()
 
+var ace_name:String = ''
 
 var hovering = false
-func set_ace_name(ace_name:String):
-	$Content/TextureRect.texture = dictionary[ace_name]
-	$Content/SubViewport.text = ace_name
+func set_ace_name(_name:String):
+	$Content/TextureRect.texture = dictionary[_name]
+	$Content/SubViewport.text = _name
+	ace_name = _name
 func _ready():
 	if not ace_menu.is_in_group('Ace Menu'):
 		push_error("Hey bozo, check the parent tree because this ace's parent's parent is not the ace menu")
@@ -24,6 +26,10 @@ func hovered():
 	ace_menu.ace_hovered(self)
 	
 func exited():
+	if self.is_queued_for_deletion():
+		return
+	if not $ColorRect:
+		return
 	var mat:ShaderMaterial = $ColorRect.material
 	mat.set_shader_parameter('enabled',false)
 	hovering = false
