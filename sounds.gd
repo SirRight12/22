@@ -36,7 +36,8 @@ func _process(delta: float) -> void:
 	if not bg_music.playing:
 		return
 	elapsed_time += delta
-	if floori(elapsed_time) % 5 == 0:
+	if floori(elapsed_time + 1) % 50 == 0:
+		print('water',floori(elapsed_time + 1) % 50)
 		elapsed_time = 0
 		water.pitch_scale = randf_range(.21,.25)
 		water.play()

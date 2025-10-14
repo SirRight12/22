@@ -20,9 +20,9 @@ layout_mode = 0
 offset_right = 2000.0
 offset_bottom = 450.0
 scale = Vector2(0.1, 0.1)
-theme_override_font_sizes/normal_font_size = 321
+theme_override_font_sizes/normal_font_size = 271
 bbcode_enabled = true
-text = "R1 | [color='red']±1[/color] | =7"
+text = "R3 | [color='red']±3[/color] | =10"
 scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1

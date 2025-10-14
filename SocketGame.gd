@@ -95,6 +95,12 @@ func received_packet(packet_string):
 			else:
 				turn_clock.stop()
 				turn = 1
+		'p1-remove-last':
+			card_manager.remove_last_p1()
+			return
+		'p2-remove-last':
+			card_manager.remove_last_p2()
+			return
 		'p2-turn':
 			card_manager.p1_light.hide()
 			card_manager.p2_light.show()
@@ -113,6 +119,7 @@ func received_packet(packet_string):
 			turn = 3
 			winner_scene(packet.message)
 		'new-round':
+			sounds.bg_music.play()
 			turn = 2
 			card_manager.p1_light.show()
 			card_manager.p2_light.hide()
@@ -152,6 +159,7 @@ func p1_lose():
 	$P1Light.hide()
 	$p1hand_value.hide()
 func winner_scene(message):
+	sounds.bg_music.playing = false
 	print(message)
 	$RevealCam.make_current()
 	$MoodLight.hide()

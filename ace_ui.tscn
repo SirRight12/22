@@ -1,11 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://dlx2hctj2jj8g"]
+[gd_scene load_steps=17 format=3 uid="uid://dlx2hctj2jj8g"]
 
 [ext_resource type="Script" uid="uid://cn5i67eq2mrdl" path="res://ace_ui.gd" id="1_iv4q6"]
 [ext_resource type="Texture2D" uid="uid://71b83yhq6vw5" path="res://Hush.png" id="3_kxgsc"]
 [ext_resource type="Texture2D" uid="uid://ch1e7jxyhq7ap" path="res://PerfectDraw.png" id="3_n6tei"]
 [ext_resource type="Texture2D" uid="uid://1gi0hh2rh7ay" path="res://Draw5.png" id="4_n0mis"]
+[ext_resource type="Texture2D" uid="uid://dsjwvdf1a607r" path="res://Draw6.png" id="5_4nwko"]
 [ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="5_kxgsc"]
 [ext_resource type="Shader" uid="uid://coqwca7uy5byv" path="res://border.gdshader" id="5_n0mis"]
+[ext_resource type="Texture2D" uid="uid://cp86spyl7o44a" path="res://Draw2.png" id="6_e04yw"]
+[ext_resource type="Texture2D" uid="uid://bd8ml6xf2f2rp" path="res://Draw3.png" id="7_qxjk8"]
+[ext_resource type="Texture2D" uid="uid://dx2jbffd6cvog" path="res://Draw7.png" id="8_vhi1u"]
+[ext_resource type="Texture2D" uid="uid://djvixh5u3vpfo" path="res://Draw4.png" id="9_ymtbq"]
+[ext_resource type="Texture2D" uid="uid://ckok8ivm16hoe" path="res://Exchange.png" id="10_uvjk7"]
+[ext_resource type="Texture2D" uid="uid://plno80rda4qa" path="res://Yoink.png" id="11_cs4gq"]
+[ext_resource type="Texture2D" uid="uid://f3p5t5mw7mbm" path="res://Refresh.png" id="12_qxjk8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n0mis"]
 resource_local_to_scene = true
@@ -29,9 +37,17 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_iv4q6")
 dictionary = Dictionary[String, Texture2D]({
+"Draw 2": ExtResource("6_e04yw"),
+"Draw 3": ExtResource("7_qxjk8"),
+"Draw 4": ExtResource("9_ymtbq"),
 "Draw 5": ExtResource("4_n0mis"),
+"Draw 6": ExtResource("5_4nwko"),
+"Draw 7": ExtResource("8_vhi1u"),
+"Exchange": ExtResource("10_uvjk7"),
 "Hush": ExtResource("3_kxgsc"),
-"Perfect Draw": ExtResource("3_n6tei")
+"Perfect Draw": ExtResource("3_n6tei"),
+"Refresh": ExtResource("12_qxjk8"),
+"Yoink!": ExtResource("11_cs4gq")
 })
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -63,7 +79,7 @@ anchor_bottom = 0.8
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("3_n6tei")
+texture = ExtResource("11_cs4gq")
 expand_mode = 1
 stretch_mode = 5
 
@@ -81,12 +97,12 @@ stretch_mode = 5
 
 [node name="SubViewport" type="SubViewport" parent="Content"]
 transparent_bg = true
-size = Vector2i(940, 205)
+size = Vector2i(445, 205)
 script = ExtResource("5_kxgsc")
-text = "Perfect Draw"
+text = "Yoink!"
 
 [node name="Label" type="Label" parent="Content/SubViewport"]
 offset_right = 40.0
 offset_bottom = 23.0
 theme_override_font_sizes/font_size = 150
-text = "Perfect Draw"
+text = "Yoink!"

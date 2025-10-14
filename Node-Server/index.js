@@ -240,6 +240,10 @@ function send_round_info(game) {
             ante: game.ante,
             hp: player.hp,
         }));
+        if (!socket) {
+            console.error('Socket disconnected for player', player.id);
+            return
+        }
         socket.send(packet.toString());
     });
 }
@@ -328,6 +332,7 @@ function start_round(game) {
                         //handle case where player has left before timer expires
                         if (!player) return
                         player.hand.push(new Card(99,false)) // Give the player a card that WILL make them bust
+                        give_up_turn(game,player)
                         console.log('timer over')
                         change_turn(game,player.playernum == 1 ? 2 : 1)
                     },game.roundTime * 1000)
@@ -335,6 +340,31 @@ function start_round(game) {
             },1000)
 
         },2000)
+    })
+}
+function give_up_turn(game,player) {
+    player.passed = true
+    const sendCard = new Card(99,false)
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        const packet = new Packet(`p${player.playernum}-draw`,JSON.stringify({
+            'card': JSON.stringify(sendCard),
+            'yours': p.playernum == player.playernum,
+            'trump': false, //ignore the voicelines on the client and plays a trump sfx
+        }))
+        if (!socket) {
+            console.error('Socket not found for player', player.id);
+            return;
+        }
+        socket.send(packet.toString())
+        const valObj = {
+            'value': get_value(player.hand, p.playernum, player.playernum),
+            'target': game.target,
+            'hcount': get_hidden_count(player.hand),
+            'yours': p.playernum == player.playernum,
+        }
+        const packetVal = new Packet(`p${player.playernum}-val`, JSON.stringify(valObj))
+        socket.send(packetVal.toString())
     })
 }
 async function change_turn(game,playernum) {
@@ -609,21 +639,41 @@ function player_pass_turn(socket) {
                     })
                     break;
             }
-            setTimeout(() => {
-                game.players.forEach(player => {
-                    const socket = players[player.id]
-                    let p = new Packet('new-round',player.playernum)
-                    if (!socket) {
-                        return
-                    }
-                    socket.send(p.toString())
-                    game.deck = generate_deck()
-                    player.hand = []
-                    player['passed'] = false      
-                })
-                start_round(game)
-                game.turn = 1
-            },8000)
+            if (result == 1 && p2.hp - game.ante <= 0) {
+                setTimeout(() => {
+                    game.players.forEach(player => {
+                        //kicks you out of the game lol
+                        const socket = players[player.id]
+                        socket.terminate()
+                    })
+                },8000)
+            } else if (result == 2 && p1.hp - game.ante <= 0) {
+                setTimeout(() => {
+                    game.players.forEach(player => {
+                        //kicks you out of the game lol
+                        const socket = players[player.id]
+                        socket.terminate()
+                    })
+                },8000)
+            } else {
+                setTimeout(() => {
+                    game.players.forEach(player => {
+                        const socket = players[player.id]
+                        let p = new Packet('new-round',player.playernum)
+                        if (!socket) {
+                            return
+                        }
+                        socket.send(p.toString())
+                        game.deck = generate_deck()
+                        player.hand = []
+                        player['passed'] = false      
+                    })
+                    //increment round
+                    game.round += 1
+                    start_round(game)
+                    game.turn = 1
+                },8000)
+            }
         },2000)
         return
     }
@@ -640,6 +690,7 @@ function use_trump(socket,packet) {
         console.error('Player not found in game')
         return
     }
+    if (player.playernum != game.turn) return
     const trumpName = packet.message
     let trump = null
     let playerHas = false
@@ -647,8 +698,10 @@ function use_trump(socket,packet) {
         const t = trumps[x]
         if (t.name == trumpName) {
             trump = t
+            console.log(player.trumps)
             // Remove the trump from the player's hand
-            const removed = player.trumps.splice(x,1)
+            const removed = player.trumps.splice(player.trumps.findIndex(t => t.name === trumpName),1)
+            console.log('removed',removed)
             if (removed.length > 0) {
                 playerHas = true
             }
@@ -667,12 +720,22 @@ function use_trump(socket,packet) {
         console.error('Trump does not exist')
         return
     }
+    console.log(player.trumps)
     switch (trump.name) {
+        case 'Draw 2':
+        case 'Draw 3':
+        case 'Draw 4':
+        case 'Draw 5':
+        case 'Draw 6':
+        case 'Draw 7':
         case 'Perfect Draw':
-            usePerfectDraw(trump,player,game)
+            useDrawSpecificCard(trump,player,game)
             break;
         case 'Hush':
             useHush(trump,player,game)
+            break;
+        case 'Yoink!':
+            useYoink(trump,player, game.players.find(p => p.playernum != player.playernum), game)
             break;
         default:
             console.error('Oops, forgot to implement that one clown',trump.name)
@@ -687,7 +750,8 @@ function use_trump(socket,packet) {
     const trumpPacket = new Packet('update-client-trumps',JSON.stringify(player.trumps))
     socket.send(trumpPacket.toString())
 }
-function usePerfectDraw(trump,player,game) {
+//general function when using a trump that draws a specific card from the deck
+function useDrawSpecificCard(trump,player,game) {
     const card = trump.onUse(player, null, game)
     if (!card) {
         console.error('Perfect Draw failed, no card to draw')
@@ -716,6 +780,42 @@ function usePerfectDraw(trump,player,game) {
         socket.send(packetVal.toString())
     })
 }
+function useYoink(trump,player,other,game) {
+    const otherCard = trump.onUse(player, other, game)
+    if (!otherCard) {
+        console.error('Yoink! failed, no card to draw')
+        return
+    }
+    //Remove card from other player's hand
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        socket.send(new Packet(`p${other.playernum}-remove-last`,'').toString())
+    })
+    //Add to your own hand
+    setTimeout(() => {
+        player.hand.push(otherCard)
+        game.players.forEach(p => {
+            const socket = players[p.id]
+            send_card(p,otherCard,player.playernum,false,true)
+            const valObj = {
+                'value': get_value(player.hand, p.playernum, player.playernum),
+                'target': game.target,
+                'hcount': get_hidden_count(player.hand),
+                'yours': p.playernum == player.playernum,
+            }
+            const packetVal = new Packet(`p${player.playernum}-val`, JSON.stringify(valObj))
+            const valObjOther = {
+                'value': get_value(other.hand, p.playernum, other.playernum),
+                'target': game.target,
+                'hcount': get_hidden_count(other.hand),
+                'yours': p.playernum == other.playernum,
+            }
+            const packetValOther = new Packet(`p${other.playernum}-val`, JSON.stringify(valObjOther))
+            socket.send(packetValOther.toString())
+            socket.send(packetVal.toString())
+        })
+    }, 500)
+}
 function useHush(trump,player,game) {
     const card = trump.onUse(player, null, game)
     if (!card) {
@@ -743,6 +843,7 @@ function useHush(trump,player,game) {
     }))
     playerSocket.send(valuePacket.toString())
 }
+
 function evaluate_game(game) {
     let p1,p2
     game.players.forEach(player => {

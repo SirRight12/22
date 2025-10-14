@@ -1,0 +1,113 @@
+[gd_scene load_steps=13 format=3 uid="uid://ev4ushbvmwdf"]
+
+[ext_resource type="Texture2D" uid="uid://dsmui6q775q7r" path="res://static1-sheet.png" id="1_li0vx"]
+[ext_resource type="Script" uid="uid://dl78gbf4xjx6p" path="res://Resize.gd" id="2_pba2v"]
+[ext_resource type="Script" uid="uid://cigr55w76xxua" path="res://autoplay.gd" id="2_vbfrp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vbfrp"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(0, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1uhrx"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(960, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t12yp"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(1920, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mtjlb"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(2880, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ukaor"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(3840, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p3e65"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(4800, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m7wsj"]
+atlas = ExtResource("1_li0vx")
+region = Rect2(5760, 0, 960, 540)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_13ids"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vbfrp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1uhrx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t12yp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mtjlb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ukaor")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p3e65")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m7wsj")
+}],
+"loop": true,
+"name": &"default",
+"speed": 24.0
+}]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jbc88"]
+viewport_path = NodePath("SubViewport")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+self_modulate = Color(1, 1, 1, 0.0823529)
+top_level = true
+scale = Vector2(1.19583, 1.19259)
+sprite_frames = SubResource("SpriteFrames_13ids")
+frame_progress = 0.319945
+script = ExtResource("2_vbfrp")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -480.0
+offset_top = -270.0
+offset_right = -480.0
+offset_bottom = -270.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.206302, 0.228708, 0.346835, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -83.8511)
+rotation = -0.0383972
+scale = Vector2(0.06, 0.06)
+skew = -0.0418879
+texture = SubResource("ViewportTexture_jbc88")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(7902, 2368)
+script = ExtResource("2_pba2v")
+text = "You [color='green']Won[/color]!"
+
+[node name="Label" type="RichTextLabel" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.000488281
+offset_bottom = 0.00805664
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 1691
+bbcode_enabled = true
+text = "You [color='green']Won[/color]!"
+
+[node name="Camera2D" type="Camera2D" parent="."]

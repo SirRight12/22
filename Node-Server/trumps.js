@@ -48,8 +48,86 @@ function Hush(player,other,game) {
     }
     return card;
 }
-
+function Yoink(player,other,game) {
+    if (other.hand.length <= 1) {
+        console.log('Yoink error: other player does not have enough cards to steal');
+        return null; // If the other player has no cards, return null
+    }
+    const stolenCard = other.hand.pop(); // Steal the top card from the other player's hand
+    return stolenCard;
+}
+function Exchange(player,other,game) {
+    if (other.hand.length === 0) {
+        console.log('Exchange error: other player has no cards to exchange');
+        return null; // If the other player has no cards, return null
+    }
+    if (player.hand.length === 0) {
+        console.log('Exchange error: player has no cards to exchange');
+        return null; // If the player has no cards, return null
+    }
+    const playerCard = player.hand.pop(); // Remove the top card from the player's hand
+    const otherCard = other.hand.pop(); // Remove the top card from the other player's hand
+    other.hand.push(playerCard); // Give the other player's card to the player
+    player.hand.push(otherCard); // Give the other's card to the  player
+    return [playerCard, otherCard]; // Return the exchanged cards for animation purposes
+}
+function Refresh(player,other,game) {
+    // Shuffle the player's hand back into the deck
+    game.deck.push(...player.hand);
+    player.hand = [];
+    // Shuffle the deck
+    for (let i = game.deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [game.deck[i], game.deck[j]] = [game.deck[j], game.deck[i]];
+    }
+    // Draw a new hand of 2 cards
+    for (let i = 0; i < 2; i++) {
+        if (game.deck.length === 0) {
+            console.log('Refresh error: no cards left in deck to draw');
+            break; // If no cards are left in the deck, stop drawing
+        }
+        const card = game.deck.pop();
+        player.hand.push(card);
+    }
+    return player.hand; // Return the new hand, so animations can be played
+}
+function DrawTwo(player,other,game) {
+    return DrawSpecificNum(1,player,game);
+}
+function DrawThree(player,other,game) {
+    return DrawSpecificNum(3,player,game);
+}
+function DrawFour(player,other,game) {
+    return DrawSpecificNum(4,player,game);
+}
+function DrawFive(player,other,game) {
+    return DrawSpecificNum(5,player,game);
+}
+function DrawSix(player,other,game) {
+    return DrawSpecificNum(6,player,game);
+}
+function DrawSeven(player,other,game) {
+    return DrawSpecificNum(7,player,game);
+}
+function DrawSpecificNum(num=1,player,game) {
+    for (let i = 0; i < game.deck.length; i++) {
+        if (game.deck[i].getValue() === num) {
+            return game.deck.splice(i, 1)[0]; // Remove and return the specific card from the deck
+        }
+    }
+    console.log(`DrawSpecificNum error: no card with value ${num} found`);
+    return null; // If no such card is found, return null
+}
 export const trumps = [
-  new Trump('Perfect Draw', 'Draw the perfect card from the deck', 1, perfectDraw),
-  new Trump('Hush', 'Draw a card and hide it from the other player', 1, Hush),
+  new Trump('Perfect Draw', 'Draw the perfect card from the deck', .6, perfectDraw),
+  new Trump('Hush', 'Draw a card and hide it from the other player', .6, Hush),
+  new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', 1, DrawTwo),
+  new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', 1, DrawThree),
+  new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', 1, DrawFour),
+  new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', 1, DrawFive),
+  new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', 1, DrawSix),
+  new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', 1, DrawSeven),
+  new Trump('Yoink!', "Steal top card from other player's hand", .8, Yoink),
+//   new Trump('Exchange', "Exchange top card with other player's top card", .5, Exchange),
+//   new Trump('Refresh','Shuffle hand back into deck and draw new hand',.2,Refresh),
 ]

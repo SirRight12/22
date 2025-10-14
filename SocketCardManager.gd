@@ -44,6 +44,28 @@ func draw_p2(server_message):
 	var tween = create_tween()
 	tween.tween_property(node,'position',final,.3)
 	node.slide()
+	
+##Remove the last card on the first player's hand
+func remove_last_p1():
+	var cards = p1.get_children()
+	var card:Node3D = cards.pop_back()
+	var sprite:Sprite3D = card.sprite
+	card.reparent($"..")
+	var tween = create_tween().tween_property(card,'position',card.position + Vector3(0,10,0),.3)
+	var tween2 = create_tween().tween_property(sprite,'modulate',Color(Color.WHITE,0.0),.3)
+	await tween.finished
+	$"..".remove_child(card)
+##Remove the last card on the second player's hand
+func remove_last_p2():
+	var cards = p2node.get_children()
+	var card:Node3D = cards.pop_back()
+	var sprite:Sprite3D = card.sprite
+	card.reparent($"..")
+	var tween = create_tween().tween_property(card,'position',card.position + Vector3(0,10,0),.3)
+	var tween2 = create_tween().tween_property(sprite,'modulate',Color(Color.WHITE,0.0),.3)
+	await tween.finished
+	$"..".remove_child(card)
+	pass
 #override the parent ready function
 func _ready():
 	pass
