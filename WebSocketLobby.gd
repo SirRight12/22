@@ -28,9 +28,9 @@ var prev_state = WebSocketPeer.STATE_CLOSED
 func init_client():
 	socket = WebSocketPeer.new()
 	#official build
-	socket.connect_to_url('wss://two2-mi7l.onrender.com')
+	#socket.connect_to_url('wss://two2-mi7l.onrender.com')
 	#debug testing
-	#socket.connect_to_url('ws://localhost:4000')
+	socket.connect_to_url('ws://localhost:4000')
 	Client.socket = socket
 	got_packet.connect(_on_data)
 	#socket = WebSocketMultiplayerPeer.new()

@@ -172,7 +172,7 @@ function start_lobby(socket,packet) {
         'deck': generate_deck(), // The game deck
         'target': 21, // The target score for player hands (can be modified by trumps)
         'round': 1, // The current round
-        'roundTime': 30, // The max time each player has to think
+        'roundTime': 60, // The max time each player has to think
         'ante': 1, // The ante is the amount of hp players will gain and lose each round
         'ante-up': 1, // The ante will increase by this amount each round (can be modified by trumps)
     }
