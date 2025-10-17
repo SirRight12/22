@@ -717,7 +717,8 @@ function use_trump(socket,packet) {
             trump = t
             console.log(player.trumps)
             // Remove the trump from the player's hand
-            const removed = player.trumps.splice(player.trumps.findIndex(t => t.name === trumpName),1)
+            let idx = player.trumps.findIndex(tn => tn === trumpName)
+            const removed = player.trumps.splice(idx,1)
             console.log('removed',removed)
             if (removed.length > 0) {
                 playerHas = true
