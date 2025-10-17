@@ -1,0 +1,164 @@
+[gd_scene load_steps=16 format=3 uid="uid://q480so7ta1j0"]
+
+[ext_resource type="Script" uid="uid://dl5pxq23k2vdu" path="res://end_screen_controller.gd" id="1_dxpms"]
+[ext_resource type="Texture2D" uid="uid://dsmui6q775q7r" path="res://static1-sheet.png" id="3_uhpfj"]
+[ext_resource type="Script" uid="uid://cigr55w76xxua" path="res://autoplay.gd" id="4_618kh"]
+[ext_resource type="Script" uid="uid://cdrats6ajfy74" path="res://WaveTextEffect.gd" id="4_dxpms"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jbc88"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vbfrp"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(0, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1uhrx"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(960, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t12yp"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(1920, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mtjlb"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(2880, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ukaor"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(3840, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p3e65"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(4800, 0, 960, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m7wsj"]
+atlas = ExtResource("3_uhpfj")
+region = Rect2(5760, 0, 960, 540)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_13ids"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vbfrp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1uhrx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t12yp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mtjlb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ukaor")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p3e65")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m7wsj")
+}],
+"loop": true,
+"name": &"default",
+"speed": 24.0
+}]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_pba2v"]
+viewport_path = NodePath("Static")
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_hqjto"]
+script = ExtResource("4_dxpms")
+metadata/_custom_type_script = "uid://cdrats6ajfy74"
+
+[node name="Control" type="Control"]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dxpms")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.206302, 0.228708, 0.346835, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -100)
+rotation = -0.0382933
+scale = Vector2(0.0717495, 0.0715567)
+skew = -0.042209
+texture = SubResource("ViewportTexture_jbc88")
+
+[node name="Static" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(562, 319)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Static"]
+top_level = true
+scale = Vector2(1.19583, 1.19259)
+sprite_frames = SubResource("SpriteFrames_13ids")
+frame_progress = 0.451707
+script = ExtResource("4_618kh")
+
+[node name="Camera2D" type="Camera2D" parent="Static"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.298039)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_pba2v")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Label" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.108025
+anchor_right = 1.0
+anchor_bottom = 0.999988
+offset_right = 0.000488281
+offset_bottom = 0.00805664
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(576, 289)
+theme_override_font_sizes/italics_font_size = 126
+theme_override_font_sizes/normal_font_size = 191
+bbcode_enabled = true
+text = "You [i][color='darkred']lost...[/color][/i]"
+horizontal_alignment = 1
+visible_characters = 11
+visible_characters_behavior = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Leave" type="RichTextLabel" parent="."]
+self_modulate = Color(0.647059, 0.647059, 0.647059, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.748457
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/bold_italics_font_size = 161
+theme_override_font_sizes/italics_font_size = 31
+bbcode_enabled = true
+text = "[wave_effect speed=3 amp=2][i]You can refresh now...[/i][/wave_effect]"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 2
+custom_effects = [SubResource("RichTextEffect_hqjto")]
+metadata/_edit_use_anchors_ = true

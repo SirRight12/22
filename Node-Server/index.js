@@ -23,7 +23,7 @@ function generateUID() {
     let string = ''
     let x = 0
 
-    while (x < randRange(5,10)) {
+    while (x < randRange(4,10)) {
         string += randRange(0,9).toString()
         x ++
     }
@@ -157,7 +157,7 @@ function start_lobby(socket,packet) {
         pInfo['id'] = player.id
         pInfo['loaded'] = false
         pInfo['hand'] = []
-        pInfo['hp'] = 7
+        pInfo['hp'] = 1
         pInfo['trumps'] = []
         pInfo['playernum'] = player_num
         pInfo['timer'] = null
@@ -172,7 +172,7 @@ function start_lobby(socket,packet) {
         'deck': generate_deck(), // The game deck
         'target': 21, // The target score for player hands (can be modified by trumps)
         'round': 1, // The current round
-        'roundTime': 60, // The max time each player has to think
+        'roundTime': 60, // The max time each player has to think (in seconds)
         'ante': 1, // The ante is the amount of hp players will gain and lose each round
         'ante-up': 1, // The ante will increase by this amount each round (can be modified by trumps)
     }
@@ -229,6 +229,16 @@ function send_card(player, card, expected, init = false, trump = false) {
     const packet = new Packet(`p${expected}-draw`, JSON.stringify(obj));
     
     socket.send(packet.toString());
+}
+function value_packet(given_player_num,expected_player_num, game) {
+    const valObj = {
+        'value': get_value(game.players[expected_player_num - 1].hand, expected_player_num, given_player_num),
+        'target': game.target,
+        'hcount': get_hidden_count(game.players[expected_player_num - 1].hand),
+        'yours': expected_player_num == given_player_num,
+    }
+    const packet = new Packet(`p${expected_player_num}-val`, JSON.stringify(valObj));
+    return packet;
 }
 function send_round_info(game) {
     game.players.forEach(player => {
@@ -639,20 +649,27 @@ function player_pass_turn(socket) {
                     })
                     break;
             }
-            if (result == 1 && p2.hp - game.ante <= 0) {
+            console.log(result,p1.hp,p2.hp,game.ante)
+            if (result == 1 && p2.hp <= 0) {
                 setTimeout(() => {
                     game.players.forEach(player => {
-                        //kicks you out of the game lol
                         const socket = players[player.id]
-                        socket.terminate()
+                        if (player.playernum == 1) {
+                            socket.send(new Packet('game-win','').toString())
+                        } else {
+                            socket.send(new Packet('game-lose','').toString())
+                        }
                     })
                 },8000)
-            } else if (result == 2 && p1.hp - game.ante <= 0) {
+            } else if (result == 2 && p1.hp <= 0) {
                 setTimeout(() => {
                     game.players.forEach(player => {
-                        //kicks you out of the game lol
                         const socket = players[player.id]
-                        socket.terminate()
+                        if (player.playernum == 2) {
+                            socket.send(new Packet('game-win','').toString())
+                        } else {
+                            socket.send(new Packet('game-lose','').toString())
+                        }
                     })
                 },8000)
             } else {
@@ -737,6 +754,9 @@ function use_trump(socket,packet) {
         case 'Yoink!':
             useYoink(trump,player, game.players.find(p => p.playernum != player.playernum), game)
             break;
+        case 'Refresh':
+            useRefresh(trump,player,game)
+            break;
         default:
             console.error('Oops, forgot to implement that one clown',trump.name)
             break;
@@ -778,6 +798,31 @@ function useDrawSpecificCard(trump,player,game) {
         // send the card to the client
         socket.send(packetDraw.toString())
         socket.send(packetVal.toString())
+    })
+}
+function useRefresh(trump,player,game) {
+    const cards = trump.onUse(player, null, game)
+    if (!cards || cards.length != 2) {
+        //Theoretically impossible because you put your original two cards back in but hey, safety first
+        console.error('Refresh failed, no cards to draw')
+        return
+    }
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        // Send both cards
+        setTimeout(() => {
+            //Remove all old cards
+            socket.send(new Packet(`p${player.playernum}-remove-all`,'').toString())
+            socket.send(value_packet(p.playernum,player.playernum,game).toString())
+        },100)
+        setTimeout(() => {
+            send_card(p,cards[0],player.playernum,false,true)
+            socket.send(value_packet(player.playernum,player.playernum,game).toString())
+        },500)
+        setTimeout(() => {
+            send_card(p,cards[1],player.playernum,false,true)
+            socket.send(value_packet(p.playernum,player.playernum,game).toString())
+        },900)
     })
 }
 function useYoink(trump,player,other,game) {

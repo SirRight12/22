@@ -141,6 +141,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 0
 allow_search = false
 metadata/_edit_use_anchors_ = true
 
@@ -254,3 +255,5 @@ stretch_mode = 5
 libraries = {
 &"": SubResource("AnimationLibrary_tcmrn")
 }
+
+[connection signal="gui_input" from="Joining/LineEdit" to="." method="_on_line_edit_gui_input"]

@@ -101,6 +101,12 @@ func received_packet(packet_string):
 		'p2-remove-last':
 			card_manager.remove_last_p2()
 			return
+		'p1-remove-all':
+			card_manager.remove_all_p1()
+			return
+		'p2-remove-all':
+			card_manager.remove_all_p2()
+			return
 		'p2-turn':
 			card_manager.p1_light.hide()
 			card_manager.p2_light.show()
@@ -136,6 +142,16 @@ func received_packet(packet_string):
 			card_manager.p2_hand_val.show()
 			card_manager.p2_hand_val.text = '0/21'
 			card_manager.p1_hand_val.text = '0/21'
+		'game-win':
+			$Canvas/Win.show()
+			$Canvas/Win.display_text()
+			game_over()
+		'game-lose':
+			$Canvas/Lose.show()
+			$Canvas/Lose.display_text()
+			game_over()
+func game_over():
+	get_tree().paused = true
 func zoom_camera():
 	var tween = create_tween().tween_property($RevealCam,'fov',20,1.5)
 	await tween.finished
@@ -199,7 +215,7 @@ func winner_scene(message):
 			if winner == pNum:
 				p2_lose()
 				sounds.win()
-			else:
+			elif winner != 3:
 				sounds.lose()
 				p1_lose()
 		2:
@@ -219,7 +235,7 @@ func winner_scene(message):
 			if winner != pNum:
 				p2_lose()
 				sounds.lose()
-			else:
+			elif winner != 3:
 				p1_lose()
 				sounds.win()
 func init_cameras(string_pdata:String):

@@ -150,7 +150,7 @@ func update_player_list(player_list):
 			prefix = '(Host) Player '
 		if Client.id == player.id:
 			prefix = '(You) Player '
-		players.add_item(prefix + player.id,load("res://icon.svg"))
+		players.add_item(prefix + player.id,load("res://icon.svg"),false)
 	
 func host_clicked():
 	var packet = Packet.new()
@@ -175,3 +175,9 @@ func _ready():
 	init_client()
 	host.pressed.connect(host_clicked)
 	join.pressed.connect(join_clicked)
+
+
+
+func _on_line_edit_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed('ui_accept'):
+		join_clicked()

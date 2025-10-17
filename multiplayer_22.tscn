@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=4 uid="uid://bfc5d01gu77ey"]
+[gd_scene load_steps=49 format=4 uid="uid://bfc5d01gu77ey"]
 
 [ext_resource type="Script" uid="uid://b6gy2tjpbxk8m" path="res://p1_turn.gd" id="1_2svmt"]
 [ext_resource type="Script" uid="uid://c7wawpuljridq" path="res://SocketGame.gd" id="1_jfl5n"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://c4fksd52317ng" path="res://slightly_move_cam.gd" id="6_vx2qo"]
 [ext_resource type="Environment" uid="uid://d27wrwsv7wsus" path="res://low_graphics.tres" id="7_hj3kp"]
 [ext_resource type="PackedScene" uid="uid://cyugpqt4rxrpw" path="res://ui.tscn" id="9_a51sq"]
+[ext_resource type="PackedScene" uid="uid://q480so7ta1j0" path="res://YOU lost.tscn" id="10_cp56q"]
 [ext_resource type="Script" uid="uid://oo4jn1kbf3ip" path="res://MultiplayerDrawControl.gd" id="10_f6tbo"]
 [ext_resource type="PackedScene" uid="uid://buu12v1gfaefj" path="res://evgenii-old_ussr_lamp.glb" id="11_qndba"]
 [ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="12_8ow6m"]
@@ -16,6 +17,7 @@
 [ext_resource type="Script" uid="uid://bohky06154ftw" path="res://AcesMenu.gd" id="13_8ow6m"]
 [ext_resource type="Script" uid="uid://rcdr6v2qucc2" path="res://organize_children.gd" id="14_4b43k"]
 [ext_resource type="Script" uid="uid://4fpadhwi0qfj" path="res://SocketCardManager.gd" id="14_f6tbo"]
+[ext_resource type="PackedScene" uid="uid://ev4ushbvmwdf" path="res://YOU WON.tscn" id="15_shsm3"]
 [ext_resource type="AudioStream" uid="uid://djdqrps8n0h0t" path="res://hit.mp3" id="16_a51sq"]
 [ext_resource type="Script" uid="uid://dtkoidtfpo13p" path="res://sounds.gd" id="16_p0q11"]
 [ext_resource type="AudioStream" uid="uid://6a4w0wo6ecbd" path="res://ill stay.mp3" id="17_p0q11"]
@@ -86,7 +88,7 @@ flip_faces = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
 emission_enabled = true
 emission = Color(0.547002, 0.536003, 0.271457, 1)
-emission_energy_multiplier = 2.95404
+emission_energy_multiplier = 2.12821
 emission_on_uv2 = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
@@ -165,7 +167,7 @@ skeleton = NodePath("")
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(0.0929806, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995666, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 2.92971
+light_energy = 2.62302
 spot_range = 2.092
 spot_angle = 22.71
 spot_angle_attenuation = 2.0
@@ -178,7 +180,7 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
-light_energy = 1.8136
+light_energy = 2.77321
 light_size = 0.1
 distance_fade_enabled = true
 distance_fade_begin = 0.9
@@ -219,6 +221,14 @@ environment = ExtResource("7_hj3kp")
 
 [node name="Canvas" type="CanvasLayer" parent="."]
 script = ExtResource("10_f6tbo")
+
+[node name="Lose" parent="Canvas" instance=ExtResource("10_cp56q")]
+visible = false
+z_index = 4
+
+[node name="Win" parent="Canvas" instance=ExtResource("15_shsm3")]
+visible = false
+z_index = 4
 
 [node name="Node" parent="Canvas" instance=ExtResource("9_a51sq")]
 

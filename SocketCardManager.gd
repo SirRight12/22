@@ -47,7 +47,7 @@ func draw_p2(server_message):
 	
 ##Remove the last card on the first player's hand
 func remove_last_p1():
-	var cards = p1.get_children()
+	var cards = p1node.get_children()
 	var card:Node3D = cards.pop_back()
 	var sprite:Sprite3D = card.sprite
 	card.reparent($"..")
@@ -66,6 +66,12 @@ func remove_last_p2():
 	await tween.finished
 	$"..".remove_child(card)
 	pass
+func remove_all_p1():
+	for card in p1node.get_children():
+		remove_last_p1()
+func remove_all_p2():
+	for card in p2node.get_children():
+		remove_last_p2()
 #override the parent ready function
 func _ready():
 	pass

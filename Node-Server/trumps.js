@@ -87,6 +87,7 @@ function Refresh(player,other,game) {
             break; // If no cards are left in the deck, stop drawing
         }
         const card = game.deck.pop();
+        card.hidden = i == 0;
         player.hand.push(card);
     }
     return player.hand; // Return the new hand, so animations can be played
@@ -121,13 +122,13 @@ function DrawSpecificNum(num=1,player,game) {
 export const trumps = [
   new Trump('Perfect Draw', 'Draw the perfect card from the deck', .6, perfectDraw),
   new Trump('Hush', 'Draw a card and hide it from the other player', .6, Hush),
-  new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', 1, DrawTwo),
-  new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', 1, DrawThree),
-  new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', 1, DrawFour),
-  new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', 1, DrawFive),
-  new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', 1, DrawSix),
-  new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', 1, DrawSeven),
-  new Trump('Yoink!', "Steal top card from other player's hand", .8, Yoink),
+  new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', .8, DrawTwo),
+  new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', .8, DrawThree),
+  new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', .8, DrawFour),
+  new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', .8, DrawFive),
+  new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', .8, DrawSix),
+  new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', .8, DrawSeven),
+  new Trump('Yoink!', "Steal top card from other player's hand", .6, Yoink),
 //   new Trump('Exchange', "Exchange top card with other player's top card", .5, Exchange),
-//   new Trump('Refresh','Shuffle hand back into deck and draw new hand',.2,Refresh),
+  new Trump('Refresh','Shuffle hand back into deck and draw new hand',.6,Refresh),
 ]
