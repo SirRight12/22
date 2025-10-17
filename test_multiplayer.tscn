@@ -1,14 +1,26 @@
-[gd_scene load_steps=12 format=3 uid="uid://wjwrypmcquom"]
+[gd_scene load_steps=14 format=3 uid="uid://wjwrypmcquom"]
 
 [ext_resource type="Script" uid="uid://b7l4678vyblmi" path="res://WebSocketLobby.gd" id="1_nrb8h"]
 [ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="2_7jfie"]
 [ext_resource type="Texture2D" uid="uid://b2ffw4wtqxlxv" path="res://Host.tres" id="2_k8sjm"]
 [ext_resource type="Script" uid="uid://bvcwu3eiqnoja" path="res://Reconnect.gd" id="4_60jql"]
 [ext_resource type="PackedScene" uid="uid://dfes0xtl1brn7" path="res://text_viewport.tscn" id="4_rjagb"]
+[ext_resource type="Texture2D" uid="uid://d4arp72gu0kxq" path="res://papa_sigma.jpg" id="5_tcmrn"]
 [ext_resource type="Texture2D" uid="uid://o24uyowiij7r" path="res://Reconnect.tres" id="7_tcmrn"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k8sjm"]
+bg_color = Color(0.136826, 0.136826, 0.136826, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_k8sjm"]
-viewport_path = NodePath(".")
+viewport_path = NodePath("Joining/TextViewport")
 
 [sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
 font = ExtResource("2_7jfie")
@@ -80,6 +92,43 @@ metadata/_edit_use_anchors_ = true
 [node name="HostViewport" parent="Host" instance=ExtResource("4_rjagb")]
 size = Vector2i(4021, 2533)
 text = "Host"
+
+[node name="Title" type="RichTextLabel" parent="Host"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.847828
+anchor_top = -2.25
+anchor_right = 1.83152
+anchor_bottom = -0.44792
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.779291, 0.779291, 0.779291, 1)
+theme_override_fonts/normal_font = ExtResource("2_7jfie")
+theme_override_font_sizes/normal_font_size = 30
+theme_override_font_sizes/bold_font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxFlat_k8sjm")
+bbcode_enabled = true
+text = "[b]Loaded Deck[/b]
+ A Game of skill and chance
+By: Sigma Inc."
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="Host"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.01087
+anchor_top = -1.07292
+anchor_right = 1.44522
+anchor_bottom = -0.468333
+offset_right = 0.080101
+offset_bottom = -0.0400429
+texture = ExtResource("5_tcmrn")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
 
 [node name="Start" type="Button" parent="."]
 visible = false

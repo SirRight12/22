@@ -88,7 +88,7 @@ flip_faces = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
 emission_enabled = true
 emission = Color(0.547002, 0.536003, 0.271457, 1)
-emission_energy_multiplier = 2.12821
+emission_energy_multiplier = 2.30186
 emission_on_uv2 = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
@@ -167,7 +167,7 @@ skeleton = NodePath("")
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(0.0929806, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995666, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 2.62302
+light_energy = 1.80089
 spot_range = 2.092
 spot_angle = 22.71
 spot_angle_attenuation = 2.0
@@ -180,7 +180,7 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
-light_energy = 2.77321
+light_energy = 2.71488
 light_size = 0.1
 distance_fade_enabled = true
 distance_fade_begin = 0.9
