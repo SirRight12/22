@@ -28,9 +28,9 @@ var prev_state = WebSocketPeer.STATE_CLOSED
 func init_client():
 	socket = WebSocketPeer.new()
 	#official build
-	socket.connect_to_url('wss://two2-mi7l.onrender.com')
+	#socket.connect_to_url('wss://two2-mi7l.onrender.com')
 	#debug testing
-	#socket.connect_to_url('ws://localhost:4000')
+	socket.connect_to_url('ws://localhost:4000')
 	Client.socket = socket
 	got_packet.connect(_on_data)
 	#socket = WebSocketMultiplayerPeer.new()
@@ -145,24 +145,30 @@ func update_player_list(player_list):
 	for idx:String in player_list:
 		var player = JSON.parse_string(player_list[idx])
 		var isHost = player.isHost
-		var prefix = 'Player '
+		var prefix = ''
 		if isHost:
-			prefix = '(Host) Player '
+			prefix = '(Host) '
 		if Client.id == player.id:
-			prefix = '(You) Player '
-		players.add_item(prefix + player.id,load("res://icon.svg"),false)
+			prefix = '(You) '
+		var player_name:String = player.display_name
+		print('length, lol',player_name.length())
+		if player_name.length() < 1:
+			player_name = 'Player ' + str(player.id)
+		players.add_item(prefix + player_name,load("res://icon.svg"),false)
 	
 func host_clicked():
 	var packet = Packet.new()
 	
 	packet.event = 'host'
-	packet.message = ''
+	packet.message = $Joining/DisplayName.text
 	socket.send_text(packet.stringify())
 	
 func join_clicked():
 	var packet = Packet.new()
 	packet.event = 'join'
-	packet.message = join_code.text if not join_code.text.is_empty() else  DisplayServer.clipboard_get()
+	var lobby_id = join_code.text if not join_code.text.is_empty() else  DisplayServer.clipboard_get()
+	var dname = $Joining/DisplayName.text
+	packet.message = JSON.stringify({'id': lobby_id, 'display_name': dname,})
 	socket.send_text(packet.stringify())
 func on_init(packet:Packet):
 	Client.id = packet.message

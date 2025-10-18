@@ -28,7 +28,8 @@ func received_packet(packet_string):
 			return
 		'update-clock':
 			var info:Dictionary = JSON.parse_string(packet.message)
-			turn_clock.wait_time = info.time
+			if info.has('time'):
+				turn_clock.wait_time = info.time
 			if not clock:
 				if int(info.playernum) == 1:
 					clock = p1_clock_ui
@@ -81,6 +82,11 @@ func received_packet(packet_string):
 		'p2-pass':
 			var message:Dictionary = JSON.parse_string(packet.message)
 			sounds.pass_turn(message.yours)
+		'p1-table-trump':
+			$p1aces.add_ace(packet.message)
+			return
+		'p2-table-trump':
+			$p2aces.add_ace(packet.message)
 		'p1-val':
 			card_manager.update_val_p1(JSON.parse_string(packet.message))
 		'p2-val':
@@ -107,6 +113,10 @@ func received_packet(packet_string):
 		'p2-remove-all':
 			card_manager.remove_all_p2()
 			return
+		'p1-remove-top-trump':
+			$p1aces.remove_top()
+		'p2-remove-top-trump':
+			$p2aces.remove_top()
 		'p2-turn':
 			card_manager.p1_light.hide()
 			card_manager.p2_light.show()
@@ -123,6 +133,8 @@ func received_packet(packet_string):
 		'winner':
 			turn_clock.stop()
 			turn = 3
+			$p1aces.clear_aces()
+			$p2aces.clear_aces()
 			winner_scene(packet.message)
 		'new-round':
 			sounds.bg_music.play()

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8xxrn8e526ei"]
+
+[ext_resource type="Script" uid="uid://f7lx1um1wftu" path="res://AceCard.gd" id="1_3uja7"]
+[ext_resource type="Texture2D" uid="uid://w8jpjm6xrpjp" path="res://table_aces/Ante-Up.png" id="1_cdr17"]
+
+[node name="Node3D" type="Node3D"]
+transform = Transform3D(0.115, 0, 0, 0, 0.115, 0, 0, 0, 0.115, 0, 0, 0)
+script = ExtResource("1_3uja7")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+flip_h = true
+texture_filter = 0
+texture = ExtResource("1_cdr17")

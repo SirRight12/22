@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dlx2hctj2jj8g"]
+[gd_scene load_steps=20 format=3 uid="uid://dlx2hctj2jj8g"]
 
 [ext_resource type="Script" uid="uid://cn5i67eq2mrdl" path="res://ace_ui.gd" id="1_iv4q6"]
 [ext_resource type="Texture2D" uid="uid://71b83yhq6vw5" path="res://Hush.png" id="3_kxgsc"]
@@ -14,6 +14,9 @@
 [ext_resource type="Texture2D" uid="uid://ckok8ivm16hoe" path="res://Exchange.png" id="10_uvjk7"]
 [ext_resource type="Texture2D" uid="uid://plno80rda4qa" path="res://Yoink.png" id="11_cs4gq"]
 [ext_resource type="Texture2D" uid="uid://f3p5t5mw7mbm" path="res://Refresh.png" id="12_qxjk8"]
+[ext_resource type="Texture2D" uid="uid://cufwrtwbjgryl" path="res://Ante-Up.png" id="13_vhi1u"]
+[ext_resource type="Texture2D" uid="uid://7rgvri02qwjw" path="res://Remove.png" id="15_uvjk7"]
+[ext_resource type="Texture2D" uid="uid://bp47ginujgpnb" path="res://Ante-Up Plus.png" id="15_ymtbq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n0mis"]
 resource_local_to_scene = true
@@ -37,6 +40,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_iv4q6")
 dictionary = Dictionary[String, Texture2D]({
+"Ante-Up": ExtResource("13_vhi1u"),
+"Ante-Up Plus": ExtResource("15_ymtbq"),
 "Draw 2": ExtResource("6_e04yw"),
 "Draw 3": ExtResource("7_qxjk8"),
 "Draw 4": ExtResource("9_ymtbq"),
@@ -47,6 +52,7 @@ dictionary = Dictionary[String, Texture2D]({
 "Hush": ExtResource("3_kxgsc"),
 "Perfect Draw": ExtResource("3_n6tei"),
 "Refresh": ExtResource("12_qxjk8"),
+"Remove": ExtResource("15_uvjk7"),
 "Yoink!": ExtResource("11_cs4gq")
 })
 
@@ -79,7 +85,7 @@ anchor_bottom = 0.8
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("11_cs4gq")
+texture = ExtResource("15_uvjk7")
 expand_mode = 1
 stretch_mode = 5
 
@@ -97,12 +103,12 @@ stretch_mode = 5
 
 [node name="SubViewport" type="SubViewport" parent="Content"]
 transparent_bg = true
-size = Vector2i(445, 205)
+size = Vector2i(584, 205)
 script = ExtResource("5_kxgsc")
-text = "Yoink!"
+text = "Remove"
 
 [node name="Label" type="Label" parent="Content/SubViewport"]
 offset_right = 40.0
 offset_bottom = 23.0
 theme_override_font_sizes/font_size = 150
-text = "Yoink!"
+text = "Remove"

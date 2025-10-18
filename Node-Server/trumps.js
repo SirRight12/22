@@ -12,6 +12,13 @@ class Trump {
     this.onUse = onUse;
   }
 }
+// Basically the same thing as Trump, but with an inverseUse function for undoing the trump's effect
+class TrumpTable extends Trump {
+    constructor(name='null', description='sorry, lol',weight=0.5,onUse=()=>{},inverseUse=()=>{}) {
+        super(name, description, weight, onUse);
+        this.inverseUse = inverseUse;
+    }
+}
 // Function for the 'Perfect Draw' trump
 // It searches the deck for the card to get the player closest to the target
 // and then draws it for them.
@@ -71,6 +78,38 @@ function Exchange(player,other,game) {
     player.hand.push(otherCard); // Give the other's card to the  player
     return [playerCard, otherCard]; // Return the exchanged cards for animation purposes
 }
+function AnteUp(player,other,game) {
+    game.ante += 1; // Increase the ante value by 1
+}
+function UndoAnteUp(player,other,game) {
+    game.ante -= 1; // Decrease the ante value by 1
+}
+function AnteUpPlus(player,other,game) {
+    game.ante += 2; // Increase the ante value by 2
+}
+function UndoAnteUpPlus(player,other,game) {
+    game.ante -= 2; // Decrease the ante value by 2
+}
+function Remove(player,other,game) {
+    // Remove the top trump card from the other player's table
+    if (other.playernum === 1) {
+        if (game.p1table.length === 0) {
+            console.log('Remove error: no trumps on player 1 table to remove');
+            return;
+        }
+        const tableTrump = find_trump_by_name(game.p1table.pop());
+        console.log(tableTrump)
+        tableTrump.inverseUse(null, null, game);
+    } else if (other.playernum === 2) {
+        if (game.p2table.length === 0) {
+            console.log('Remove error: no trumps on player 2 table to remove');
+            return;
+        }
+        const tableTrump = find_trump_by_name(game.p2table.pop());
+        console.log(tableTrump)
+        tableTrump.inverseUse(null, null, game);
+    }
+}
 function Refresh(player,other,game) {
     // Shuffle the player's hand back into the deck
     game.deck.push(...player.hand);
@@ -93,7 +132,7 @@ function Refresh(player,other,game) {
     return player.hand; // Return the new hand, so animations can be played
 }
 function DrawTwo(player,other,game) {
-    return DrawSpecificNum(1,player,game);
+    return DrawSpecificNum(2,player,game);
 }
 function DrawThree(player,other,game) {
     return DrawSpecificNum(3,player,game);
@@ -120,6 +159,7 @@ function DrawSpecificNum(num=1,player,game) {
     return null; // If no such card is found, return null
 }
 export const trumps = [
+  // Trumps available in the first release
   new Trump('Perfect Draw', 'Draw the perfect card from the deck', .6, perfectDraw),
   new Trump('Hush', 'Draw a card and hide it from the other player', .6, Hush),
   new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', .8, DrawTwo),
@@ -129,6 +169,14 @@ export const trumps = [
   new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', .8, DrawSix),
   new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', .8, DrawSeven),
   new Trump('Yoink!', "Steal top card from other player's hand", .6, Yoink),
-//   new Trump('Exchange', "Exchange top card with other player's top card", .5, Exchange),
+  // Trumps added in the second release
+  new TrumpTable('Ante-Up', 'Increase the ante by 1 for this round', .8, AnteUp, UndoAnteUp),
+  new TrumpTable('Ante-Up Plus', 'Increase the ante by 2 for this round', .5, AnteUpPlus, UndoAnteUpPlus),
+  new Trump('Remove', 'Remove the top trump card from the enemy\'s table', .8, Remove),
   new Trump('Refresh','Shuffle hand back into deck and draw new hand',.6,Refresh),
+  // TODO: add this one lol
+  //   new Trump('Exchange', "Exchange top card with other player's top card", .5, Exchange),
 ]
+function find_trump_by_name(name) {
+    return trumps.find(trump => trump.name === name);
+}

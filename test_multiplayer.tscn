@@ -20,7 +20,7 @@ corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_k8sjm"]
-viewport_path = NodePath("Joining/TextViewport")
+viewport_path = NodePath(".")
 
 [sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
 font = ExtResource("2_7jfie")
@@ -109,7 +109,7 @@ theme_override_font_sizes/bold_font_size = 45
 theme_override_styles/normal = SubResource("StyleBoxFlat_k8sjm")
 bbcode_enabled = true
 text = "[b]Loaded Deck[/b]
- A Game of skill and chance
+ A game of skill and chance
 By: Sigma Inc."
 scroll_active = false
 horizontal_alignment = 1
@@ -232,6 +232,19 @@ metadata/_edit_use_anchors_ = true
 size = Vector2i(3214, 2533)
 text = "Join"
 
+[node name="DisplayName" type="LineEdit" parent="Joining"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.10101
+anchor_top = 1.71875
+anchor_right = 0.89899
+anchor_bottom = 2.71875
+theme_override_fonts/font = ExtResource("2_7jfie")
+theme_override_font_sizes/font_size = 30
+placeholder_text = "(Display Name)"
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="ID_UI" type="Control" parent="."]
 visible = false
 layout_mode = 1
@@ -304,5 +317,10 @@ stretch_mode = 5
 libraries = {
 &"": SubResource("AnimationLibrary_tcmrn")
 }
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 0
+offset_right = 68.5625
+offset_bottom = 31.0
 
 [connection signal="gui_input" from="Joining/LineEdit" to="." method="_on_line_edit_gui_input"]

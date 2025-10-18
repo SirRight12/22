@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=4 uid="uid://bfc5d01gu77ey"]
+[gd_scene load_steps=50 format=4 uid="uid://bfc5d01gu77ey"]
 
 [ext_resource type="Script" uid="uid://b6gy2tjpbxk8m" path="res://p1_turn.gd" id="1_2svmt"]
 [ext_resource type="Script" uid="uid://c7wawpuljridq" path="res://SocketGame.gd" id="1_jfl5n"]
@@ -30,8 +30,9 @@
 [ext_resource type="Script" uid="uid://cjkgw8ev5cbl0" path="res://connection_watcher.gd" id="26_cm4tu"]
 [ext_resource type="AudioStream" uid="uid://b1yj74puvt5ql" path="res://bgmusic.wav" id="26_dklut"]
 [ext_resource type="AudioStream" uid="uid://dh4drti3i7nxw" path="res://water.mp3" id="28_2xe74"]
-[ext_resource type="PackedScene" uid="uid://dhe6mxfcjp8q5" path="res://Node-Server/alarm_clock.glb" id="29_2xe74"]
+[ext_resource type="PackedScene" uid="uid://b7o5wyk761ssb" path="res://alarm_clock.glb" id="29_2xe74"]
 [ext_resource type="PackedScene" uid="uid://fv6ujv0vv3tl" path="res://control.tscn" id="30_ypx5c"]
+[ext_resource type="Script" uid="uid://byu0mv6pmy1yh" path="res://add_ace.gd" id="34_ftw4c"]
 
 [sub_resource type="Environment" id="Environment_l2d17"]
 
@@ -88,7 +89,7 @@ flip_faces = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcj2m"]
 emission_enabled = true
 emission = Color(0.547002, 0.536003, 0.271457, 1)
-emission_energy_multiplier = 2.30186
+emission_energy_multiplier = 2.75616
 emission_on_uv2 = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_8xr63"]
@@ -165,9 +166,9 @@ mesh = SubResource("BoxMesh_s32hl")
 skeleton = NodePath("")
 
 [node name="P2Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
-transform = Transform3D(0.0929806, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995666, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
+transform = Transform3D(0.0929805, 0.270835, -0.958125, 0, 0.962293, 0.272014, 0.995665, -0.0252921, 0.0894748, -0.748, 0.869, -0.20128)
 visible = false
-light_energy = 1.80089
+light_energy = 2.69054
 spot_range = 2.092
 spot_angle = 22.71
 spot_angle_attenuation = 2.0
@@ -180,7 +181,7 @@ mesh = SubResource("SphereMesh_8xr63")
 
 [node name="P1Light" type="SpotLight3D" parent="." node_paths=PackedStringArray("look_target")]
 transform = Transform3D(-0.0857523, -0.256865, 0.962635, 0, 0.966194, 0.257814, -0.996316, 0.0221082, -0.0828534, 0.987, 0.917, 0.188)
-light_energy = 2.71488
+light_energy = 2.8912
 light_size = 0.1
 distance_fade_enabled = true
 distance_fade_begin = 0.9
@@ -645,6 +646,16 @@ transparent_bg = true
 size = Vector2i(275, 45)
 
 [node name="Control" parent="p2clock/UI" instance=ExtResource("30_ypx5c")]
+
+[node name="p1aces" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.281, 0.578, 0.107511)
+script = ExtResource("34_ftw4c")
+test_ace_name = "Ante-Up"
+
+[node name="p2aces" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.281, 0.578, -0.108)
+script = ExtResource("34_ftw4c")
+test_ace_name = "Ante-Up"
 
 [connection signal="mouse_entered" from="Canvas/Control2/ColorRect" to="Canvas/Control2" method="_on_color_rect_mouse_entered"]
 [connection signal="mouse_exited" from="Canvas/Control2/ColorRect" to="Canvas/Control2" method="_on_color_rect_mouse_exited"]

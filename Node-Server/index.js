@@ -64,6 +64,7 @@ function lobby_to_client(lobby=[]) {
         let player = lobby[x]
         nLobby[x] = JSON.stringify({
             'id': player.id,
+            'display_name': player.display_name,
             'isHost': player.isHost,
         })
     }
@@ -75,6 +76,7 @@ function host_lobby(socket,packet) {
         l_uid = generateUID()
     }
     lobbies[l_uid] = [socket]
+    socket.display_name = packet.message
     let args = {
         'id': l_uid,
         'client_lobby': JSON.stringify(lobby_to_client(lobbies[l_uid])),
@@ -88,7 +90,10 @@ function server_error(socket,message) {
     var packet = new Packet('server_error',message)
     socket.send(packet.toString())
 }
-function join_lobby(socket,lobby_id) {
+function join_lobby(socket,message) {
+    const obj = JSON.parse(message)
+    const lobby_id = obj['id']
+    socket.display_name = obj['display_name']
     if (!lobbies[lobby_id]) {
         server_error(socket,'Lobby does not exist')
         return
@@ -157,7 +162,7 @@ function start_lobby(socket,packet) {
         pInfo['id'] = player.id
         pInfo['loaded'] = false
         pInfo['hand'] = []
-        pInfo['hp'] = 1
+        pInfo['hp'] = 7
         pInfo['trumps'] = []
         pInfo['playernum'] = player_num
         pInfo['timer'] = null
@@ -172,6 +177,8 @@ function start_lobby(socket,packet) {
         'deck': generate_deck(), // The game deck
         'target': 21, // The target score for player hands (can be modified by trumps)
         'round': 1, // The current round
+        'p1table': [], // The aces on the table for player 1
+        'p2table': [], // The aces on the table for player 2
         'roundTime': 60, // The max time each player has to think (in seconds)
         'ante': 1, // The ante is the amount of hp players will gain and lose each round
         'ante-up': 1, // The ante will increase by this amount each round (can be modified by trumps)
@@ -382,7 +389,10 @@ async function change_turn(game,playernum) {
     game.players.forEach(async player => {
         console.log('changing turn for player', player.playernum)
         const socket = players[player.id]
-        if (!socket) return
+        if (!socket) {
+            console.log('Socket not found for player', player.id,' must have disconnected');
+            return
+        }
         socket.send(new Packet('no-turn','').toString())
         await new Promise(resolve => setTimeout(resolve, 1000))
         console.log('after await for player', player.playernum)
@@ -548,6 +558,16 @@ function player_draw_card(socket) {
         },2000)
     })
 }
+function undo_trumps(table,game) {
+    table.forEach(trump => {
+        for (let x in trumps) {
+            let t = trumps[x]
+            if (t.name == trump) {
+                t.inverseUse(null, null, game)
+            }
+        }
+    })
+}
 function player_pass_turn(socket) {
     const [lobby, lobby_id] = find_player_lobby(socket)
     const game = games[lobby_id]
@@ -649,6 +669,11 @@ function player_pass_turn(socket) {
                     })
                     break;
             }
+            undo_trumps(game.p1table,game)
+            undo_trumps(game.p2table,game)
+            console.log('tables undone',game.p1table,game.p2table)
+            game.p1table = []
+            game.p2table = []
             console.log(result,p1.hp,p2.hp,game.ante)
             if (result == 1 && p2.hp <= 0) {
                 setTimeout(() => {
@@ -738,6 +763,7 @@ function use_trump(socket,packet) {
         console.error('Trump does not exist')
         return
     }
+    const other = game.players.find(p => p.playernum != player.playernum)
     console.log(player.trumps)
     switch (trump.name) {
         case 'Draw 2':
@@ -753,10 +779,21 @@ function use_trump(socket,packet) {
             useHush(trump,player,game)
             break;
         case 'Yoink!':
-            useYoink(trump,player, game.players.find(p => p.playernum != player.playernum), game)
+            useYoink(trump,player, other, game)
             break;
         case 'Refresh':
             useRefresh(trump,player,game)
+            break;
+        case 'Ante-Up':
+            useAnteUp(trump,player,game)
+            add_table_trump(trump.name, player.playernum, game)
+            break;
+        case 'Ante-Up Plus':
+            useAnteUpPlus(trump,player,game)
+            add_table_trump(trump.name, player.playernum, game)
+            break;
+        case 'Remove':
+            useRemove(trump,player,other,game)
             break;
         default:
             console.error('Oops, forgot to implement that one clown',trump.name)
@@ -770,6 +807,21 @@ function use_trump(socket,packet) {
     //send the updated trump data to the player
     const trumpPacket = new Packet('update-client-trumps',JSON.stringify(player.trumps))
     socket.send(trumpPacket.toString())
+}
+function add_table_trump(trumpName, playernum, game) {
+    if (playernum == 1) {
+        game.p1table.push(trumpName)
+    } else if (playernum == 2) {
+        game.p2table.push(trumpName)
+    }
+    console.log('table trumps',game.p1table,game.p2table)
+}
+function give_players_trump(num_used /* Player who used the trump */, trump_name, game) {
+    game.players.forEach(player => {
+        const socket = players[player.id]
+        let event = `p${num_used}-table-trump`
+        socket.send(new Packet(event, trump_name).toString())
+    })
 }
 //general function when using a trump that draws a specific card from the deck
 function useDrawSpecificCard(trump,player,game) {
@@ -799,6 +851,23 @@ function useDrawSpecificCard(trump,player,game) {
         // send the card to the client
         socket.send(packetDraw.toString())
         socket.send(packetVal.toString())
+    })
+}
+function useRemove(trump,player,other,game) {
+    //Remove the top trump card from the other player's table
+    trump.onUse(player, other, game)
+
+    // Send the packet to remove the top trump card, this is only visual so, hopefully this isn't insecure
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        let event = `p${other.playernum}-remove-top-trump`
+        socket.send(new Packet(event,'').toString())
+        const packet = new Packet('update-clock', JSON.stringify({
+            'round': game.round,
+            'hp': game.players[p.playernum - 1].hp,
+            'ante': game.ante,
+        }))
+        socket.send(packet.toString())
     })
 }
 function useRefresh(trump,player,game) {
@@ -862,6 +931,34 @@ function useYoink(trump,player,other,game) {
         })
     }, 500)
 }
+function useAnteUp(trump,player,game) {
+    trump.onUse(player, null, game)
+    // Send the updated ante to all players
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        const packet = new Packet('update-clock', JSON.stringify({
+            'round': game.round,
+            'hp': game.players[p.playernum - 1].hp,
+            'ante': game.ante,
+        }))
+        socket.send(packet.toString())
+    })
+    give_players_trump(player.playernum, trump.name, game)
+}
+function useAnteUpPlus(trump,player,game) {
+    trump.onUse(player, null, game)
+    // Send the updated ante to all players
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        const packet = new Packet('update-clock', JSON.stringify({
+            'round': game.round,
+            'hp': game.players[p.playernum - 1].hp,
+            'ante': game.ante,
+        }))
+        socket.send(packet.toString())
+    })
+    give_players_trump(player.playernum, trump.name, game)
+}
 function useHush(trump,player,game) {
     const card = trump.onUse(player, null, game)
     if (!card) {
@@ -891,6 +988,7 @@ function useHush(trump,player,game) {
 }
 
 function evaluate_game(game) {
+    
     let p1,p2
     game.players.forEach(player => {
         if (player.playernum == 1) {
