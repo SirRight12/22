@@ -171,7 +171,7 @@ function Remove(player,other,game) {
 }
 function Refresh(player,other,game) {
     // Shuffle the player's hand back into the deck
-    for (card of player.hand) {
+    for (const card of player.hand) {
         card.hidden = false; // Make sure all cards are visible when shuffled back
     }
     game.deck.push(...player.hand);
