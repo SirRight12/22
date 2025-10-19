@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://gfpdk41tjx8n"]
+
+[ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="1_i02b7"]
+
+[resource]
+default_font = ExtResource("1_i02b7")
+RichTextLabel/colors/default_color = Color(1, 1, 1, 1)
+RichTextLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+RichTextLabel/fonts/mono_font = ExtResource("1_i02b7")
+RichTextLabel/fonts/normal_font = ExtResource("1_i02b7")

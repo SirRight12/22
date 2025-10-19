@@ -112,7 +112,7 @@ corner_radius_bottom_left = 7
 anti_aliasing = false
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_k8sjm"]
-viewport_path = NodePath("Joining/TextViewport")
+viewport_path = NodePath(".")
 
 [sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
 font = ExtResource("2_7jfie")
@@ -223,7 +223,6 @@ stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="Start" type="Button" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.336806
@@ -365,19 +364,20 @@ texture_hover = ExtResource("9_scta2")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Trump Per Round" type="Control" parent="Start/Game Settings"]
+[node name="Round Time" type="Control" parent="Start/Game Settings"]
 layout_mode = 1
-anchor_top = 0.269058
+anchor_top = 0.266815
 anchor_right = 1.00028
-anchor_bottom = 0.365784
+anchor_bottom = 0.363542
 offset_right = -0.0860062
 offset_bottom = -0.140003
 script = ExtResource("6_rvqjn")
-val = 2
-min = 1
+val = 60
+min = 30
+max = 120
 metadata/_edit_use_anchors_ = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Start/Game Settings/Trump Per Round"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Start/Game Settings/Round Time"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.457797
@@ -385,18 +385,16 @@ anchor_bottom = 0.93
 offset_right = -0.0860023
 offset_bottom = 0.00999832
 theme = ExtResource("6_0n88v")
-theme_override_font_sizes/normal_font_size = 14
-text = "	Trumps Per Round"
-scroll_active = false
+text = "	Round Time"
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Up" type="Button" parent="Start/Game Settings/Trump Per Round"]
+[node name="Up" type="Button" parent="Start/Game Settings/Round Time"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.654
+anchor_left = 0.657268
 anchor_top = 0.14
-anchor_right = 0.745
+anchor_right = 0.748268
 anchor_bottom = 0.86
 offset_left = -0.124481
 offset_top = -0.0203052
@@ -410,7 +408,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_rvqjn")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
-[node name="Down" type="Button" parent="Start/Game Settings/Trump Per Round"]
+[node name="Down" type="Button" parent="Start/Game Settings/Round Time"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.471
@@ -428,114 +426,18 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_p263u")
 text = "-"
 metadata/_edit_use_anchors_ = true
 
-[node name="AmtDisplay" type="RichTextLabel" parent="Start/Game Settings/Trump Per Round"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.571927
-anchor_top = 0.232551
-anchor_right = 0.643927
-anchor_bottom = 0.767505
-offset_left = -0.0100098
-offset_right = -0.0420074
-offset_bottom = -0.00300026
-theme = ExtResource("6_0n88v")
-text = "2"
-scroll_active = false
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="Reset" type="TextureButton" parent="Start/Game Settings/Trump Per Round"]
-visible = false
-texture_filter = 3
-layout_mode = 0
-offset_left = 241.0
-offset_top = 5.99969
-offset_right = 269.0
-offset_bottom = 36.9997
-texture_normal = ExtResource("8_k4ct1")
-texture_pressed = ExtResource("9_p263u")
-texture_hover = ExtResource("9_scta2")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Round Time" type="Control" parent="Start/Game Settings"]
-layout_mode = 1
-anchor_left = 0.00653435
-anchor_top = 0.336322
-anchor_right = 1.00682
-anchor_bottom = 0.433049
-offset_left = 0.000488281
-offset_top = 16.0003
-offset_right = -0.0855103
-offset_bottom = 15.8603
-script = ExtResource("6_rvqjn")
-val = 60
-min = 30
-max = 120
-metadata/_edit_use_anchors_ = true
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Start/Game Settings/Round Time"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.457797
-anchor_bottom = 0.93
-offset_right = -0.0860023
-offset_bottom = 0.00999832
-theme = ExtResource("6_0n88v")
-text = "	Thinking Time"
-vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="Up" type="Button" parent="Start/Game Settings/Round Time"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.650732
-anchor_top = 0.14
-anchor_right = 0.741732
-anchor_bottom = 0.86
-offset_left = -0.124481
-offset_top = -0.0203052
-offset_right = 0.0295105
-offset_bottom = 0.0196953
-focus_mode = 0
-theme_override_fonts/font = ExtResource("2_7jfie")
-theme_override_styles/hover = SubResource("StyleBoxFlat_k4ct1")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_0n88v")
-theme_override_styles/normal = SubResource("StyleBoxFlat_rvqjn")
-text = "+"
-metadata/_edit_use_anchors_ = true
-
-[node name="Down" type="Button" parent="Start/Game Settings/Round Time"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.464464
-anchor_top = 0.139528
-anchor_right = 0.555464
-anchor_bottom = 0.86
-offset_left = -0.126495
-offset_right = 0.0274963
-offset_bottom = 0.0196953
-focus_mode = 0
-theme_override_fonts/font = ExtResource("2_7jfie")
-theme_override_styles/hover = SubResource("StyleBoxFlat_scta2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_rumif")
-theme_override_styles/normal = SubResource("StyleBoxFlat_p263u")
-text = "-"
-metadata/_edit_use_anchors_ = true
-
 [node name="AmtDisplay" type="RichTextLabel" parent="Start/Game Settings/Round Time"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.549051
+anchor_left = 0.555587
 anchor_top = 0.232551
-anchor_right = 0.621051
+anchor_right = 0.627587
 anchor_bottom = 0.767505
 offset_left = -0.0100098
 offset_right = 10.958
 offset_bottom = -0.00299835
 theme = ExtResource("6_0n88v")
-text = "60"
+text = "120"
 scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1

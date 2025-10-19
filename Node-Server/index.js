@@ -2,7 +2,7 @@
 import pkg from 'express'
 import http from 'http'
 import {WebSocketServer} from 'ws'
-import {trumps} from './trumps.js'
+import {trumps,trumpChances} from './trumps.js'
 //Declare the arbitrary port
 const PORT = process.env.PORT || 4000
 const express = pkg
@@ -149,6 +149,8 @@ function generate_deck() {
 }
 function start_lobby(socket,packet) {
     const [lobby,lobby_id] = find_player_lobby(socket)
+    //Game settings
+    const info = JSON.parse(packet.message)
     const gameInfo = []
     let player_num = 1
     //define player info
@@ -162,7 +164,7 @@ function start_lobby(socket,packet) {
         pInfo['id'] = player.id
         pInfo['loaded'] = false
         pInfo['hand'] = []
-        pInfo['hp'] = 7
+        pInfo['hp'] = info.starting_hp || 7
         pInfo['trumps'] = []
         pInfo['playernum'] = player_num
         pInfo['timer'] = null
@@ -179,7 +181,8 @@ function start_lobby(socket,packet) {
         'round': 1, // The current round
         'p1table': [], // The aces on the table for player 1
         'p2table': [], // The aces on the table for player 2
-        'roundTime': 60, // The max time each player has to think (in seconds)
+        'trumpsPerRound': info.trump_per_round || 2,
+        'roundTime': info.round_time || 60, // The max time each player has to think (in seconds)
         'ante': 1, // The ante is the amount of hp players will gain and lose each round
         'ante-up': 1, // The ante will increase by this amount each round (can be modified by trumps)
     }
@@ -284,6 +287,7 @@ function start_round(game) {
             p2 = player
         }
     })
+    if (!p1 || !p2) return
     p1.hand.push(card1,card3)
     p2.hand.push(card2,card4)
     const trumpPackets = roundTrumps(game)
@@ -339,6 +343,7 @@ function start_round(game) {
             setTimeout(async () => {
                 send_card(player,card4,2,true)
                 socket.send(p2Update2.toString())
+                await new Promise(resolve => setTimeout(resolve, 1000))
                 await sendTrumps(socket,player, trumpPackets)
                 console.log('sent trumps')
                 const turnPacket = new Packet('p1-turn',player.playernum == 1)
@@ -414,27 +419,37 @@ async function change_turn(game,playernum) {
     console.log('turn changed to',playernum)
     game.turn = playernum
 }
-function sendTrumps(socket, player, trumpPackets) {
-    return new Promise((resolve) => {
+async function sendTrumps(socket, player, trumpPackets) {
+    return new Promise(async (resolve) => {
         if (!trumpPackets || !trumpPackets[player.playernum - 1]) {
+            console.log('no packets')
             return;
         }
         console.log(trumpPackets[player.playernum - 1])
-        trumpPackets[player.playernum - 1].forEach(async packet => {
+        for (const packet of trumpPackets[player.playernum - 1]) {
+            console.log('one sent')
             socket.send(packet.toString())
-            await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for 1 second before sending the next packet
-        })
+            await new Promise(async (resolve) => {
+                setTimeout(() => {
+                    resolve(true);
+                    console.log('promise resolved')
+                }, 750)
+            }) // Wait for 0.75 seconds before sending the next packet
+        }
         resolve(); // Resolve the promise after all packets are sent
     })
 }
 function drawRandomTrump() {
     let totalWeight = 0;
-    for (const trump of trumps) {
+    for (const trump of trumpChances) {
         totalWeight += trump.weight;
     }
     let random = Math.random() * totalWeight;
-    for (const trump of trumps) {
+    for (const trump of trumpChances) {
         if (random < trump.weight) {
+            if (trump.isGroup) {
+                return trump.selectRandom()
+            }
             return trump;
         }
         random -= trump.weight;
@@ -446,7 +461,7 @@ function roundTrumps(game) {
     const packets = []
     let p1Packets = [] // an array of packets for player 1, p2's trump names will not be sent
     let p2Packets = [] // an array of packets for player 2, p1's trump names will not be sent to keep client integrity
-    for (let x = 0; x < 4; x ++) {
+    for (let x = 0; x < 2 * game.trumpsPerRound; x ++) {
         if (x % 2 == 0) {
             const trump = drawRandomTrump()
             p1.trumps.push(trump.name)
@@ -480,6 +495,10 @@ function player_draw_card(socket) {
     }
     if (game.turn != p.playernum) {
         return // If it's not the player's turn, do nothing
+    }
+    if (game.deck.length < 1) {
+        console.log('Draw error: no cards left in deck to draw');
+        return;
     }
     function send_to_players(drawingPlayer,card) {
         let event = 'p1-draw'
@@ -589,6 +608,10 @@ function player_pass_turn(socket) {
                 },game.roundTime * 1000)
             }
             const packet = new Packet(event,player.playernum == game.turn)
+            if (!sock) {
+                console.error("Socket disconnected mid-event")
+                return
+            }
             sock.send(packet.toString())
         })
     }
@@ -785,12 +808,20 @@ function use_trump(socket,packet) {
             useRefresh(trump,player,game)
             break;
         case 'Ante-Up':
-            useAnteUp(trump,player,game)
+            useAnteChanger(trump,player,game)
             add_table_trump(trump.name, player.playernum, game)
             break;
         case 'Ante-Up Plus':
-            useAnteUpPlus(trump,player,game)
+            useAnteChanger(trump,player,game)
             add_table_trump(trump.name, player.playernum, game)
+            break;
+        case 'Go For Seventeen':
+            useTargetChanger(trump,player,game)
+            add_table_trump(trump.name, player.playernum, game)
+            break;
+        case 'Go For 24':
+            useTargetChanger(trump,player,game)
+            add_table_trump(trump.name,player.playernum,game)
             break;
         case 'Remove':
             useRemove(trump,player,other,game)
@@ -853,6 +884,36 @@ function useDrawSpecificCard(trump,player,game) {
         socket.send(packetVal.toString())
     })
 }
+function updateTotals(game) {
+    game.players.forEach(p => {
+        const socket = players[p.id]
+
+        const p1ValuePacket = value_packet(p.playernum,1,game)
+        socket.send(p1ValuePacket.toString())
+        const p2ValuePacket = value_packet(p.playernum,2,game)
+        socket.send(p2ValuePacket.toString())
+    })
+}
+function useTargetChanger(trump,player,game) {
+    const [removedIdx,player_removed_from] = trump.onUse(player, null, game)
+    
+    console.log('removedIdx',removedIdx)
+    // Remove the card at the specified index if needed
+    game.players.forEach(p => {
+        const socket = players[p.id]
+        // need to packets for each player
+        const p1ValuePacket = value_packet(p.playernum,1,game)
+        socket.send(p1ValuePacket.toString())
+        const p2ValuePacket = value_packet(p.playernum,2,game)
+        socket.send(p2ValuePacket.toString())
+        if (removedIdx == -1) return
+        let event = `p${player_removed_from}-remove-trump-at`
+        socket.send(new Packet(event, removedIdx).toString())
+    })
+    // add the trump to the table
+    give_players_trump(player.playernum, trump.name, game)
+}
+
 function useRemove(trump,player,other,game) {
     //Remove the top trump card from the other player's table
     trump.onUse(player, other, game)
@@ -869,6 +930,7 @@ function useRemove(trump,player,other,game) {
         }))
         socket.send(packet.toString())
     })
+    updateTotals(game)
 }
 function useRefresh(trump,player,game) {
     const cards = trump.onUse(player, null, game)
@@ -931,21 +993,7 @@ function useYoink(trump,player,other,game) {
         })
     }, 500)
 }
-function useAnteUp(trump,player,game) {
-    trump.onUse(player, null, game)
-    // Send the updated ante to all players
-    game.players.forEach(p => {
-        const socket = players[p.id]
-        const packet = new Packet('update-clock', JSON.stringify({
-            'round': game.round,
-            'hp': game.players[p.playernum - 1].hp,
-            'ante': game.ante,
-        }))
-        socket.send(packet.toString())
-    })
-    give_players_trump(player.playernum, trump.name, game)
-}
-function useAnteUpPlus(trump,player,game) {
+function useAnteChanger(trump,player,game) {
     trump.onUse(player, null, game)
     // Send the updated ante to all players
     game.players.forEach(p => {

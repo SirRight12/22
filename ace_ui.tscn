@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dlx2hctj2jj8g"]
+[gd_scene load_steps=22 format=3 uid="uid://dlx2hctj2jj8g"]
 
 [ext_resource type="Script" uid="uid://cn5i67eq2mrdl" path="res://ace_ui.gd" id="1_iv4q6"]
 [ext_resource type="Texture2D" uid="uid://71b83yhq6vw5" path="res://Hush.png" id="3_kxgsc"]
@@ -17,6 +17,8 @@
 [ext_resource type="Texture2D" uid="uid://cufwrtwbjgryl" path="res://Ante-Up.png" id="13_vhi1u"]
 [ext_resource type="Texture2D" uid="uid://7rgvri02qwjw" path="res://Remove.png" id="15_uvjk7"]
 [ext_resource type="Texture2D" uid="uid://bp47ginujgpnb" path="res://Ante-Up Plus.png" id="15_ymtbq"]
+[ext_resource type="Texture2D" uid="uid://d4futk5nsu0l5" path="res://Go For Seventeen.png" id="16_cs4gq"]
+[ext_resource type="Texture2D" uid="uid://cqqujw74a8c8p" path="res://Go For 24.png" id="17_kpxq1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n0mis"]
 resource_local_to_scene = true
@@ -49,6 +51,8 @@ dictionary = Dictionary[String, Texture2D]({
 "Draw 6": ExtResource("5_4nwko"),
 "Draw 7": ExtResource("8_vhi1u"),
 "Exchange": ExtResource("10_uvjk7"),
+"Go For 24": ExtResource("17_kpxq1"),
+"Go For Seventeen": ExtResource("16_cs4gq"),
 "Hush": ExtResource("3_kxgsc"),
 "Perfect Draw": ExtResource("3_n6tei"),
 "Refresh": ExtResource("12_qxjk8"),

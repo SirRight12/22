@@ -10,5 +10,6 @@ script = ExtResource("1_3uja7")
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 flip_h = true
+shaded = true
 texture_filter = 0
 texture = ExtResource("1_cdr17")

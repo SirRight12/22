@@ -50,8 +50,8 @@ func received_packet(packet_string):
 			card_manager.draw_p1(message)
 		'p1-draw-trump':
 			var message = packet.message
-			if card_manager.has_method('slide_trump'):
-				card_manager.slide_trump('p1')
+			print('drawing ace?')
+			$p1aces.draw_ace()
 			if not message:
 				return
 			trump_ui.aces.append(message)
@@ -63,8 +63,8 @@ func received_packet(packet_string):
 			trump_ui.got_aces(trump_ui.aces)
 		'p2-draw-trump':
 			var message = packet.message
-			if card_manager.has_method('slide_trump'):
-				card_manager.slide_trump('p2')
+			print('drawing ace2?')
+			$p2aces.draw_ace()
 			if not message:
 				return
 			trump_ui.aces.append(message)
@@ -117,6 +117,10 @@ func received_packet(packet_string):
 			$p1aces.remove_top()
 		'p2-remove-top-trump':
 			$p2aces.remove_top()
+		'p1-remove-trump-at':
+			$p1aces.remove_at(int(packet.message))
+		'p2-remove-trump-at':
+			$p2aces.remove_at(int(packet.message))
 		'p2-turn':
 			card_manager.p1_light.hide()
 			card_manager.p2_light.show()

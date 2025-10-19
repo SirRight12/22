@@ -97,7 +97,13 @@ func disband_pressed():
 func start_pressed():
 	var packet = Packet.new()
 	packet.event = 'start'
-	packet.message = ''
+	var dict = {
+		'starting_hp': $"Start/Game Settings/Player Health".val,
+		'round_time': $"Start/Game Settings/Round Time".val,
+		'trump_per_round': $"Start/Game Settings/Trump Per Round".val,
+	}
+	
+	packet.message = JSON.stringify(dict)
 	socket.send_text(packet.stringify())
 
 func host_success(packet:Packet):
@@ -151,7 +157,6 @@ func update_player_list(player_list):
 		if Client.id == player.id:
 			prefix = '(You) '
 		var player_name:String = player.display_name
-		print('length, lol',player_name.length())
 		if player_name.length() < 1:
 			player_name = 'Player ' + str(player.id)
 		players.add_item(prefix + player_name,load("res://icon.svg"),false)

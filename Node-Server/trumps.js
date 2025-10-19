@@ -2,6 +2,11 @@
 // A Trump card has a name, description, and an onUse function that defines its effect
 // The onUse function takes the player, other player, and game as arguments
 // and can modify the game state as needed.
+function randRange(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
 
 // BTW "busting" is when the player's hand value exceeds the target value,
 class Trump {
@@ -17,6 +22,24 @@ class TrumpTable extends Trump {
     constructor(name='null', description='sorry, lol',weight=0.5,onUse=()=>{},inverseUse=()=>{}) {
         super(name, description, weight, onUse);
         this.inverseUse = inverseUse;
+    }
+}
+//Literally the same as TrumpTable, but with a isTarget flag for trumps that modify the target value, so it's easier to search for them
+class TrumpTableTarget extends TrumpTable {
+    constructor(name='null', description='sorry, lol',weight=0.5,onUse=()=>{},inverseUse=()=>{}) {
+        super(name, description, weight, onUse, inverseUse);
+        this.isTarget = true;
+    }
+}
+
+class TrumpGroup {
+    constructor(trumps=[],weight=.5) {
+        this.trumps = trumps
+        this.weight = weight
+        this.isGroup = true
+    }
+    selectRandom() {
+        return this.trumps[randRange(0,this.trumps.length-1)]
     }
 }
 // Function for the 'Perfect Draw' trump
@@ -90,6 +113,42 @@ function AnteUpPlus(player,other,game) {
 function UndoAnteUpPlus(player,other,game) {
     game.ante -= 2; // Decrease the ante value by 2
 }
+function removeTargetTrump(game) {
+    console.log('p1Table',game.p1table,'p2Table',game.p2table)
+    for (let x = 0; x < game.p1table.length; x++) {
+        console.log(game.p1table[x])
+        const trump = find_trump_by_name(game.p1table[x]);
+        if (trump.isTarget) {
+            game.p1table.splice(x, 1); // Remove existing target-modifying trump
+            // In theory, there should only be one target modifier, so end the search here and return the index so the client can find it.
+            return [x,1];
+        }
+    }
+    for (let x = 0; x < game.p2table.length; x++) {
+        console.log(game.p2table[x])
+        const trump = find_trump_by_name(game.p2table[x]);
+        if (trump.isTarget) {
+            game.p2table.splice(x, 1); // Remove existing target-modifying trump
+            // In theory, there should only be one target modifier, so end the search here and return the index so the client can find it.
+            return [x,2];
+        }
+    }
+    return [-1,null]; // If no target modifier is found, return -1
+}
+function GoForSeventeen(player,other,game) {
+    game.target = 17; // Set target to 17
+    return removeTargetTrump(game);
+}
+function UndoGoForSeventeen(player,other,game) {
+    game.target = 21; // Reset target to 21
+}
+function GoFor24(player,other,game) {
+    game.target = 24; // Set target to 24
+    return removeTargetTrump(game);
+}
+function UndoGoFor24(player,other,game) {
+    game.target = 21; // Reset target to 21
+}
 function Remove(player,other,game) {
     // Remove the top trump card from the other player's table
     if (other.playernum === 1) {
@@ -112,6 +171,9 @@ function Remove(player,other,game) {
 }
 function Refresh(player,other,game) {
     // Shuffle the player's hand back into the deck
+    for (card of player.hand) {
+        card.hidden = false; // Make sure all cards are visible when shuffled back
+    }
     game.deck.push(...player.hand);
     player.hand = [];
     // Shuffle the deck
@@ -158,25 +220,49 @@ function DrawSpecificNum(num=1,player,game) {
     console.log(`DrawSpecificNum error: no card with value ${num} found`);
     return null; // If no such card is found, return null
 }
-export const trumps = [
+export const trumpChances = [
   // Trumps available in the first release
   new Trump('Perfect Draw', 'Draw the perfect card from the deck', .6, perfectDraw),
   new Trump('Hush', 'Draw a card and hide it from the other player', .6, Hush),
-  new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', .8, DrawTwo),
-  new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', .8, DrawThree),
-  new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', .8, DrawFour),
-  new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', .8, DrawFive),
-  new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', .8, DrawSix),
-  new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', .8, DrawSeven),
+  //Group of "draw specific card"
+  new TrumpGroup([
+    new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', .8, DrawTwo),
+    new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', .8, DrawThree),
+    new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', .8, DrawFour),
+    new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', .8, DrawFive),
+    new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', .8, DrawSix),
+    new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', .8, DrawSeven)],
+  .8),
   new Trump('Yoink!', "Steal top card from other player's hand", .6, Yoink),
   // Trumps added in the second release
-  new TrumpTable('Ante-Up', 'Increase the ante by 1 for this round', .8, AnteUp, UndoAnteUp),
-  new TrumpTable('Ante-Up Plus', 'Increase the ante by 2 for this round', .5, AnteUpPlus, UndoAnteUpPlus),
-  new Trump('Remove', 'Remove the top trump card from the enemy\'s table', .8, Remove),
+  
+  // Group of "Small Ante-Changers"
+  new TrumpGroup([
+    new TrumpTable('Ante-Up', 'Increase the ante by 1 while on the table', .8, AnteUp, UndoAnteUp),],
+  .8),
+  //Group of "Big Ante-Changers"
+  new TrumpGroup([
+    new TrumpTable('Ante-Up Plus', 'Increase the ante by 2 while on the table', .5, AnteUpPlus, UndoAnteUpPlus),],
+  .5),
+  // Group of "change target to"
+  new TrumpGroup([
+      new TrumpTableTarget('Go For Seventeen', 'Change the target value to 17 while on the table', .4, GoForSeventeen, UndoGoForSeventeen),
+      new TrumpTableTarget('Go For 24','Change the target value to 17 while on the table', .4, GoFor24, UndoGoFor24),],
+  .7),
+  new Trump('Remove', 'Remove the top trump card from the enemy\'s table', .6, Remove),
   new Trump('Refresh','Shuffle hand back into deck and draw new hand',.6,Refresh),
   // TODO: add this one lol
   //   new Trump('Exchange', "Exchange top card with other player's top card", .5, Exchange),
 ]
+let rawTrumps = []
+for (let x = 0; x < trumpChances.length; x ++) {
+    let trump = trumpChances[x]
+    if (trump.isGroup) {
+        rawTrumps = rawTrumps.concat(trump.trumps)
+    }
+    rawTrumps.push(trump)
+}
+export const trumps = rawTrumps
 function find_trump_by_name(name) {
     return trumps.find(trump => trump.name === name);
 }

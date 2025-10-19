@@ -65,7 +65,6 @@ func remove_last_p2():
 	var tween2 = create_tween().tween_property(sprite,'modulate',Color(Color.WHITE,0.0),.3)
 	await tween.finished
 	$"..".remove_child(card)
-	pass
 func remove_all_p1():
 	for card in p1node.get_children():
 		remove_last_p1()
