@@ -184,6 +184,7 @@ function start_lobby(socket,packet) {
         'trumpsPerRound': info.trump_per_round || 2,
         'roundTime': info.round_time || 60, // The max time each player has to think (in seconds)
         'ante': 1, // The ante is the amount of hp players will gain and lose each round
+        'added_ante': 0, // extra ante added by some trumps
         'ante-up': 1, // The ante will increase by this amount each round (can be modified by trumps)
     }
 
@@ -657,12 +658,14 @@ function player_pass_turn(socket) {
             })
             let p1val = get_value(p1.hand,1,1)
             let p2val = get_value(p2.hand,1,1)
+            let a = Math.max(game.ante + game.added_ante, 0)
+            console.log('total ante: ',a)
             switch(result) {
                 case 1:
                     //p1 wins
-                    p1.hp += game.ante
-                    p2.hp -= game.ante
-                    game.ante += 1
+                    p1.hp += a
+                    p2.hp -= a
+                    game.ante += game['ante-up']
                     game.players.forEach(player => {
                         const socket = players[player.id]
                         p = new Packet('winner',[1,player.playernum,p1.hand,p2.hand,p1val,p2val])
@@ -671,11 +674,11 @@ function player_pass_turn(socket) {
                     })
                     break;
                 case 2:
-                        //p2 wins
-                        p1.hp -= game.ante
-                        p2.hp += game.ante
-                        game.ante += 1
-                        game.players.forEach(player => {
+                    //p2 wins
+                    p1.hp += a
+                    p2.hp -= a
+                    game.ante += game['ante-up']
+                    game.players.forEach(player => {
                             const socket = players[player.id]
                             p = new Packet('winner',[2,player.playernum,p1.hand,p2.hand,p1val,p2val])
                             console.log(p.message)
@@ -692,6 +695,7 @@ function player_pass_turn(socket) {
                     })
                     break;
             }
+            game.added_ante = 0;
             undo_trumps(game.p1table,game)
             undo_trumps(game.p2table,game)
             console.log('tables undone',game.p1table,game.p2table)
@@ -808,10 +812,9 @@ function use_trump(socket,packet) {
             useRefresh(trump,player,game)
             break;
         case 'Ante-Up':
-            useAnteChanger(trump,player,game)
-            add_table_trump(trump.name, player.playernum, game)
-            break;
         case 'Ante-Up Plus':
+        case 'Defend':
+        case 'Defend Plus':
             useAnteChanger(trump,player,game)
             add_table_trump(trump.name, player.playernum, game)
             break;
@@ -1001,7 +1004,7 @@ function useAnteChanger(trump,player,game) {
         const packet = new Packet('update-clock', JSON.stringify({
             'round': game.round,
             'hp': game.players[p.playernum - 1].hp,
-            'ante': game.ante,
+            'ante': game.ante + game.added_ante,
         }))
         socket.send(packet.toString())
     })

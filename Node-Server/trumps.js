@@ -102,16 +102,28 @@ function Exchange(player,other,game) {
     return [playerCard, otherCard]; // Return the exchanged cards for animation purposes
 }
 function AnteUp(player,other,game) {
-    game.ante += 1; // Increase the ante value by 1
+    game.added_ante += 1; // Increase the ante value by 1
 }
 function UndoAnteUp(player,other,game) {
-    game.ante -= 1; // Decrease the ante value by 1
+    game.added_ante -= 1; // Decrease the ante value by 1
 }
 function AnteUpPlus(player,other,game) {
-    game.ante += 2; // Increase the ante value by 2
+    game.added_ante += 2; // Increase the ante value by 2
 }
 function UndoAnteUpPlus(player,other,game) {
-    game.ante -= 2; // Decrease the ante value by 2
+    game.added_ante -= 2; // Decrease the ante value by 2
+}
+function Defend(player,other,game) {
+    game.added_ante -= 1; // Decrease the ante value by 1
+}
+function UndoDefend(player,other,game) {
+    game.added_ante += 1; // Re-Increase the ante value by 1
+}
+function DefendPlus(player,other,game) {
+    game.added_ante -= 2; // Decrease the ante value by 2
+}
+function UndoDefendPlus(player,other,game) {
+    game.added_ante += 2; // Re-Increase the ante value by 2
 }
 function removeTargetTrump(game) {
     console.log('p1Table',game.p1table,'p2Table',game.p2table)
@@ -222,35 +234,37 @@ function DrawSpecificNum(num=1,player,game) {
 }
 export const trumpChances = [
   // Trumps available in the first release
-  new Trump('Perfect Draw', 'Draw the perfect card from the deck', .6, perfectDraw),
-  new Trump('Hush', 'Draw a card and hide it from the other player', .6, Hush),
+  new Trump('Perfect Draw', 'Draw the perfect card from the deck', 0.6, perfectDraw),
+  new Trump('Hush', 'Draw a card and hide it from the other player', 0.6, Hush),
   //Group of "draw specific card"
   new TrumpGroup([
-    new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', .8, DrawTwo),
-    new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', .8, DrawThree),
-    new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', .8, DrawFour),
-    new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', .8, DrawFive),
-    new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', .8, DrawSix),
-    new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', .8, DrawSeven)],
-  .8),
-  new Trump('Yoink!', "Steal top card from other player's hand", .6, Yoink),
+    new Trump('Draw 2', 'Draw the 2 card from the deck, if already drawn, do nothing', 0.8, DrawTwo),
+    new Trump('Draw 3', 'Draw the 3 card from the deck, if already drawn, do nothing', 0.8, DrawThree),
+    new Trump('Draw 4', 'Draw the 4 card from the deck, if already drawn, do nothing', 0.8, DrawFour),
+    new Trump('Draw 5', 'Draw the 5 card from the deck, if already drawn, do nothing', 0.8, DrawFive),
+    new Trump('Draw 6', 'Draw the 6 card from the deck, if already drawn, do nothing', 0.8, DrawSix),
+    new Trump('Draw 7', 'Draw the 7 card from the deck, if already drawn, do nothing', 0.8, DrawSeven)],
+  0.8),
+  new Trump('Yoink!', "Steal top card from other player's hand", 0.6, Yoink),
   // Trumps added in the second release
   
   // Group of "Small Ante-Changers"
   new TrumpGroup([
-    new TrumpTable('Ante-Up', 'Increase the ante by 1 while on the table', .8, AnteUp, UndoAnteUp),],
-  .8),
+    new TrumpTable('Ante-Up', 'Increase the ante by 1 while on the table', 0.8, AnteUp, UndoAnteUp),
+    new TrumpTable('Defend', 'Decrease the ante by 1 while on the table', 0.8, Defend, UndoDefend),],
+  0.8),
   //Group of "Big Ante-Changers"
   new TrumpGroup([
-    new TrumpTable('Ante-Up Plus', 'Increase the ante by 2 while on the table', .5, AnteUpPlus, UndoAnteUpPlus),],
-  .5),
+    new TrumpTable('Ante-Up Plus', 'Increase the ante by 2 while on the table', 0.5, AnteUpPlus, UndoAnteUpPlus),
+    new TrumpTable('Defend Plus', 'Decrease the ante by 2 while on the table', 0.5, DefendPlus, UndoDefendPlus),],
+  0.5),
   // Group of "change target to"
   new TrumpGroup([
-      new TrumpTableTarget('Go For Seventeen', 'Change the target value to 17 while on the table', .4, GoForSeventeen, UndoGoForSeventeen),
-      new TrumpTableTarget('Go For 24','Change the target value to 17 while on the table', .4, GoFor24, UndoGoFor24),],
-  .7),
-  new Trump('Remove', 'Remove the top trump card from the enemy\'s table', .6, Remove),
-  new Trump('Refresh','Shuffle hand back into deck and draw new hand',.6,Refresh),
+      new TrumpTableTarget('Go For Seventeen', 'Change the target value to 17 while on the table', 0.4, GoForSeventeen, UndoGoForSeventeen),
+      new TrumpTableTarget('Go For 24','Change the target value to 24 while on the table', 0.4, GoFor24, UndoGoFor24),],
+  0.7),
+  new Trump('Remove', 'Remove the top trump card from the enemy\'s table', 0.6, Remove),
+  new Trump('Refresh','Shuffle hand back into deck and draw new hand', 0.6,Refresh),
   // TODO: add this one lol
   //   new Trump('Exchange', "Exchange top card with other player's top card", .5, Exchange),
 ]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dlx2hctj2jj8g"]
+[gd_scene load_steps=24 format=3 uid="uid://dlx2hctj2jj8g"]
 
 [ext_resource type="Script" uid="uid://cn5i67eq2mrdl" path="res://ace_ui.gd" id="1_iv4q6"]
 [ext_resource type="Texture2D" uid="uid://71b83yhq6vw5" path="res://Hush.png" id="3_kxgsc"]
@@ -19,6 +19,8 @@
 [ext_resource type="Texture2D" uid="uid://bp47ginujgpnb" path="res://Ante-Up Plus.png" id="15_ymtbq"]
 [ext_resource type="Texture2D" uid="uid://d4futk5nsu0l5" path="res://Go For Seventeen.png" id="16_cs4gq"]
 [ext_resource type="Texture2D" uid="uid://cqqujw74a8c8p" path="res://Go For 24.png" id="17_kpxq1"]
+[ext_resource type="Texture2D" uid="uid://c5xu5lnqjdh56" path="res://Defend.png" id="18_pjyqf"]
+[ext_resource type="Texture2D" uid="uid://ceybxxp1mtby" path="res://Defend Plus.png" id="19_kysnf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n0mis"]
 resource_local_to_scene = true
@@ -44,6 +46,8 @@ script = ExtResource("1_iv4q6")
 dictionary = Dictionary[String, Texture2D]({
 "Ante-Up": ExtResource("13_vhi1u"),
 "Ante-Up Plus": ExtResource("15_ymtbq"),
+"Defend": ExtResource("18_pjyqf"),
+"Defend Plus": ExtResource("19_kysnf"),
 "Draw 2": ExtResource("6_e04yw"),
 "Draw 3": ExtResource("7_qxjk8"),
 "Draw 4": ExtResource("9_ymtbq"),

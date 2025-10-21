@@ -2,16 +2,17 @@
 
 [ext_resource type="Script" uid="uid://b7l4678vyblmi" path="res://WebSocketLobby.gd" id="1_nrb8h"]
 [ext_resource type="FontFile" uid="uid://bxmcjqe08qt4f" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="2_7jfie"]
-[ext_resource type="Texture2D" uid="uid://b2ffw4wtqxlxv" path="res://Host.tres" id="2_k8sjm"]
 [ext_resource type="Script" uid="uid://bvcwu3eiqnoja" path="res://Reconnect.gd" id="4_60jql"]
 [ext_resource type="PackedScene" uid="uid://dfes0xtl1brn7" path="res://text_viewport.tscn" id="4_rjagb"]
 [ext_resource type="Texture2D" uid="uid://d4arp72gu0kxq" path="res://papa_sigma.jpg" id="5_tcmrn"]
 [ext_resource type="Theme" uid="uid://gfpdk41tjx8n" path="res://settings_ui.tres" id="6_0n88v"]
 [ext_resource type="Script" uid="uid://b3k0l3x6k01ha" path="res://Incrementer.gd" id="6_rvqjn"]
-[ext_resource type="Texture2D" uid="uid://o24uyowiij7r" path="res://Reconnect.tres" id="7_tcmrn"]
 [ext_resource type="Texture2D" uid="uid://dhv0o08btlnut" path="res://Refresh-Button.png" id="8_k4ct1"]
 [ext_resource type="Texture2D" uid="uid://cw631ohe6ekut" path="res://Refresh-Button-Pressed.png" id="9_p263u"]
 [ext_resource type="Texture2D" uid="uid://cj0o34e58d4mh" path="res://Refresh-Button-Hover.png" id="9_scta2"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_scta2"]
+viewport_path = NodePath("Host/HostViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k8sjm"]
 bg_color = Color(0.136826, 0.136826, 0.136826, 1)
@@ -111,12 +112,15 @@ corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 anti_aliasing = false
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_k8sjm"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_p263u"]
 viewport_path = NodePath("Joining/TextViewport")
 
 [sub_resource type="LabelSettings" id="LabelSettings_7jfie"]
 font = ExtResource("2_7jfie")
 font_size = 36
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k4ct1"]
+viewport_path = NodePath("CanvasLayer/TextViewport")
 
 [sub_resource type="Animation" id="Animation_k8sjm"]
 length = 0.001
@@ -176,7 +180,7 @@ anchor_bottom = 0.498457
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 61
-icon = ExtResource("2_k8sjm")
+icon = SubResource("ViewportTexture_scta2")
 icon_alignment = 1
 expand_icon = true
 metadata/_edit_use_anchors_ = true
@@ -633,7 +637,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 61
-icon = SubResource("ViewportTexture_k8sjm")
+icon = SubResource("ViewportTexture_p263u")
 icon_alignment = 1
 expand_icon = true
 metadata/_edit_use_anchors_ = true
@@ -719,7 +723,7 @@ anchor_right = 0.9
 anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("7_tcmrn")
+texture = SubResource("ViewportTexture_k4ct1")
 expand_mode = 1
 stretch_mode = 5
 
