@@ -675,8 +675,8 @@ function player_pass_turn(socket) {
                     break;
                 case 2:
                     //p2 wins
-                    p1.hp += a
-                    p2.hp -= a
+                    p1.hp -= a
+                    p2.hp += a
                     game.ante += game['ante-up']
                     game.players.forEach(player => {
                             const socket = players[player.id]

@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dfes0xtl1brn7" path="res://text_viewport.tscn" id="4_rjagb"]
 [ext_resource type="Texture2D" uid="uid://d4arp72gu0kxq" path="res://papa_sigma.jpg" id="5_tcmrn"]
 [ext_resource type="Theme" uid="uid://gfpdk41tjx8n" path="res://settings_ui.tres" id="6_0n88v"]
-[ext_resource type="Script" uid="uid://b3k0l3x6k01ha" path="res://Incrementer.gd" id="6_rvqjn"]
+[ext_resource type="Script" path="res://Incrementer.gd" id="6_rvqjn"]
 [ext_resource type="Texture2D" uid="uid://dhv0o08btlnut" path="res://Refresh-Button.png" id="8_k4ct1"]
 [ext_resource type="Texture2D" uid="uid://cw631ohe6ekut" path="res://Refresh-Button-Pressed.png" id="9_p263u"]
 [ext_resource type="Texture2D" uid="uid://cj0o34e58d4mh" path="res://Refresh-Button-Hover.png" id="9_scta2"]
