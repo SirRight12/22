@@ -829,6 +829,9 @@ function use_trump(socket,packet) {
         case 'Remove':
             useRemove(trump,player,other,game)
             break;
+        case "Pot Of Greed":
+            usePotOfGreed(trump,player,other,game)
+            break;
         default:
             console.error('Oops, forgot to implement that one clown',trump.name)
             break;
@@ -959,6 +962,13 @@ function useRefresh(trump,player,game) {
             socket.send(value_packet(p.playernum,player.playernum,game).toString())
         },900)
     })
+}
+function usePotOfGreed(trump,player,other,game) {
+    const result = trump.onUse(player,other,game)
+    if (result == -1) {
+        console.error("Pot of greed error, probably not enough cards to draw.")
+    }
+    const [[card1,card2,card3,card4],[]] = result
 }
 function useYoink(trump,player,other,game) {
     const otherCard = trump.onUse(player, other, game)

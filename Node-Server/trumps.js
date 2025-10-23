@@ -181,6 +181,12 @@ function Remove(player,other,game) {
         tableTrump.inverseUse(null, null, game);
     }
 }
+function shuffle_deck(game) {
+    for (let i = game.deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [game.deck[i], game.deck[j]] = [game.deck[j], game.deck[i]];
+    }
+}
 function Refresh(player,other,game) {
     // Shuffle the player's hand back into the deck
     for (const card of player.hand) {
@@ -189,10 +195,7 @@ function Refresh(player,other,game) {
     game.deck.push(...player.hand);
     player.hand = [];
     // Shuffle the deck
-    for (let i = game.deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [game.deck[i], game.deck[j]] = [game.deck[j], game.deck[i]];
-    }
+    shuffle_deck()
     // Draw a new hand of 2 cards
     for (let i = 0; i < 2; i++) {
         if (game.deck.length === 0) {
@@ -204,6 +207,55 @@ function Refresh(player,other,game) {
         player.hand.push(card);
     }
     return player.hand; // Return the new hand, so animations can be played
+}
+//Micah's dumb idea, I like it tho...
+//IDEA: Shuffle player's hand back into the deck, works like refresh. Draw 4 new cards.
+//          If the player goes over, apply the current ante to the player's hps as if the second player won and reduce it to 1
+//          If the player remains below the target then apply half the ante to the player's hps as if the player who used the trump won
+//          If the player reaches exactly the target, then apply the full ante to the player's hps as if the player who used the trump won
+//      Either way, shuffle the player's 4 cards back into the deck, draw 2 new and pass
+function PotOfGreed(player,other,game) {
+    // If the player's hand and the deck do not make four cards, exit the execution of the function
+    if (game.deck.length + player.hand.length < 4) {
+        console.error("Pot of greed error, not enough cards to draw")
+        return -1
+    }
+    game.turn = 3
+    // Shuffle the player's hand back into the deck
+    for (const card of player.hand) {
+        card.hidden = false; // Make sure all cards are visible when shuffled back
+    }
+    game.deck.push(...player.hand);
+    player.hand = []
+    shuffle_deck(game)
+    let val = 0
+    const cards = []
+    for (let x = 0; x < 4; x ++) {
+        const card = game.deck[x]
+        val += card.getValue(true)
+        cards.push(card)
+        player.hand.push(card)
+    }
+    let a = game.ante + game['added_ante']
+    if (val < game.target) {
+        player.hp += Math.ceil(a/2)
+        other.hp -= Math.ceil(a/2)
+    } else if (val == game.target) {
+        player.hp += a
+        other.hp -= a
+    } else {
+        player.hp -= a
+        other.hp += a
+    }
+    game.deck.push(...cards)
+    shuffle_deck(game)
+    const newCards = []
+    for (let x = 0; x < 2; x++) {
+        const card = game.deck[x]
+        newCards.push(card)
+    }
+    return [cards,newCards]
+
 }
 function DrawTwo(player,other,game) {
     return DrawSpecificNum(2,player,game);
